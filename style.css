@@ -94,11 +94,11 @@ body {
 /* Custom Text Highlight (Selection) */
 ::selection {
     background-color: var(--accent);
-    color: #000;
+    color: var(--bg-color);
 }
 ::-moz-selection {
     background-color: var(--accent);
-    color: #000;
+    color: var(--bg-color);
 }
 
 /* Base Typographic Styles */
