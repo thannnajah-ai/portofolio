@@ -36,6 +36,12 @@ document.addEventListener("DOMContentLoaded", () => {
     themeToggleBtn.addEventListener('click', (e) => {
         const isLight = document.body.classList.contains('light-theme');
         
+        // 360° spin animation
+        themeToggleBtn.classList.remove('spin-anim');
+        void themeToggleBtn.offsetWidth; // reflow to restart animation
+        themeToggleBtn.classList.add('spin-anim');
+        setTimeout(() => themeToggleBtn.classList.remove('spin-anim'), 650);
+
         // Batman Reveal Effect
         const x = e.clientX || window.innerWidth - 50;
         const y = e.clientY || 50;
@@ -166,58 +172,58 @@ const i18n = {
     id: {
         available: "Tersedia untuk kerja",
         heroTitle: "Frontend & Mobile Developer",
-        heroSubtitle: "Menciptakan Antarmuka Berkelas",
-        heroDesc: "Menggabungkan alat coding AI dengan prinsip Design Engineering yang kuat untuk menciptakan pengalaman digital yang estetis dan mulus.",
+        heroSubtitle: "Bikin Antarmuka yang Berasa",
+        heroDesc: "Jadi, saya pakai AI buat nulis kode lebih cepat — tapi hasilnya tetap dikontrol ketat pakai prinsip Design Engineering. Bukan asal jalan, tapi harus enak dilihat dan dipegang.",
         viewProjects: "Lihat Proyek",
         aboutMe: "Tentang Saya",
-        aboutP1: "Saya adalah pelajar di <strong>MA Mu'allimin Muhammadiyah Yogyakarta</strong> (Jurusan IPA) yang memiliki passion mendalam pada software engineering, khususnya di bidang Web dan Mobile (Flutter). Lahir pada 23 Februari 2009, perjalanan saya di dunia teknologi didorong oleh rasa ingin tahu terhadap bagaimana antarmuka digital dapat terasa hidup.",
-        aboutP2: "Saya sangat peduli pada detail antarmuka (UI). Dalam alur kerja sehari-hari, saya terbiasa menggunakan AI-assisted coding tools dan agentic workflows (seperti Claude Code CLI & Antigravity) di lingkungan local/proxy. Saya menggabungkan kecepatan AI dengan prinsip <em>Design Engineering</em> yang kuat untuk memastikan produk akhir tidak hanya fungsional, tetapi juga memiliki <em>good taste</em> dan pengalaman pengguna yang premium.",
-        skillsTitle: "Kapabilitas & Selera",
-        skill1Desc: "Keahlian solid dalam fondasi web modern menggunakan HTML5, CSS3, dan Vanilla JS, serta pengembangan aplikasi mobile cross-platform dengan Flutter.",
-        skill2Desc: "Menerapkan animasi natural berbasis physics, custom easing curves, dan tactile feedback. Interaksi terasa presisi, menghindari animasi generik linear.",
-        skill3Desc: "Fokus pada <em>good taste</em> UI/UX: tipografi presisi, proporsi spacing sempurna, dan desain asimetris. Menghindari tampilan \"boilerplate\" khas template.",
+        aboutP1: "Jadi, saya ini masih pelajar di <strong>MA Mu'allimin Muhammadiyah Yogyakarta</strong>, jurusan IPA. Lahir 23 Februari 2009. Ketertarikan saya di dunia software engineering — khususnya Web dan Mobile pakai Flutter — tumbuh dari satu pertanyaan: kenapa ada antarmuka yang kerasa hidup, dan kenapa yang lain kerasa mati?",
+        aboutP2: "Nah, dalam keseharian saya, saya udah terbiasa banget pakai AI-assisted tools kayak Claude Code CLI sama Antigravity buat bantu nulis kode. Tapi bukan berarti tinggal copy-paste — saya tetap pegang kendali desainnya. Kombinasi kecepatan AI sama prinsip <em>Design Engineering</em> yang kuat itu yang bikin hasil akhirnya bukan cuma fungsional, tapi juga punya <em>good taste</em> dan feel yang premium.",
+        skillsTitle: "Kemampuan & Selera",
+        skill1Desc: "Dasarnya kuat: HTML5, CSS3, Vanilla JS — semuanya saya pegang sendiri tanpa framework yang nambah beban. Plus Flutter buat mobile cross-platform.",
+        skill2Desc: "Animasinya bukan sekadar gerak — berbasis physics, pakai custom easing, dan ada tactile feedback-nya. Biar interaksinya kerasa presisi, bukan asal linear.",
+        skill3Desc: "Fokus di <em>good taste</em>: tipografi harus pas, spacing harus proporsional, desainnya harus asimetris dan berkarakter. Pokoknya jauh dari tampilan template generik.",
         projectsTitle: "Proyek Pilihan",
         project1Title: "TembusPTN.my.id",
-        project1Desc: "Platform belajar online UTBK/SNBT gratis dengan antarmuka yang clean dan responsif, dirancang untuk fokus tinggi penggunanya.",
+        project1Desc: "Platform belajar UTBK/SNBT yang gratis. Antarmukanya saya buat clean dan responsif, biar fokus belajarnya nggak terganggu.",
         project2Title: "Karya Tulis Ilmiah",
-        project2Desc: "Penelitian eksperimental mengenai Pengaruh Cara Konsumsi Berbeda terhadap Kadar Glukosa Nasi Putih. Studi ini memberikan implikasi untuk pola makan sehat.",
+        project2Desc: "Ini penelitian eksperimental tentang pengaruh cara makan berbeda terhadap kadar glukosa nasi putih. Nunjukin sisi analitis saya di luar coding.",
         thoughtsTitle: "Catatan & Pikiran",
         contactTitle: "Hubungi Saya",
         sendBtn: "Kirim Pesan",
-        blog1Title: "Mengapa Animasi UI Itu Penting",
+        blog1Title: "Kenapa Animasi UI Itu Penting Banget",
         blog1Date: "20 Mei 2026",
-        blog1Content: "<p>Animasi dalam antarmuka pengguna (UI) sering dianggap sebagai hiasan semata. Padahal, animasi yang dirancang dengan <em>good taste</em> memberikan fungsi krusial: <strong>feedback visual dan spasial</strong>.</p><p>Ketika seorang pengguna menekan tombol dan tombol tersebut merespons dengan efek gelombang (ripple) atau pegas (spring), otak mereka secara tak sadar merasa terhubung secara fisik dengan antarmuka digital tersebut.</p><p>Sebagai Frontend Developer, saya percaya bahwa memoles detail mikro interaksi adalah apa yang membedakan aplikasi biasa dari aplikasi kelas dunia.</p>",
-        blog2Title: "Beralih dari React ke Vanilla JS",
+        blog1Content: "<p>Banyak yang mikir animasi di UI itu cuma hiasan. Tapi kalau dipikir lagi, animasi yang dibuat dengan <em>good taste</em> itu punya fungsi yang jauh lebih dalam: <strong>feedback visual dan spasial</strong>.</p><p>Coba bayangin — kamu tekan tombol, dan tombolnya langsung balas dengan efek ripple atau spring yang mulus. Otak kamu secara nggak sadar langsung merasa 'terhubung' secara fisik sama layar. Itu yang bikin orang betah pakai aplikasinya.</p><p>Menurut saya, detail mikro interaksi kayak gini yang ngebedain aplikasi biasa dari yang beneran kelas dunia.</p>",
+        blog2Title: "Kenapa Saya Tinggal React dan Balik ke Vanilla JS",
         blog2Date: "15 April 2026",
-        blog2Content: "<p>Ekosistem JavaScript modern sangat terobsesi dengan framework raksasa seperti React, Next.js, dan Vue. Namun untuk website statis seperti portofolio, framework seringkali hanya menambah beban (bloat).</p><p>Saya memutuskan untuk membangun portofolio ini menggunakan 100% Vanilla JS dan murni CSS. Hasilnya? Tidak ada proses <em>hydration</em> yang lambat, tidak ada file bundel raksasa berukuran MB, dan performa 60fps yang terkunci rapat bahkan di perangkat kelas bawah.</p><p>Kembali ke dasar kadang adalah langkah paling maju yang bisa kita ambil.</p>"
+        blog2Content: "<p>Ekosistem JavaScript sekarang kayaknya wajib pakai React, Next.js, atau Vue. Tapi tunggu dulu — untuk website statis kayak portofolio, semua framework itu sering kali cuma nambah beban tanpa manfaat yang sebanding.</p><p>Jadi saya putuskan: portofolio ini 100% Vanilla JS dan CSS murni. Hasilnya? Nggak ada proses <em>hydration</em> yang lambat, nggak ada bundle file yang ukurannya gila-gilaan, dan performa 60fps stabil bahkan di HP kelas bawah.</p><p>Kadang, balik ke dasar itu justru langkah paling maju yang bisa kita ambil.</p>"
     },
     en: {
         available: "Available for work",
         heroTitle: "Frontend & Mobile Developer",
-        heroSubtitle: "Crafting Interfaces with Taste",
-        heroDesc: "Combining AI-assisted coding tools with strong Design Engineering principles to create highly aesthetic and fluid digital experiences.",
+        heroSubtitle: "Building Interfaces That Actually Feel Good",
+        heroDesc: "I use AI to write code faster — but I keep a tight grip on the design side. The goal isn't just to ship something that works. It has to feel right.",
         viewProjects: "View Projects",
         aboutMe: "About Me",
-        aboutP1: "I am a student at <strong>MA Mu'allimin Muhammadiyah Yogyakarta</strong> (Science major) with a deep passion for software engineering, specifically in Web and Mobile (Flutter). Born on February 23, 2009, my journey in technology is driven by a curiosity about how digital interfaces can feel alive.",
-        aboutP2: "I deeply care about user interface (UI) details. In my daily workflow, I am accustomed to using AI-assisted coding tools and agentic workflows (such as Claude Code CLI & Antigravity) in local/proxy environments. I combine the speed of AI with strong <em>Design Engineering</em> principles to ensure the final product is not only functional but also has <em>good taste</em> and a premium user experience.",
+        aboutP1: "So, I'm still a student at <strong>MA Mu'allimin Muhammadiyah Yogyakarta</strong> — science track. Born February 23, 2009. My interest in software engineering, specifically Web and Mobile with Flutter, started from one question: why do some interfaces feel alive, and others just... don't?",
+        aboutP2: "Day-to-day, I work with AI-assisted tools like Claude Code CLI and Antigravity to move fast. But I'm not just copy-pasting — I'm still the one making the design calls. Pairing that speed with solid <em>Design Engineering</em> principles is how I make sure the final product isn't just functional, but also has <em>good taste</em> and a premium feel.",
         skillsTitle: "Capabilities & Taste",
-        skill1Desc: "Solid expertise in modern web foundations using HTML5, CSS3, and Vanilla JS, as well as cross-platform mobile app development with Flutter.",
-        skill2Desc: "Applying natural physics-based animations, custom easing curves, and tactile feedback. Interactions feel precise, avoiding linear generic animations.",
-        skill3Desc: "Focus on UI/UX <em>good taste</em>: precise typography, perfect spacing proportions, and modern asymmetrical design. Avoiding typical \"boilerplate\" templates.",
+        skill1Desc: "Strong foundation: HTML5, CSS3, Vanilla JS — all handled directly, no bloated framework in the middle. Plus Flutter for cross-platform mobile.",
+        skill2Desc: "Animations aren't just movement — they're physics-based, with custom easing and tactile feedback. Interactions feel precise, not generic and linear.",
+        skill3Desc: "I care about <em>good taste</em>: typography has to be right, spacing has to breathe, and the design should have character. No boilerplate templates.",
         projectsTitle: "Featured Projects",
         project1Title: "TembusPTN.my.id",
-        project1Desc: "A free online learning platform for UTBK/SNBT with a clean and responsive interface, designed for high user focus.",
+        project1Desc: "A free UTBK/SNBT study platform. I built the interface clean and responsive — so nothing gets in the way of actually studying.",
         project2Title: "Scientific Research",
-        project2Desc: "Experimental research on the Effect of Different Consumption Methods on Glucose Levels in White Rice. This study provides implications for a healthy diet.",
+        project2Desc: "Experimental research on how different eating methods affect glucose levels in white rice. Shows there's an analytical side to me beyond just coding.",
         thoughtsTitle: "Thoughts & Logs",
         contactTitle: "Get In Touch",
         sendBtn: "Send Message",
-        blog1Title: "Why UI Animation Matters",
+        blog1Title: "Why UI Animation Actually Matters",
         blog1Date: "May 20, 2026",
-        blog1Content: "<p>Animations in user interfaces (UI) are often seen as mere decorations. In reality, tasteful animation serves a crucial function: <strong>visual and spatial feedback</strong>.</p><p>When a user presses a button and it responds with a ripple or a spring effect, their brain subconsciously feels a physical connection to the digital interface.</p><p>As a Frontend Developer, I believe that polishing micro-interactions is what separates an ordinary application from a world-class one.</p>",
-        blog2Title: "Switching from React to Vanilla JS",
+        blog1Content: "<p>A lot of people treat UI animations as decoration. But if you think about it, animation done with <em>good taste</em> serves a much deeper function: <strong>visual and spatial feedback</strong>.</p><p>Think about it — you press a button, and it fires back with a smooth ripple or spring. Your brain instantly feels a physical connection to the screen. That's what keeps people engaged.</p><p>To me, that kind of micro-interaction detail is exactly what separates an ordinary app from one that feels world-class.</p>",
+        blog2Title: "Why I Left React and Went Back to Vanilla JS",
         blog2Date: "April 15, 2026",
-        blog2Content: "<p>The modern JavaScript ecosystem is heavily obsessed with giant frameworks like React, Next.js, and Vue. However, for static websites like portfolios, frameworks often just add bloat.</p><p>I decided to build this portfolio using 100% Vanilla JS and pure CSS. The result? No slow hydration processes, no massive megabyte-sized bundle files, and rock-solid 60fps performance even on low-end devices.</p><p>Sometimes going back to basics is the most advanced step we can take.</p>"
+        blog2Content: "<p>The JavaScript ecosystem basically says you have to use React, Next.js, or Vue. But hold on — for a static site like a portfolio, all that framework overhead usually adds weight without a real payoff.</p><p>So I made the call: 100% Vanilla JS and pure CSS. The result? No slow hydration, no massive bundle files, and locked 60fps performance even on budget phones.</p><p>Sometimes going back to basics is actually the most advanced move you can make.</p>"
     }
 };
 
@@ -257,6 +263,12 @@ function showDynamicIsland(text) {
 setLanguage('en');
 
 langToggleBtn.addEventListener('click', () => {
+    // Card flip animation
+    langToggleBtn.classList.remove('flip-anim');
+    void langToggleBtn.offsetWidth; // reflow to restart
+    langToggleBtn.classList.add('flip-anim');
+    setTimeout(() => langToggleBtn.classList.remove('flip-anim'), 420);
+
     currentLang = currentLang === 'en' ? 'id' : 'en';
     localStorage.setItem('lang', currentLang);
     setLanguage(currentLang);
@@ -346,6 +358,35 @@ document.getElementById('menu-terminal')?.addEventListener('click', () => {
     document.getElementById('terminal-input').focus();
 });
 
+// Converts raw commit messages into conversational language
+function humanizeCommit(msg) {
+    // Only use the first line (ignore multiline commit bodies)
+    const firstLine = msg.split('\n')[0].trim();
+    const match = firstLine.match(/^([^:(]+)[:(]\s*(.+)/);
+    if (!match) return firstLine;
+
+    const type = match[1].toLowerCase().trim();
+    const body = match[2].replace(/[()]/g, '').trim();
+    const cap = body.charAt(0).toUpperCase() + body.slice(1);
+
+    const map = {
+        'feat'        : [`Nambah fitur baru — ${cap} ✨`, ''],
+        'fitur'       : [`Selesai bikin ${cap} ✨`, ''],
+        'fix'         : [`Fix nih: ${cap} 🐛`, ''],
+        'perbaikan'   : [`Udah beres — ${cap} 🐛`, ''],
+        'config'      : [`Update config: ${cap} 🔧`, ''],
+        'konfigurasi' : [`Update setting: ${cap} 🔧`, ''],
+        'refactor'    : [`Beresin struktur: ${cap} ♻️`, ''],
+        'style'       : [`Poles tampilan: ${cap} 🎨`, ''],
+        'docs'        : [`Update docs: ${cap} 📝`, ''],
+        'chore'       : [`${cap} 🔩`, ''],
+        'perf'        : [`Optimasi: ${cap} ⚡`, ''],
+        'animasi'     : [`Tambah animasi — ${cap} 🎬`, ''],
+    };
+
+    return map[type] ? map[type][0] : `${cap}`;
+}
+
 // 5. GitHub Logs Injector (Live)
 const logsTimeline = document.getElementById('logs-timeline');
 if (logsTimeline) {
@@ -362,7 +403,7 @@ if (logsTimeline) {
                 const hash = commitObj.sha.substring(0, 7);
                 const dateObj = new Date(commitObj.commit.author.date);
                 const dateStr = dateObj.toLocaleDateString('id-ID', { month: 'short', day: 'numeric', year: 'numeric' });
-                const msg = commitObj.commit.message;
+                const msg = humanizeCommit(commitObj.commit.message);
                 
                 const div = document.createElement('div');
                 div.className = 'log-item';
@@ -580,7 +621,7 @@ if (termInput) {
                     printToTerminal("Available commands: <br> - <span class='highlight'>whoami</span>: Who am I? <br> - <span class='highlight'>projects</span>: List projects <br> - <span class='highlight'>clear</span>: Clear terminal");
                     break;
                 case 'whoami':
-                    printToTerminal("Nathan Ferdwiansyah W. - Frontend & Mobile Developer. Born 2009. Crafts fluid UI.");
+                    printToTerminal("Nathan Ferdwiansyah W. — masih pelajar, lahir 2009. Fokusnya di Frontend & Mobile development. Suka banget bikin UI yang berasa hidup.");
                     break;
                 case 'projects':
                     printToTerminal("1. TembusPTN.my.id (Education Platform)<br>2. Scientific Research (Glucose Levels)");
@@ -607,6 +648,5 @@ if (termInput) {
     });
 }
 
-}
 });
 
