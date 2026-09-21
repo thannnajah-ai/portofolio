@@ -390,18 +390,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const cap = body.charAt(0).toUpperCase() + body.slice(1);
 
         const map = {
-            'feat': `✨ ${cap}`,
-            'fitur': `✨ ${cap}`,
-            'fix': `🐛 ${cap}`,
-            'perbaikan': `🐛 ${cap}`,
-            'config': `🔧 ${cap}`,
-            'konfigurasi': `🔧 ${cap}`,
-            'refactor': `♻️ ${cap}`,
-            'style': `🎨 ${cap}`,
-            'docs': `📝 ${cap}`,
-            'chore': `🔩 ${cap}`,
-            'perf': `⚡ ${cap}`,
-            'animasi': `🎬 ${cap}`
+            'feat': `${cap}`,
+            'fitur': `${cap}`,
+            'fix': `${cap}`,
+            'perbaikan': `${cap}`,
+            'config': `${cap}`,
+            'konfigurasi': `${cap}`,
+            'refactor': `${cap}`,
+            'style': `${cap}`,
+            'docs': `${cap}`,
+            'chore': `${cap}`,
+            'perf': `${cap}`,
+            'animasi': `${cap}`
         };
 
         return map[type] || cap;
@@ -638,7 +638,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 printToTerminal(`<span class="prompt">guest@nathan:~$</span> ${cmd}`);
 
-                switch(cmd) {
+                switch (cmd) {
                     case 'help':
                         printToTerminal("Commands:<br> - <span class='highlight'>whoami</span> &nbsp;- siapa saya<br> - <span class='highlight'>projects</span> - daftar project<br> - <span class='highlight'>skills</span> &nbsp;&nbsp;- tech stack<br> - <span class='highlight'>blog</span> &nbsp;&nbsp;&nbsp;&nbsp;- artikel saya<br> - <span class='highlight'>socials</span> &nbsp;- link sosial<br> - <span class='highlight'>contact</span> &nbsp;- kontak saya<br> - <span class='highlight'>age</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- umur saya<br> - <span class='highlight'>open 1</span> &nbsp;&nbsp;- buka TembusPTN<br> - <span class='highlight'>theme</span> &nbsp;&nbsp;&nbsp;- ganti tema<br> - <span class='highlight'>clear</span> &nbsp;&nbsp;&nbsp;- bersihkan terminal");
                         break;
