@@ -1031,7 +1031,7 @@ body.loaded #preloader {
     height: 300px;
     overflow-y: auto;
 }
-.terminal-body p { margin-bottom: 0.5rem; line-height: 1.4; margin-top: 0;}
+.terminal-body p { margin-bottom: 0.5rem; line-height: 1.4; margin-top: 0; color: inherit; }
 .highlight { color: #60a5fa; }
 .terminal-input-line {
     padding: 0 16px 16px;
