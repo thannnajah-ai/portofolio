@@ -101,6 +101,13 @@ document.addEventListener("DOMContentLoaded", () => {
             el.addEventListener('mouseenter', () => cursor.classList.add('active'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
         });
+
+        // 5. Ripple Click Effect
+        document.addEventListener('mousedown', () => {
+            cursor.classList.remove('ripple-active');
+            void cursor.offsetWidth; // trigger reflow
+            cursor.classList.add('ripple-active');
+        });
     }
 
     // Magnetic Button Logic
