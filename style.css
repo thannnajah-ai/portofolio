@@ -509,12 +509,31 @@ section {
     }
     
     .custom-cursor.active {
-        width: 48px;
-        height: 48px;
+        width: 40px;
+        height: 40px;
         background-color: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(2px);
-        border: 1px solid rgba(255,255,255,0.2);
-        mix-blend-mode: normal;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .light-theme .custom-cursor.active {
+        background-color: rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    /* FIX: Restore native cursor when any dialog is open (since dialog top-layer hides custom cursor) */
+    body:has(dialog[open]),
+    body:has(dialog[open]) .blog-reader-dialog,
+    body:has(dialog[open]) .terminal-dialog {
+        cursor: default !important;
+    }
+    body:has(dialog[open]) a, 
+    body:has(dialog[open]) button, 
+    body:has(dialog[open]) .magnetic,
+    body:has(dialog[open]) .blog-close-btn,
+    body:has(dialog[open]) #term-close {
+        cursor: pointer !important;
+    }
+    body:has(dialog[open]) .custom-cursor {
+        display: none !important;
     }
 }
 
