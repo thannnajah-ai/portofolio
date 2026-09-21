@@ -38,6 +38,8 @@
     <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
     <!-- Spline 3D Viewer -->
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.0/build/spline-viewer.js"></script>
+    <!-- Lenis Smooth Scroll -->
+    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 </head>
 
 <body>
@@ -66,9 +68,14 @@
 
     <div class="noise-overlay"></div>
     <canvas id="particle-canvas" class="particle-canvas"></canvas>
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="loader-circle"></div>
+    <!-- Preloader / Page Reveal -->
+    <div id="preloader" class="page-reveal">
+        <div class="reveal-text">
+            <span>Halo.</span>
+            <span>Hello.</span>
+            <span>こんにちは.</span>
+            <span>Bonjour.</span>
+        </div>
     </div>
     <!-- Scroll Progress -->
     <div class="scroll-progress" id="scroll-progress"></div>

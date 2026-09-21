@@ -3,6 +3,63 @@
 // We start slightly scaled down (0.98 in CSS) and fade in smoothly.
 
 document.addEventListener("DOMContentLoaded", () => {
+    // 0. Initialize Lenis Smooth Scroll (Design Engineering touch)
+    if (typeof Lenis !== 'undefined') {
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
+            smooth: true
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+        window.lenis = lenis; // Expose globally just in case
+    }
+
+    // 0.5 UI Sound Engine (Web Audio API)
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioCtx();
+
+    function playTone(freq, type = 'sine', duration = 0.1, vol = 0.05) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        // Envelope (fast attack, exponential decay)
+        gain.gain.setValueAtTime(0, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    const sfx = {
+        click: () => playTone(800, 'sine', 0.05, 0.02),
+        hover: () => playTone(1200, 'sine', 0.03, 0.01),
+        pop: () => playTone(600, 'triangle', 0.1, 0.03),
+        enter: () => playTone(300, 'square', 0.1, 0.02),
+        success: () => {
+            playTone(440, 'sine', 0.1, 0.02);
+            setTimeout(() => playTone(554.37, 'sine', 0.1, 0.02), 100); // C#
+            setTimeout(() => playTone(659.25, 'sine', 0.2, 0.02), 200); // E
+        }
+    };
+    
+    // Bind sounds globally to specific classes
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.theme-toggle') || e.target.closest('.lang-toggle') || e.target.closest('button')) {
+            sfx.click();
+        }
+    });
+
     // Setup observer
     const observerOptions = {
         root: null,
@@ -157,15 +214,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Preloader Logic
-    const hidePreloader = () => document.body.classList.add('loaded');
-    const spline = document.querySelector('spline-viewer');
-    if (spline) {
-        spline.addEventListener('load', hidePreloader);
-        setTimeout(hidePreloader, 3000); // Fallback
-    } else {
-        window.addEventListener('load', hidePreloader);
-    }
+    // Page Reveal Logic
+    const hidePreloader = () => {
+        document.body.classList.add('loaded');
+        // Re-enable smooth scrolling after reveal
+        if (window.lenis) {
+            window.lenis.start();
+        }
+    };
+
+    // Stop scrolling while curtain is down
+    if (window.lenis) window.lenis.stop();
+
+    // Always hide after the greeting sequence (2.3s)
+    setTimeout(hidePreloader, 2300);
 
     // i18n Dictionary
     const i18n = {
@@ -633,6 +695,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (termInput) {
         termInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
+                sfx.enter();
                 const cmd = termInput.value.trim().toLowerCase();
                 termInput.value = '';
 
