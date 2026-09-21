@@ -325,20 +325,34 @@ document.getElementById('menu-terminal')?.addEventListener('click', () => {
     document.getElementById('terminal-input').focus();
 });
 
-// 5. GitHub Logs Injector
-const commits = [
-    { hash: 'a1b2c3d', date: 'Sep 21, 2026', msg: 'Implement Phase 6: Dynamic Island & Context Menu' },
-    { hash: 'f900a60', date: 'Sep 21, 2026', msg: 'Refactor Spline 3D Viewer and Custom Terminal' },
-    { hash: '3437892', date: 'Sep 20, 2026', msg: 'Initial commit: God-Tier Portfolio Setup' },
-];
+// 5. GitHub Logs Injector (Live)
 const logsTimeline = document.getElementById('logs-timeline');
 if (logsTimeline) {
-    commits.forEach(commit => {
-        const div = document.createElement('div');
-        div.className = 'log-item';
-        div.innerHTML = `<div class="log-date">${commit.date}</div><div class="log-msg"><span class="log-hash">${commit.hash}</span> ${commit.msg}</div>`;
-        logsTimeline.appendChild(div);
-    });
+    logsTimeline.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem;">Fetching live commits from GitHub...</div>';
+    
+    fetch('https://api.github.com/repos/thannnajah-ai/portofolio/commits')
+        .then(response => response.json())
+        .then(data => {
+            logsTimeline.innerHTML = ''; // clear loading text
+            
+            // Get latest 4 commits
+            const commits = data.slice(0, 4);
+            commits.forEach(commitObj => {
+                const hash = commitObj.sha.substring(0, 7);
+                const dateObj = new Date(commitObj.commit.author.date);
+                const dateStr = dateObj.toLocaleDateString('id-ID', { month: 'short', day: 'numeric', year: 'numeric' });
+                const msg = commitObj.commit.message;
+                
+                const div = document.createElement('div');
+                div.className = 'log-item';
+                div.innerHTML = `<div class="log-date">${dateStr}</div><div class="log-msg"><a href="${commitObj.html_url}" target="_blank" class="log-hash" style="text-decoration:none">${hash}</a> ${msg}</div>`;
+                logsTimeline.appendChild(div);
+            });
+        })
+        .catch(err => {
+            logsTimeline.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem;">Failed to load live commits.</div>';
+            console.error('Error fetching commits:', err);
+        });
 }
 
     
