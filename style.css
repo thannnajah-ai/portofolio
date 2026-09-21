@@ -1090,14 +1090,19 @@ body.loaded #preloader {
    PREMIUM MICRO-INTERACTIONS
    ========================================= */
 
-/* 1. Staggered Text Reveal */
+/* 1. Staggered Text Reveal (Plays after preloader) */
 .hero-title span {
     display: inline-block;
     opacity: 0;
-    animation: revealUp 0.8s var(--ease-out-expo) forwards;
 }
-.hero-title span:nth-child(1) { animation-delay: 0.1s; }
-.hero-title span:nth-child(3) { animation-delay: 0.3s; }
+body.loaded .hero-title span:nth-child(1) { 
+    animation: revealUp 0.8s var(--ease-out-expo) forwards;
+    animation-delay: 0.2s; 
+}
+body.loaded .hero-title span:nth-child(3) { 
+    animation: revealUp 0.8s var(--ease-out-expo) forwards;
+    animation-delay: 0.4s; 
+}
 
 @keyframes revealUp {
     0% { opacity: 0; transform: translateY(20px); }
@@ -1148,13 +1153,15 @@ body.loaded #preloader {
 /* 5. Staggered Navbar Load */
 .nav-link {
     opacity: 0;
+}
+body.loaded .nav-link {
     animation: navDrop 0.6s var(--ease-out-expo) forwards;
 }
-.nav-link:nth-child(1) { animation-delay: 0.1s; }
-.nav-link:nth-child(2) { animation-delay: 0.15s; }
-.nav-link:nth-child(3) { animation-delay: 0.2s; }
-.nav-link:nth-child(4) { animation-delay: 0.25s; }
-.nav-link:nth-child(5) { animation-delay: 0.3s; }
+body.loaded .nav-link:nth-child(1) { animation-delay: 0.1s; }
+body.loaded .nav-link:nth-child(2) { animation-delay: 0.15s; }
+body.loaded .nav-link:nth-child(3) { animation-delay: 0.2s; }
+body.loaded .nav-link:nth-child(4) { animation-delay: 0.25s; }
+body.loaded .nav-link:nth-child(5) { animation-delay: 0.3s; }
 
 @keyframes navDrop {
     0% { opacity: 0; transform: translateY(-15px); }
