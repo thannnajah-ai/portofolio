@@ -186,8 +186,10 @@ const i18n = {
         sendBtn: "Kirim Pesan",
         blog1Title: "Mengapa Animasi UI Itu Penting",
         blog1Date: "20 Mei 2026",
+        blog1Content: "<p>Animasi dalam antarmuka pengguna (UI) sering dianggap sebagai hiasan semata. Padahal, animasi yang dirancang dengan <em>good taste</em> memberikan fungsi krusial: <strong>feedback visual dan spasial</strong>.</p><p>Ketika seorang pengguna menekan tombol dan tombol tersebut merespons dengan efek gelombang (ripple) atau pegas (spring), otak mereka secara tak sadar merasa terhubung secara fisik dengan antarmuka digital tersebut.</p><p>Sebagai Frontend Developer, saya percaya bahwa memoles detail mikro interaksi adalah apa yang membedakan aplikasi biasa dari aplikasi kelas dunia.</p>",
         blog2Title: "Beralih dari React ke Vanilla JS",
-        blog2Date: "15 April 2026"
+        blog2Date: "15 April 2026",
+        blog2Content: "<p>Ekosistem JavaScript modern sangat terobsesi dengan framework raksasa seperti React, Next.js, dan Vue. Namun untuk website statis seperti portofolio, framework seringkali hanya menambah beban (bloat).</p><p>Saya memutuskan untuk membangun portofolio ini menggunakan 100% Vanilla JS dan murni CSS. Hasilnya? Tidak ada proses <em>hydration</em> yang lambat, tidak ada file bundel raksasa berukuran MB, dan performa 60fps yang terkunci rapat bahkan di perangkat kelas bawah.</p><p>Kembali ke dasar kadang adalah langkah paling maju yang bisa kita ambil.</p>"
     },
     en: {
         available: "Available for work",
@@ -212,8 +214,10 @@ const i18n = {
         sendBtn: "Send Message",
         blog1Title: "Why UI Animation Matters",
         blog1Date: "May 20, 2026",
+        blog1Content: "<p>Animations in user interfaces (UI) are often seen as mere decorations. In reality, tasteful animation serves a crucial function: <strong>visual and spatial feedback</strong>.</p><p>When a user presses a button and it responds with a ripple or a spring effect, their brain subconsciously feels a physical connection to the digital interface.</p><p>As a Frontend Developer, I believe that polishing micro-interactions is what separates an ordinary application from a world-class one.</p>",
         blog2Title: "Switching from React to Vanilla JS",
-        blog2Date: "April 15, 2026"
+        blog2Date: "April 15, 2026",
+        blog2Content: "<p>The modern JavaScript ecosystem is heavily obsessed with giant frameworks like React, Next.js, and Vue. However, for static websites like portfolios, frameworks often just add bloat.</p><p>I decided to build this portfolio using 100% Vanilla JS and pure CSS. The result? No slow hydration processes, no massive megabyte-sized bundle files, and rock-solid 60fps performance even on low-end devices.</p><p>Sometimes going back to basics is the most advanced step we can take.</p>"
     }
 };
 
@@ -474,25 +478,63 @@ document.querySelectorAll('a, button, .tilt-card').forEach(el => {
     });
 });
 
-// Blog Rendering
+// Blog Rendering & Dialog Logic
 const blogs = [
-    { titleKey: 'blog1Title', dateKey: 'blog1Date', link: '#' },
-    { titleKey: 'blog2Title', dateKey: 'blog2Date', link: '#' }
+    { titleKey: 'blog1Title', dateKey: 'blog1Date', contentKey: 'blog1Content', link: '#' },
+    { titleKey: 'blog2Title', dateKey: 'blog2Date', contentKey: 'blog2Content', link: '#' }
 ];
 const blogContainer = document.getElementById('blog-container');
+const blogDialog = document.getElementById('blog-dialog');
+const blogDialogTitle = document.getElementById('blog-dialog-title');
+const blogDialogDate = document.getElementById('blog-dialog-date');
+const blogDialogContent = document.getElementById('blog-dialog-content');
+const blogCloseBtn = document.getElementById('blog-close');
+
 if (blogContainer) {
     blogs.forEach(blog => {
         const card = document.createElement('a');
         card.className = 'blog-card magnetic tilt-card';
-        card.href = blog.link;
+        card.href = 'javascript:void(0)';
         card.innerHTML = `
             <div class="blog-date" data-i18n="${blog.dateKey}"></div>
             <h3 class="blog-title" data-i18n="${blog.titleKey}"></h3>
         `;
+        
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Populate dialog content based on current lang
+            const lang = localStorage.getItem('lang') || 'en';
+            blogDialogTitle.innerHTML = i18n[lang][blog.titleKey];
+            blogDialogDate.innerHTML = i18n[lang][blog.dateKey];
+            blogDialogContent.innerHTML = i18n[lang][blog.contentKey];
+            
+            // Show dialog
+            blogDialog.showModal();
+            document.body.style.overflow = 'hidden'; // prevent bg scrolling
+        });
+        
         blogContainer.appendChild(card);
     });
     // Need to re-trigger setLanguage to translate newly added nodes
     setLanguage(currentLang);
+}
+
+if (blogDialog && blogCloseBtn) {
+    blogCloseBtn.addEventListener('click', () => {
+        blogDialog.classList.add('closing');
+        setTimeout(() => {
+            blogDialog.close();
+            blogDialog.classList.remove('closing');
+            document.body.style.overflow = '';
+        }, 300); // match CSS animation duration
+    });
+    
+    // Close on backdrop click
+    blogDialog.addEventListener('click', (e) => {
+        if (e.target === blogDialog) {
+            blogCloseBtn.click();
+        }
+    });
 }
 
 // Secret Terminal
