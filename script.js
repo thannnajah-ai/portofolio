@@ -149,7 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
             glowBg.style.transform = `translate(calc(-50% + ${-x}px), ${-y}px)`;
         });
     }
-});
 
 // Preloader Logic
 window.addEventListener('load', () => {
@@ -231,6 +230,22 @@ function setLanguage(lang) {
     langToggleBtn.innerText = lang.toUpperCase();
 }
 
+// 3. Dynamic Island Logic (Moved up)
+let islandTimeout;
+function showDynamicIsland(text) {
+    const island = document.getElementById('dynamic-island');
+    const islandText = document.getElementById('island-text');
+    if (!island || !islandText) return;
+    
+    islandText.textContent = text;
+    island.classList.remove('hidden-island');
+    
+    clearTimeout(islandTimeout);
+    islandTimeout = setTimeout(() => {
+        island.classList.add('hidden-island');
+    }, 3000);
+}
+
 // Initialize Language (we default to EN in the HTML structure)
 setLanguage('en');
 
@@ -280,21 +295,7 @@ window.addEventListener('scroll', () => {
     if (scrollLine) scrollLine.style.height = scrolled + '%';
 });
 
-// 3. Dynamic Island
-let islandTimeout;
-function showDynamicIsland(text) {
-    const island = document.getElementById('dynamic-island');
-    const islandText = document.getElementById('island-text');
-    if (!island || !islandText) return;
-    
-    islandText.textContent = text;
-    island.classList.remove('hidden-island');
-    
-    clearTimeout(islandTimeout);
-    islandTimeout = setTimeout(() => {
-        island.classList.add('hidden-island');
-    }, 3000);
-}
+// 3. Dynamic Island logic has been moved up
 
 // 4. Custom Context Menu
 const contextMenu = document.getElementById('custom-context-menu');
@@ -537,3 +538,4 @@ if (termInput) {
         }
     });
 }
+});
