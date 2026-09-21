@@ -60,11 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Setup observer
+    // Configuration for Intersection Observer
     const observerOptions = {
         root: null,
         rootMargin: '0px',
-        threshold: 0.15 // Trigger when 15% of the element is visible
+        threshold: 0.3 // Trigger when 30% of the element is visible
     };
 
     const observer = new IntersectionObserver((entries, observer) => {
