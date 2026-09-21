@@ -93,15 +93,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     themeToggleBtn.addEventListener('click', (e) => {
         const isLight = document.body.classList.contains('light-theme');
-        
-        // 360° spin animation on button
+
+        // 360° spin animation
         themeToggleBtn.classList.remove('spin-anim');
-        void themeToggleBtn.offsetWidth; 
+        void themeToggleBtn.offsetWidth; // reflow to restart animation
         themeToggleBtn.classList.add('spin-anim');
         setTimeout(() => themeToggleBtn.classList.remove('spin-anim'), 650);
 
-        // Helper to toggle theme classes and storage
-        const toggleTheme = () => {
+        // Batman Reveal Effect
+        const x = e.clientX || window.innerWidth - 50;
+        const y = e.clientY || 50;
+        if (circleReveal) {
+            circleReveal.style.left = x + 'px';
+            circleReveal.style.top = y + 'px';
+            circleReveal.style.backgroundColor = isLight ? '#000000' : '#FAFAFA';
+            circleReveal.classList.add('active');
+        }
+
+        setTimeout(() => {
             if (isLight) {
                 document.body.classList.remove('light-theme');
                 if (typeof showDynamicIsland === 'function') showDynamicIsland('Dark Mode Activated');
@@ -111,42 +120,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (typeof showDynamicIsland === 'function') showDynamicIsland('Light Mode Activated');
                 localStorage.setItem('theme', 'light');
             }
-        };
 
-        // Fallback for browsers that don't support view transitions
-        if (!document.startViewTransition) {
-            toggleTheme();
-            return;
-        }
-
-        // Get click position
-        const x = e.clientX || window.innerWidth / 2;
-        const y = e.clientY || window.innerHeight / 2;
-        const endRadius = Math.hypot(
-            Math.max(x, innerWidth - x),
-            Math.max(y, innerHeight - y)
-        );
-
-        // Native View Transition API
-        const transition = document.startViewTransition(() => {
-            toggleTheme();
-        });
-
-        transition.ready.then(() => {
-            document.documentElement.animate(
-                {
-                    clipPath: [
-                        `circle(0px at ${x}px ${y}px)`,
-                        `circle(${endRadius}px at ${x}px ${y}px)`
-                    ]
-                },
-                {
-                    duration: 800,
-                    easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                    pseudoElement: '::view-transition-new(root)'
-                }
-            );
-        });
+            if (circleReveal) {
+                setTimeout(() => {
+                    circleReveal.classList.remove('active');
+                }, 100);
+            }
+        }, 400); // Wait for circle to cover screen
     });
 
     // Initialize theme from storage
@@ -974,11 +954,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. Scroll Reading Progress Bar
     const scrollProgress = document.getElementById('scroll-progress');
     if (scrollProgress) {
+        let isScrolling = false;
         window.addEventListener('scroll', () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            scrollProgress.style.width = scrolled + "%";
+            if (!isScrolling) {
+                window.requestAnimationFrame(() => {
+                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrolled = (winScroll / height) * 100;
+                    scrollProgress.style.width = scrolled + "%";
+                    isScrolling = false;
+                });
+                isScrolling = true;
+            }
         });
     }
 

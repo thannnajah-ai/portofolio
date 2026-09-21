@@ -1164,16 +1164,20 @@ body.loaded #preloader {
     transition: height 0.1s ease-out;
 }
 
-/* 4. Native View Transition (Theme Reveal) */
-::view-transition-old(root),
-::view-transition-new(root) {
-    animation: none;
-    mix-blend-mode: normal;
+/* 4. Theme Reveal Circle */
+.theme-reveal-circle {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: scale(0);
+    transition: transform 0.8s cubic-bezier(0.64, 0, 0.78, 0), opacity 0.8s ease-in-out;
+    opacity: 0;
 }
-::view-transition-old(root) { z-index: 1; }
-::view-transition-new(root) { z-index: 2; }
-.light-theme::view-transition-old(root) { z-index: 2; }
-.light-theme::view-transition-new(root) { z-index: 1; }
+.theme-reveal-circle.active {
+    transform: scale(100);
+    opacity: 1;
+}
 
 /* 6. Custom Context Menu */
 .custom-context-menu {
