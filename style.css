@@ -1085,3 +1085,78 @@ body.loaded #preloader {
     border-radius: 4px;
     margin-right: 8px;
 }
+
+/* =========================================
+   PREMIUM MICRO-INTERACTIONS
+   ========================================= */
+
+/* 1. Staggered Text Reveal */
+.hero-title span {
+    display: inline-block;
+    opacity: 0;
+    animation: revealUp 0.8s var(--ease-out-expo) forwards;
+}
+.hero-title span:nth-child(1) { animation-delay: 0.1s; }
+.hero-title span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes revealUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* 2. Smooth Image Parallax */
+.project-image {
+    overflow: hidden;
+}
+.preview-img, .placeholder-img {
+    transition: transform 0.6s var(--ease-out-expo) !important;
+}
+.project-card:hover .preview-img,
+.project-card:hover .placeholder-img {
+    transform: scale(1.05);
+}
+
+/* 3. Skill Icon Drawing & Pop */
+.skill-icon svg path, .skill-icon svg circle, .skill-icon svg polyline, .skill-icon svg line {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    transition: stroke-dashoffset 1s var(--ease-out-expo);
+}
+.skill-card:hover .skill-icon svg path,
+.skill-card:hover .skill-icon svg circle,
+.skill-card:hover .skill-icon svg polyline,
+.skill-card:hover .skill-icon svg line {
+    stroke-dashoffset: 0;
+}
+.skill-icon svg {
+    transition: transform 0.5s var(--ease-spring);
+}
+.skill-card:hover .skill-icon svg {
+    transform: scale(1.15) rotate(5deg);
+}
+
+/* 4. Form Input Interaction */
+.contact-form input, .contact-form textarea {
+    transition: transform 0.3s var(--ease-out-expo), border-color 0.3s, box-shadow 0.3s !important;
+}
+.contact-form input:focus, .contact-form textarea:focus {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border-color: var(--accent);
+}
+
+/* 5. Staggered Navbar Load */
+.nav-link {
+    opacity: 0;
+    animation: navDrop 0.6s var(--ease-out-expo) forwards;
+}
+.nav-link:nth-child(1) { animation-delay: 0.1s; }
+.nav-link:nth-child(2) { animation-delay: 0.15s; }
+.nav-link:nth-child(3) { animation-delay: 0.2s; }
+.nav-link:nth-child(4) { animation-delay: 0.25s; }
+.nav-link:nth-child(5) { animation-delay: 0.3s; }
+
+@keyframes navDrop {
+    0% { opacity: 0; transform: translateY(-15px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
