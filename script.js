@@ -398,37 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setLanguage(currentLang);
     });
 
-    // 3D Tilt Effect on Cards
-    const tiltCards = document.querySelectorAll('.tilt-card');
-    tiltCards.forEach(card => {
-        let rect = null;
-        let centerX, centerY;
 
-        card.addEventListener('mouseenter', () => {
-            rect = card.getBoundingClientRect();
-            centerX = rect.width / 2;
-            centerY = rect.height / 2;
-            card.style.transition = 'none'; // Remove transition for smooth tracking
-        });
-
-        card.addEventListener('mousemove', (e) => {
-            if (!rect) return;
-            const x = e.clientX - rect.left; // x position within the element.
-            const y = e.clientY - rect.top;  // y position within the element.
-
-            // Calculate rotation based on distance from center
-            const rotateX = ((y - centerY) / centerY) * -5; // max 5 deg
-            const rotateY = ((x - centerX) / centerX) * 5;  // max 5 deg
-
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-        });
-
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
-            card.style.transition = 'transform var(--speed-normal) ease'; // Smooth reset
-            rect = null;
-        });
-    });
 
     // ==========================================
     // PHASE 6: EXTREME LAZY FEATURES
