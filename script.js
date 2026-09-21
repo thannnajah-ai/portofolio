@@ -198,6 +198,48 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Spotlight Glow Effect Logic
+    const glowCards = document.querySelectorAll('.skill-card, .project-card');
+    glowCards.forEach((card) => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+
+    // 3D Tilt Effect Logic (Vanilla JS)
+    const tiltCards = document.querySelectorAll('.tilt-card');
+    if (window.matchMedia('(pointer: fine)').matches) {
+        tiltCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -8; // max 8 deg
+                const rotateY = ((x - centerX) / centerX) * 8;
+                
+                card.style.transform = `perspective(1000px) scale(1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                card.style.transition = 'none';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) scale(1) rotateX(0deg) rotateY(0deg)`;
+                card.style.transition = 'transform 0.5s var(--ease-out-expo)';
+            });
+            
+            card.addEventListener('mouseenter', () => {
+                card.style.transition = 'transform 0.1s ease-out';
+            });
+        });
+    }
+
     // Dynamic Copyright Year
     const copyrightYear = document.getElementById('copyright-year');
     if (copyrightYear) {
