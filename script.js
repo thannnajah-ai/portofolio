@@ -607,27 +607,6 @@ if (termInput) {
     });
 }
 
-// Formspree AJAX
-const contactForm = document.querySelector('.contact-form');
-if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = contactForm.querySelector('button');
-        const ogText = btn.innerText;
-        btn.innerText = 'Sending...';
-        try {
-            await fetch(contactForm.action, {
-                method: 'POST',
-                body: new FormData(contactForm),
-                headers: { 'Accept': 'application/json' }
-            });
-            btn.innerText = 'Sent!';
-            contactForm.reset();
-        } catch (err) {
-            btn.innerText = 'Error';
-        }
-        setTimeout(() => btn.innerText = ogText, 3000);
-    });
 }
 });
 
