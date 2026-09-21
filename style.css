@@ -1912,3 +1912,124 @@ dialog[open] .log-item:nth-child(5) { animation-delay: 0.5s; }
 .stagger-mask.visible .stagger-text {
     transform: translateY(0);
 }
+
+/* 10. Work Philosophy Slider */
+.philosophy-slider {
+    width: 100%;
+    overflow-x: auto;
+    padding: 2rem 0;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+.philosophy-slider::-webkit-scrollbar {
+    display: none;
+}
+.philosophy-track {
+    display: flex;
+    gap: 2rem;
+    padding: 0 1rem;
+    width: max-content;
+}
+.philosophy-card {
+    flex: 0 0 320px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: transform 0.3s var(--ease-spring), border-color 0.3s;
+    user-select: none;
+    cursor: grab;
+}
+.philosophy-card:active {
+    cursor: grabbing;
+}
+.philosophy-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+}
+.philosophy-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+.philosophy-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+.philosophy-card p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* 11. Interactive Download Button */
+.btn-download, .btn-download-mobile {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+    transition: background 0.3s, transform 0.2s;
+}
+.btn-download-mobile {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+.btn-text, .btn-check {
+    position: relative;
+    z-index: 2;
+    transition: opacity 0.3s, transform 0.3s;
+}
+.btn-check {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    opacity: 0;
+    transform: scale(0.5);
+}
+.btn-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    z-index: 1;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading State */
+.btn-download.loading .btn-progress,
+.btn-download-mobile.loading .btn-progress {
+    width: 100%;
+}
+.btn-download.loading .btn-text,
+.btn-download-mobile.loading .btn-text {
+    opacity: 0.8;
+}
+
+/* Success State */
+.btn-download.success,
+.btn-download-mobile.success {
+    background: #10b981; /* green */
+}
+.btn-download.success .btn-text,
+.btn-download-mobile.success .btn-text {
+    opacity: 0;
+    transform: translateY(10px);
+}
+.btn-download.success .btn-check,
+.btn-download-mobile.success .btn-check {
+    opacity: 1;
+    transform: scale(1);
+    display: block !important;
+}

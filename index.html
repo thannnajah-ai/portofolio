@@ -229,6 +229,30 @@
             </div>
         </section>
 
+        <!-- Work Philosophy Section (Pengganti Testimonial) -->
+        <section id="philosophy" class="fade-in-section" style="margin-bottom: 8rem;">
+            <h2 class="section-title"><span class="stagger-mask"><span class="stagger-text" data-i18n="philosophyTitle">Work Philosophy</span></span></h2>
+            <div class="philosophy-slider" id="philosophy-slider">
+                <div class="philosophy-track">
+                    <div class="philosophy-card tilt-card">
+                        <div class="philosophy-icon">🎯</div>
+                        <h3 data-i18n="phil1Title">Pixel Perfect</h3>
+                        <p data-i18n="phil1Desc">Desain bukan cuma soal tampilan, tapi tentang bagaimana setiap elemen memiliki proporsi dan fungsi yang tepat.</p>
+                    </div>
+                    <div class="philosophy-card tilt-card">
+                        <div class="philosophy-icon">⚡</div>
+                        <h3 data-i18n="phil2Title">Performance First</h3>
+                        <p data-i18n="phil2Desc">Animasi sekeren apa pun nggak ada artinya kalau bikin web lambat. Performa dan fluiditas adalah kunci.</p>
+                    </div>
+                    <div class="philosophy-card tilt-card">
+                        <div class="philosophy-icon">💡</div>
+                        <h3 data-i18n="phil3Title">User Centric</h3>
+                        <p data-i18n="phil3Desc">Kode yang saya tulis selalu memprioritaskan empati terhadap end-user. Aksesibilitas dan kenyamanan nomor satu.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Projects Section -->
         <section id="projects" class="fade-in-section">
             <h2 class="section-title"><span class="stagger-mask"><span class="stagger-text" data-i18n="projectsTitle">Featured Projects</span></span></h2>
@@ -341,8 +365,13 @@
                     class="footer-link magnetic">WhatsApp</a>
                 <a href="mailto:thannnajah@gmail.com" class="footer-link magnetic">Email</a>
                 <!-- Link Download CV -->
-                <a href="CV_Nathan.pdf" download="CV_Nathan_Ferdwiansyah.pdf"
-                    class="footer-link btn-download magnetic">Download CV</a>
+                <button id="download-cv-btn" class="footer-link btn-download magnetic">
+                    <span class="btn-text" data-i18n="downloadCV">Download CV</span>
+                    <span class="btn-progress"></span>
+                    <svg class="btn-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </button>
             </div>
         </div>
     </footer>
@@ -353,8 +382,12 @@
     <menu id="custom-context-menu" class="custom-context-menu hidden">
         <div class="menu-item" id="menu-theme"><span data-i18n="menuTheme">Toggle Theme</span></div>
         <div class="menu-item" id="menu-terminal"><span data-i18n="menuTerminal">Open Terminal</span></div>
-        <a href="CV_Nathan.pdf" download="CV_Nathan_Ferdwiansyah.pdf" class="menu-item"><span
-                data-i18n="menuCV">Download CV</span></a>
+        <button id="mobile-cv-btn" class="menu-item btn-download-mobile">
+            <span class="btn-text" data-i18n="menuCV">Download CV</span>
+            <svg class="btn-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; display: none;">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </button>
     </menu>
 
     <!-- Project Detail Dialog -->

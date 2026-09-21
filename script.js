@@ -276,7 +276,16 @@ document.addEventListener("DOMContentLoaded", () => {
             blog3Content: "<p>Saya pakai Claude Code CLI dan Antigravity hampir setiap hari. Dan ini bukan magic — AI bisa salah, nulis kode yang nggak nyambung, atau malah nambah kompleksitas yang nggak perlu.</p><p>Yang menentukan hasilnya adalah cara pakainya. Kalau kamu cuma <em>paste output AI mentah-mentah</em>, hasilnya kelihatan — generik dan susah di-maintain. Cara saya: AI buat akselerasi, keputusan desain tetap di tangan saya.</p><p>Taste, judgment, sense of quality — itu yang nggak bisa didelegasikan ke AI.</p>",
             blog4Title: "Kenapa Saya Pilih Flutter buat Mobile",
             blog4Date: "1 Agt 2026",
-            blog4Content: "<p>Yang pertama bikin saya tertarik sama Flutter bukan fitur-fiturnya, tapi filosofinya. Satu codebase, jalan di mana aja, dan UI-nya dikontrol penuh pixel by pixel.</p><p>React Native masih ngandalin native components, jadi ada batasan visual yang nggak bisa kamu tembus. Flutter punya canvas-nya sendiri — semua yang keliatan di layar itu Flutter yang gambar. Kalau kamu ngerti desain, kamu bisa bikin apapun yang kamu mau.</p><p>Buat saya yang obsesi sama UI detail, ini bedanya besar.</p>"
+            blog4Content: "<p>Yang pertama bikin saya tertarik sama Flutter bukan fitur-fiturnya, tapi filosofinya. Satu codebase, jalan di mana aja, dan UI-nya dikontrol penuh pixel by pixel.</p><p>React Native masih ngandalin native components, jadi ada batasan visual yang nggak bisa kamu tembus. Flutter punya canvas-nya sendiri — semua yang keliatan di layar itu Flutter yang gambar. Kalau kamu ngerti desain, kamu bisa bikin apapun yang kamu mau.</p><p>Buat saya yang obsesi sama UI detail, ini bedanya besar.</p>",
+            philosophyTitle: "Filosofi Kerja",
+            phil1Title: "Pixel Perfect",
+            phil1Desc: "Desain bukan cuma soal tampilan, tapi tentang bagaimana setiap elemen memiliki proporsi dan fungsi yang tepat.",
+            phil2Title: "Performance First",
+            phil2Desc: "Animasi sekeren apa pun nggak ada artinya kalau bikin web lambat. Performa dan fluiditas adalah kunci.",
+            phil3Title: "User Centric",
+            phil3Desc: "Kode yang saya tulis selalu memprioritaskan empati terhadap end-user. Aksesibilitas dan kenyamanan nomor satu.",
+            downloadCV: "Unduh CV",
+            menuCV: "Unduh CV"
         },
         en: {
             available: "Available for work",
@@ -314,7 +323,16 @@ document.addEventListener("DOMContentLoaded", () => {
             blog3Content: "<p>I use Claude Code CLI and Antigravity almost every day. It's not magic — AI gets things wrong, writes code that doesn't fit, or adds complexity you didn't ask for.</p><p>What determines the output is how you use it. If you paste AI output raw, it shows — generic and hard to maintain. My approach: AI for speed, design decisions are mine.</p><p>Taste, judgment, sense of quality — those don't delegate well.</p>",
             blog4Title: "Why I Chose Flutter for Mobile",
             blog4Date: "Aug 1, 2026",
-            blog4Content: "<p>What got me interested in Flutter wasn't the feature list. It was the philosophy. One codebase, runs anywhere, and the UI is fully controlled pixel by pixel.</p><p>React Native still depends on native components, so there are visual limits you can't push past. Flutter has its own canvas — everything on screen, Flutter drew it. If you understand design, you can build exactly what you picture.</p><p>For someone obsessed with UI detail, that difference matters.</p>"
+            blog4Content: "<p>What got me interested in Flutter wasn't the feature list. It was the philosophy. One codebase, runs anywhere, and the UI is fully controlled pixel by pixel.</p><p>React Native still depends on native components, so there are visual limits you can't push past. Flutter has its own canvas — everything on screen, Flutter drew it. If you understand design, you can build exactly what you picture.</p><p>For someone obsessed with UI detail, that difference matters.</p>",
+            philosophyTitle: "Work Philosophy",
+            phil1Title: "Pixel Perfect",
+            phil1Desc: "Design is not just what it looks like. It's about how every element has its exact proportion and function.",
+            phil2Title: "Performance First",
+            phil2Desc: "Cool animations mean nothing if they make the web slow. Performance and fluidity are key.",
+            phil3Title: "User Centric",
+            phil3Desc: "The code I write always prioritizes empathy for the end-user. Accessibility and comfort are number one.",
+            downloadCV: "Download CV",
+            menuCV: "Download CV"
         }
     };
 
@@ -793,3 +811,42 @@ document.addEventListener('visibilitychange', () => {
     sectionTitles.forEach(el => {
         maskObserver.observe(el);
     });
+
+    // 8. Interactive Download CV Button
+    const setupDownloadBtn = (btnId) => {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        
+        btn.addEventListener('click', (e) => {
+            if (btn.classList.contains('loading') || btn.classList.contains('success')) {
+                e.preventDefault();
+                return;
+            }
+            
+            e.preventDefault(); // Mencegah download langsung untuk animasi
+            btn.classList.add('loading');
+            
+            // Simulasi proses download 1.5 detik
+            setTimeout(() => {
+                btn.classList.remove('loading');
+                btn.classList.add('success');
+                
+                // Trigger download aslinya
+                const a = document.createElement('a');
+                a.href = 'CV_Nathan.pdf';
+                a.download = 'CV_Nathan_Ferdwiansyah.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                // Kembalikan tombol ke semula setelah 3 detik
+                setTimeout(() => {
+                    btn.classList.remove('success');
+                }, 3000);
+            }, 1500);
+        });
+    };
+    
+    setupDownloadBtn('download-cv-btn');
+    setupDownloadBtn('mobile-cv-btn');
+});
