@@ -1017,12 +1017,19 @@ body.loaded #preloader {
     padding: 1.5rem;
     margin-bottom: 2rem;
     overflow-x: auto;
+    perspective: 1200px;
 }
 .gh-chart {
     filter: invert(1) hue-rotate(180deg);
     transition: filter 0.3s;
     width: 100%;
     min-width: 600px;
+    transform-style: preserve-3d;
+    animation: ghFloat3d 6s ease-in-out infinite alternate;
+}
+@keyframes ghFloat3d {
+    0% { transform: rotateX(20deg) rotateY(-10deg) scale(0.95); }
+    100% { transform: rotateX(30deg) rotateY(-20deg) scale(0.98) translateY(-10px); }
 }
 .light-theme .gh-chart {
     filter: invert(0);
