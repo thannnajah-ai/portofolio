@@ -781,3 +781,172 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+    // ==========================================
+    // TAHAP 4: EASTER EGGS & POLISH
+    // ==========================================
+    
+    // 1. Konami Code (Matrix Mode)
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let konamiIndex = 0;
+    let matrixActive = false;
+    let matrixInterval = null;
+
+    document.addEventListener('keydown', (e) => {
+        const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+        if (key === konamiCode[konamiIndex].toLowerCase() || key === konamiCode[konamiIndex]) {
+            konamiIndex++;
+            if (konamiIndex === konamiCode.length) {
+                activateMatrixMode();
+                konamiIndex = 0;
+            }
+        } else {
+            konamiIndex = 0; // reset if wrong key
+        }
+    });
+
+    function activateMatrixMode() {
+        if (matrixActive) return;
+        matrixActive = true;
+        document.body.classList.add('matrix-mode');
+        
+        const canvas = document.getElementById('matrix-canvas');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        canvas.style.display = 'block';
+        
+        setTimeout(() => {
+            canvas.style.opacity = '1';
+        }, 50);
+
+        const resizeCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        let columns = canvas.width / fontSize;
+        let drops = [];
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+            
+            if (drops.length < canvas.width / fontSize) {
+                for (let x = drops.length; x < canvas.width / fontSize; x++) drops[x] = 1;
+            }
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        };
+
+        matrixInterval = setInterval(draw, 30);
+        if (window.sfx && window.sfx.success) window.sfx.success();
+
+        // Deactivate after 15 seconds
+        setTimeout(() => {
+            document.body.classList.remove('matrix-mode');
+            canvas.style.opacity = '0';
+            setTimeout(() => {
+                clearInterval(matrixInterval);
+                canvas.style.display = 'none';
+                window.removeEventListener('resize', resizeCanvas);
+                matrixActive = false;
+            }, 2000);
+        }, 15000);
+    }
+
+    // 2. Project Modal Logic
+    const projectModal = document.getElementById('project-modal');
+    const projectModalClose = document.getElementById('project-close');
+    const projectCardsDOM = document.querySelectorAll('.project-card');
+    const projectModalTitle = document.getElementById('project-modal-title');
+    const projectModalDesc = document.getElementById('project-modal-desc');
+    const projectModalImgContainer = document.getElementById('project-modal-img-container');
+    const projectModalLink = document.getElementById('project-modal-link');
+
+    projectCardsDOM.forEach(card => {
+        card.addEventListener('click', (e) => {
+            // Ignore if it's the WIP card
+            if (card.classList.contains('project-wip')) return;
+            
+            e.preventDefault(); // Stop default anchor navigation
+            
+            // Extract content
+            const titleEl = card.querySelector('.project-title');
+            const descEl = card.querySelector('.project-desc');
+            const imgEl = card.querySelector('.project-image img');
+            
+            if (titleEl) projectModalTitle.innerHTML = titleEl.innerHTML;
+            if (descEl) projectModalDesc.innerHTML = descEl.innerHTML;
+            
+            if (imgEl) {
+                projectModalImgContainer.innerHTML = `<img src="${imgEl.src}" alt="${titleEl ? titleEl.textContent : 'Project'}">`;
+            } else {
+                projectModalImgContainer.innerHTML = '';
+            }
+
+            const href = card.getAttribute('href');
+            if (href && href !== '#') {
+                projectModalLink.href = href;
+                projectModalLink.style.display = 'inline-block';
+            } else {
+                projectModalLink.style.display = 'none';
+            }
+            
+            if (projectModal) {
+                projectModal.showModal();
+                if (window.lenis) window.lenis.stop();
+            }
+        });
+    });
+
+    if (projectModalClose && projectModal) {
+        projectModalClose.addEventListener('click', () => {
+            projectModal.classList.add('closing');
+            setTimeout(() => {
+                projectModal.close();
+                projectModal.classList.remove('closing');
+                if (window.lenis) window.lenis.start();
+            }, 300);
+        });
+
+        // Close when clicking outside
+        projectModal.addEventListener('click', (e) => {
+            const rect = projectModal.getBoundingClientRect();
+            if (
+                e.clientX < rect.left ||
+                e.clientX > rect.right ||
+                e.clientY < rect.top ||
+                e.clientY > rect.bottom
+            ) {
+                projectModal.classList.add('closing');
+                setTimeout(() => {
+                    projectModal.close();
+                    projectModal.classList.remove('closing');
+                    if (window.lenis) window.lenis.start();
+                }, 300);
+            }
+        });
+    }
+
