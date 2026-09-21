@@ -226,8 +226,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Stop scrolling while curtain is down
     if (window.lenis) window.lenis.stop();
 
-    // Always hide after the greeting sequence (2.3s)
-    setTimeout(hidePreloader, 2300);
+    // Always hide after the greeting sequence (2.8s)
+    setTimeout(hidePreloader, 2800);
 
     // i18n Dictionary
     const i18n = {
