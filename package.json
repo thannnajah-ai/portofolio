@@ -1,0 +1,24 @@
+{
+  "name": "portofolio",
+  "version": "1.0.0",
+  "description": "My personal website and digital playground. Built completely from scratch using Vanilla HTML, CSS, and JavaScript.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thannnajah-ai/portofolio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/thannnajah-ai/portofolio/issues"
+  },
+  "homepage": "https://github.com/thannnajah-ai/portofolio#readme",
+  "dependencies": {
+    "puppeteer": "^25.11.0"
+  }
+}

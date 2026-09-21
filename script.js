@@ -99,16 +99,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const interactables = document.querySelectorAll('a, button, .magnetic');
 
     // Only run cursor logic if fine pointer is available
-    if (window.matchMedia('(pointer: fine)').matches) {
-        let mouseX = 0;
-        let mouseY = 0;
-        let cursorX = 0;
-        let cursorY = 0;
+    if (window.matchMedia('(pointer: fine)').matches && cursor) {
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let cursorX = mouseX;
+        let cursorY = mouseY;
+        let isCursorVisible = false;
 
         // Use requestAnimationFrame for smoother following
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
+            
+            if (!isCursorVisible) {
+                cursor.style.opacity = '1';
+                isCursorVisible = true;
+            }
         });
 
         const animateCursor = () => {
@@ -748,3 +754,42 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
+
+
+    // 7. Parallax Depth Scrolling & Staggered Reveal
+    // Parallax on Hero elements
+    const heroTitle = document.querySelector('.hero-title');
+    const heroSubtitle = document.querySelector('.hero-subtitle');
+    if (heroTitle) heroTitle.dataset.parallaxSpeed = '0.25';
+    if (heroSubtitle) heroSubtitle.dataset.parallaxSpeed = '0.1';
+
+    let isParallaxing = false;
+    window.addEventListener('scroll', () => {
+        if (!isParallaxing) {
+            window.requestAnimationFrame(() => {
+                const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+                document.querySelectorAll('[data-parallax-speed]').forEach(el => {
+                    const speed = parseFloat(el.dataset.parallaxSpeed);
+                    el.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+                isParallaxing = false;
+            });
+            isParallaxing = true;
+        }
+    });
+
+    const maskObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Add visible class to the mask
+                const mask = entry.target.querySelector('.stagger-mask');
+                if (mask) mask.classList.add('visible');
+                maskObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    const sectionTitles = document.querySelectorAll('.section-title');
+    sectionTitles.forEach(el => {
+        maskObserver.observe(el);
+    });
