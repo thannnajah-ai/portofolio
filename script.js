@@ -31,32 +31,55 @@ document.addEventListener("DOMContentLoaded", () => {
     const themeToggleBtn = document.getElementById('theme-toggle');
     const sunIcon = document.querySelector('.sun-icon');
     const moonIcon = document.querySelector('.moon-icon');
-    
-    // Check local storage or system preference
-    const currentTheme = localStorage.getItem('theme');
-    if (currentTheme === 'light') {
-        document.body.classList.add('light-theme');
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
-    } else {
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
-    }
+    const circleReveal = document.getElementById('theme-reveal-circle');
 
-    themeToggleBtn.addEventListener('click', () => {
-        document.body.classList.toggle('light-theme');
-        let theme = 'dark';
-        if (document.body.classList.contains('light-theme')) {
-            theme = 'light';
-            sunIcon.style.display = 'block';
-            moonIcon.style.display = 'none';
-        } else {
-            sunIcon.style.display = 'none';
-            moonIcon.style.display = 'block';
+    themeToggleBtn.addEventListener('click', (e) => {
+        playSound();
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        
+        // Batman Reveal Effect
+        const x = e.clientX || window.innerWidth - 50;
+        const y = e.clientY || 50;
+        if (circleReveal) {
+            circleReveal.style.left = x + 'px';
+            circleReveal.style.top = y + 'px';
+            circleReveal.style.backgroundColor = isDark ? '#FAFAFA' : '#000000';
+            circleReveal.classList.add('active');
         }
-        localStorage.setItem('theme', theme);
+        
+        setTimeout(() => {
+            if (isDark) {
+                document.body.removeAttribute('data-theme');
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+                showDynamicIsland('Light Mode Activated');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+                showDynamicIsland('Dark Mode Activated');
+                localStorage.setItem('theme', 'dark');
+            }
+            
+            if (circleReveal) {
+                setTimeout(() => {
+                    circleReveal.classList.remove('active');
+                }, 100);
+            }
+        }, 400); // Wait for circle to cover screen
     });
 
+    // Initialize theme from storage
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        if (sunIcon) sunIcon.style.display = 'block';
+        if (moonIcon) moonIcon.style.display = 'none';
+    } else {
+        if (sunIcon) sunIcon.style.display = 'none';
+        if (moonIcon) moonIcon.style.display = 'block';
+    }
     // Custom Cursor Logic
     const cursor = document.querySelector('.custom-cursor');
     const interactables = document.querySelectorAll('a, button, .magnetic');
@@ -198,6 +221,7 @@ const langToggleBtn = document.getElementById('lang-toggle');
 let currentLang = 'en'; // Default to EN for now, or ID if preferred
 
 function setLanguage(lang) {
+    showDynamicIsland(lang === 'id' ? 'Bahasa Indonesia Aktif' : 'English Activated');
     const elementsToTranslate = document.querySelectorAll('[data-i18n]');
     elementsToTranslate.forEach(el => {
         const key = el.getAttribute('data-i18n');
@@ -234,6 +258,89 @@ tiltCards.forEach(card => {
         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
         card.style.transition = 'none'; // Remove transition for smooth tracking
     });
+
+// ==========================================
+// PHASE 6: EXTREME LAZY FEATURES
+// ==========================================
+
+// 1. Magnetic Text Wrapper
+document.querySelectorAll('.hero-title span').forEach(el => {
+    el.classList.add('magnetic-text');
+});
+
+// 2. Scroll Line Indicator
+const scrollLine = document.getElementById('scroll-line-indicator');
+window.addEventListener('scroll', () => {
+    const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    if (scrollLine) scrollLine.style.height = scrolled + '%';
+});
+
+// 3. Dynamic Island
+let islandTimeout;
+function showDynamicIsland(text) {
+    const island = document.getElementById('dynamic-island');
+    const islandText = document.getElementById('island-text');
+    if (!island || !islandText) return;
+    
+    islandText.textContent = text;
+    island.classList.remove('hidden-island');
+    
+    clearTimeout(islandTimeout);
+    islandTimeout = setTimeout(() => {
+        island.classList.add('hidden-island');
+    }, 3000);
+}
+
+// 4. Custom Context Menu
+const contextMenu = document.getElementById('custom-context-menu');
+document.addEventListener('contextmenu', (e) => {
+    if (e.target.closest('a') || e.target.closest('img')) return; // Allow default on links/images
+    e.preventDefault();
+    
+    // Constrain to window bounds
+    let x = e.clientX;
+    let y = e.clientY;
+    if (x + 200 > window.innerWidth) x = window.innerWidth - 200;
+    if (y + 150 > window.innerHeight) y = window.innerHeight - 150;
+    
+    contextMenu.style.left = x + 'px';
+    contextMenu.style.top = y + 'px';
+    contextMenu.classList.remove('hidden');
+});
+
+document.addEventListener('click', (e) => {
+    if (contextMenu && !contextMenu.contains(e.target)) {
+        contextMenu.classList.add('hidden');
+    }
+});
+
+document.getElementById('menu-theme')?.addEventListener('click', (e) => {
+    contextMenu.classList.add('hidden');
+    themeToggleBtn.click(); // Trigger native click
+});
+
+document.getElementById('menu-terminal')?.addEventListener('click', () => {
+    contextMenu.classList.add('hidden');
+    document.getElementById('terminal-overlay').classList.remove('hidden');
+    document.getElementById('terminal-input').focus();
+});
+
+// 5. GitHub Logs Injector
+const commits = [
+    { hash: 'a1b2c3d', date: 'Sep 21, 2026', msg: 'Implement Phase 6: Dynamic Island & Context Menu' },
+    { hash: 'f900a60', date: 'Sep 21, 2026', msg: 'Refactor Spline 3D Viewer and Custom Terminal' },
+    { hash: '3437892', date: 'Sep 20, 2026', msg: 'Initial commit: God-Tier Portfolio Setup' },
+];
+const logsTimeline = document.getElementById('logs-timeline');
+if (logsTimeline) {
+    commits.forEach(commit => {
+        const div = document.createElement('div');
+        div.className = 'log-item';
+        div.innerHTML = `<div class="log-date">${commit.date}</div><div class="log-msg"><span class="log-hash">${commit.hash}</span> ${commit.msg}</div>`;
+        logsTimeline.appendChild(div);
+    });
+}
+
     
     card.addEventListener('mouseleave', () => {
         card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;

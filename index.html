@@ -28,6 +28,29 @@
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.0/build/spline-viewer.js"></script>
 </head>
 <body>
+    <!-- SVG Filter for Liquid Distortion -->
+    <svg style="display: none;">
+        <defs>
+            <filter id="liquid">
+                <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Theme Reveal Circle -->
+    <div id="theme-reveal-circle" class="theme-reveal-circle"></div>
+
+    <!-- Dynamic Island -->
+    <div id="dynamic-island" class="dynamic-island hidden-island">
+        <span id="island-text"></span>
+    </div>
+
+    <!-- Scroll Line -->
+    <div class="scroll-line-container">
+        <div class="scroll-line" id="scroll-line-indicator"></div>
+    </div>
+
     <div class="noise-overlay"></div>
     <canvas id="particle-canvas" class="particle-canvas"></canvas>
     <!-- Preloader -->
@@ -155,10 +178,21 @@
             </div>
         </section>
 
-        <!-- Thoughts Section -->
+        <!-- Thoughts & Logs Section -->
         <section id="thoughts" class="fade-in-section">
             <h2 class="section-title" data-i18n="thoughtsTitle">Thoughts & Logs</h2>
-            <div id="blog-container" class="blog-grid">
+            <div class="github-stats">
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--text);">GitHub Contributions</h3>
+                <img src="https://ghchart.rshah.org/thannnajah-ai" alt="GitHub Contributions" class="gh-chart">
+            </div>
+            
+            <div class="logs-container">
+                <div class="logs-timeline" id="logs-timeline">
+                    <!-- Logs injected via JS -->
+                </div>
+            </div>
+
+            <div id="blog-container" class="blog-grid" style="margin-top: 3rem;">
                 <!-- Injected via JS -->
             </div>
         </section>
@@ -215,6 +249,13 @@
                 <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" autofocus aria-label="Terminal Input">
             </div>
         </div>
+    </div>
+
+    <!-- Custom Context Menu -->
+    <div id="custom-context-menu" class="custom-context-menu hidden">
+        <div class="menu-item" id="menu-theme"><span data-i18n="menuTheme">Toggle Theme</span></div>
+        <div class="menu-item" id="menu-terminal"><span data-i18n="menuTerminal">Open Terminal</span></div>
+        <a href="CV_Nathan.pdf" download="CV_Nathan_Ferdwiansyah.pdf" class="menu-item"><span data-i18n="menuCV">Download CV</span></a>
     </div>
 
     <script src="script.js"></script>
