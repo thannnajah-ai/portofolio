@@ -1282,19 +1282,60 @@ body.loaded .hero-title span:nth-child(3) {
 .skill-icon svg path, .skill-icon svg circle, .skill-icon svg polyline, .skill-icon svg line {
     stroke-dasharray: 200;
     stroke-dashoffset: 200;
-    transition: stroke-dashoffset 1s var(--ease-out-expo);
+    transition: stroke-dashoffset 1.5s var(--ease-out-expo);
 }
+
+/* Draw the icon when scrolled into view or hovered */
+.fade-in-section.is-visible .skill-icon svg path,
+.fade-in-section.is-visible .skill-icon svg circle,
+.fade-in-section.is-visible .skill-icon svg polyline,
+.fade-in-section.is-visible .skill-icon svg line,
 .skill-card:hover .skill-icon svg path,
 .skill-card:hover .skill-icon svg circle,
 .skill-card:hover .skill-icon svg polyline,
 .skill-card:hover .skill-icon svg line {
     stroke-dashoffset: 0;
 }
+
+/* Staggered delay for drawing when scrolled into view */
+.fade-in-section.is-visible .skill-card:nth-child(1) .skill-icon svg path,
+.fade-in-section.is-visible .skill-card:nth-child(1) .skill-icon svg circle,
+.fade-in-section.is-visible .skill-card:nth-child(1) .skill-icon svg polyline,
+.fade-in-section.is-visible .skill-card:nth-child(1) .skill-icon svg line { transition-delay: 0.1s; }
+
+.fade-in-section.is-visible .skill-card:nth-child(2) .skill-icon svg path,
+.fade-in-section.is-visible .skill-card:nth-child(2) .skill-icon svg circle,
+.fade-in-section.is-visible .skill-card:nth-child(2) .skill-icon svg polyline,
+.fade-in-section.is-visible .skill-card:nth-child(2) .skill-icon svg line { transition-delay: 0.3s; }
+
+.fade-in-section.is-visible .skill-card:nth-child(3) .skill-icon svg path,
+.fade-in-section.is-visible .skill-card:nth-child(3) .skill-icon svg circle,
+.fade-in-section.is-visible .skill-card:nth-child(3) .skill-icon svg polyline,
+.fade-in-section.is-visible .skill-card:nth-child(3) .skill-icon svg line { transition-delay: 0.5s; }
+
+/* Remove delay when hovering so it feels snappy */
+.skill-card:hover .skill-icon svg path,
+.skill-card:hover .skill-icon svg circle,
+.skill-card:hover .skill-icon svg polyline,
+.skill-card:hover .skill-icon svg line { transition-delay: 0s; }
+
 .skill-icon svg {
     transition: transform 0.5s var(--ease-spring);
 }
+
+/* Staggered pop animation when scrolling into view */
+.fade-in-section.is-visible .skill-card:nth-child(1) .skill-icon svg { animation: skillPop 0.8s var(--ease-spring) 0.1s; }
+.fade-in-section.is-visible .skill-card:nth-child(2) .skill-icon svg { animation: skillPop 0.8s var(--ease-spring) 0.3s; }
+.fade-in-section.is-visible .skill-card:nth-child(3) .skill-icon svg { animation: skillPop 0.8s var(--ease-spring) 0.5s; }
+
 .skill-card:hover .skill-icon svg {
     transform: scale(1.15) rotate(5deg);
+}
+
+@keyframes skillPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2) rotate(10deg); }
+    100% { transform: scale(1) rotate(0deg); }
 }
 
 /* 4. Form Input Interaction */
