@@ -258,6 +258,12 @@ tiltCards.forEach(card => {
         card.style.transition = 'none'; // Remove transition for smooth tracking
     });
 
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
+        card.style.transition = 'transform 300ms ease'; // Smooth reset
+    });
+});
+
 // ==========================================
 // PHASE 6: EXTREME LAZY FEATURES
 // ==========================================
@@ -353,13 +359,6 @@ if (logsTimeline) {
             console.error('Error fetching commits:', err);
         });
 }
-
-    
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
-        card.style.transition = 'transform 300ms ease'; // Smooth reset
-    });
-});
 
 // Local Time Widget (Yogyakarta Time)
 const localTimeEl = document.getElementById('local-time');
