@@ -46,10 +46,6 @@
     <!-- Scroll Progress Bar -->
     <div id="scroll-progress" style="position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: var(--text-primary); z-index: 99999; transition: width 0.1s ease-out; pointer-events: none;"></div>
 
-    <!-- Matrix Rain Canvas (Easter Egg) -->
-    <canvas id="matrix-canvas"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99998; pointer-events: none; opacity: 0; transition: opacity 2s ease;"></canvas>
-
     <!-- SVG Filter for Liquid Distortion -->
     <svg style="display: none;">
         <defs>
@@ -62,22 +58,6 @@
 
     <!-- Theme Reveal Circle -->
     <div id="theme-reveal-circle" class="theme-reveal-circle"></div>
-
-    <!-- Secret Terminal Dialog -->
-    <dialog id="secret-terminal" class="secret-terminal">
-        <div class="terminal-header">
-            <span class="terminal-title">user@portfolio:~</span>
-            <button id="terminal-close" class="terminal-close">&times;</button>
-        </div>
-        <div class="terminal-body" id="terminal-output">
-            <div>Welcome to Portfolio OS v1.0.0.</div>
-            <div>Type 'help' for a list of commands.</div>
-        </div>
-        <form id="terminal-form" class="terminal-input-line">
-            <span class="terminal-prompt">$</span>
-            <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" autofocus>
-        </form>
-    </dialog>
 
     <!-- Dynamic Island -->
     <aside id="dynamic-island" class="dynamic-island hidden-island">
@@ -367,28 +347,7 @@
         </div>
     </footer>
 
-    <!-- Secret Terminal -->
-    <dialog id="terminal-dialog" class="terminal-dialog">
-        <div class="terminal-window">
-            <div class="terminal-header">
-                <div class="terminal-dots">
-                    <span class="terminal-dot red" id="term-close"></span>
-                    <span class="terminal-dot yellow"></span>
-                    <span class="terminal-dot green"></span>
-                </div>
-                <div class="terminal-title">guest@nathan-os:~</div>
-            </div>
-            <div class="terminal-body" id="terminal-output">
-                <p>Welcome to Nathan OS v1.0.0</p>
-                <p>Type <span class="highlight">help</span> for a list of available commands.</p>
-            </div>
-            <div class="terminal-input-line">
-                <span class="prompt">guest@nathan:~$</span>
-                <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" autofocus
-                    aria-label="Terminal Input">
-            </div>
-        </div>
-    </dialog>
+
 
     <!-- Custom Context Menu -->
     <menu id="custom-context-menu" class="custom-context-menu hidden">

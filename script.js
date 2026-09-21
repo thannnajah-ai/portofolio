@@ -19,46 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
         window.lenis = lenis; // Expose globally just in case
     }
 
-    // 0.5 UI Sound Engine (Web Audio API)
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    const audioCtx = new AudioCtx();
-
-    function playTone(freq, type = 'sine', duration = 0.1, vol = 0.05) {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        
-        // Envelope (fast attack, exponential decay)
-        gain.gain.setValueAtTime(0, audioCtx.currentTime);
-        gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-    }
-
-    const sfx = {
-        click: () => playTone(800, 'sine', 0.05, 0.02),
-        hover: () => playTone(1200, 'sine', 0.03, 0.01),
-        pop: () => playTone(600, 'triangle', 0.1, 0.03),
-        enter: () => playTone(300, 'square', 0.1, 0.02),
-        success: () => {
-            playTone(440, 'sine', 0.1, 0.02);
-            setTimeout(() => playTone(554.37, 'sine', 0.1, 0.02), 100); // C#
-            setTimeout(() => playTone(659.25, 'sine', 0.2, 0.02), 200); // E
-        }
-    };
-    
-    // Bind sounds globally to specific classes
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.theme-toggle') || e.target.closest('.lang-toggle') || e.target.closest('button')) {
-            sfx.click();
-        }
-    });
 
     // Configuration for Intersection Observer
     const observerOptions = {
@@ -219,22 +179,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                
+
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
-                
+
                 const rotateX = ((y - centerY) / centerY) * -8; // max 8 deg
                 const rotateY = ((x - centerX) / centerX) * 8;
-                
+
                 card.style.transform = `perspective(1000px) scale(1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 card.style.transition = 'none';
             });
-            
+
             card.addEventListener('mouseleave', () => {
                 card.style.transform = `perspective(1000px) scale(1) rotateX(0deg) rotateY(0deg)`;
                 card.style.transition = 'transform 0.5s var(--ease-out-expo)';
             });
-            
+
             card.addEventListener('mouseenter', () => {
                 card.style.transition = 'transform 0.1s ease-out';
             });
@@ -675,417 +635,116 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Secret Terminal
-    const termOverlay = document.getElementById('terminal-dialog');
-    const termInput = document.getElementById('terminal-input');
-    const termOutput = document.getElementById('terminal-output');
-    const termClose = document.getElementById('term-close');
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === '`') {
-            if (!termOverlay.open) {
-                termOverlay.showModal();
-                termInput.focus();
-            } else {
-                termOverlay.close();
-            }
-        }
-    });
-
-    if (termClose) {
-        termClose.addEventListener('click', () => {
-            termOverlay.close();
-        });
-    }
-
-    function printToTerminal(text) {
-        const p = document.createElement('p');
-        p.innerHTML = text;
-        termOutput.appendChild(p);
-        termOutput.scrollTop = termOutput.scrollHeight;
-    }
-
-    if (termInput) {
-        termInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                sfx.enter();
-                const cmd = termInput.value.trim().toLowerCase();
-                termInput.value = '';
-
-                printToTerminal(`<span class="prompt">guest@nathan:~$</span> ${cmd}`);
-
-                switch (cmd) {
-                    case 'help':
-                        printToTerminal("Commands:<br> - <span class='highlight'>whoami</span> &nbsp;- siapa saya<br> - <span class='highlight'>projects</span> - daftar project<br> - <span class='highlight'>skills</span> &nbsp;&nbsp;- tech stack<br> - <span class='highlight'>blog</span> &nbsp;&nbsp;&nbsp;&nbsp;- artikel saya<br> - <span class='highlight'>socials</span> &nbsp;- link sosial<br> - <span class='highlight'>contact</span> &nbsp;- kontak saya<br> - <span class='highlight'>age</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- umur saya<br> - <span class='highlight'>open 1</span> &nbsp;&nbsp;- buka TembusPTN<br> - <span class='highlight'>theme</span> &nbsp;&nbsp;&nbsp;- ganti tema<br> - <span class='highlight'>clear</span> &nbsp;&nbsp;&nbsp;- bersihkan terminal");
-                        break;
-                    case 'whoami':
-                        printToTerminal("Nathan Ferdwiansyah W. \u2014 masih pelajar, lahir 2009. Fokusnya di Frontend & Mobile development. Suka banget bikin UI yang berasa hidup.");
-                        break;
-                    case 'projects':
-                        printToTerminal("1. <a href='https://tembusptn.my.id' target='_blank' style='color:var(--accent)'>TembusPTN.my.id</a> \u2014 Platform belajar UTBK/SNBT<br>2. KTI \u2014 Riset kadar glukosa nasi<br>3. Next Project \u2014 <em>coming soon...</em>");
-                        break;
-                    case 'skills':
-                        printToTerminal("HTML &nbsp;CSS &nbsp;JavaScript &nbsp;Flutter &nbsp;Dart<br>Git &nbsp;Figma &nbsp;Design Engineering &nbsp;AI-assisted workflows");
-                        break;
-                    case 'blog': {
-                        const lang = localStorage.getItem('lang') || 'en';
-                        const b1 = i18n[lang].blog1Title;
-                        const b2 = i18n[lang].blog2Title;
-                        const b3 = i18n[lang].blog3Title;
-                        const b4 = i18n[lang].blog4Title;
-                        printToTerminal(`1. ${b1}<br>2. ${b2}<br>3. ${b3}<br>4. ${b4}<br><br><span style='color:var(--text-muted)'>Klik kartu blog di halaman untuk baca.</span>`);
-                        break;
-                    }
-                    case 'socials':
-                        printToTerminal("<a href='https://github.com/thannnajah-ai' target='_blank' style='color:var(--accent)'>GitHub</a> &nbsp;\u2022&nbsp; <a href='https://linkedin.com/in/thannnajah' target='_blank' style='color:var(--accent)'>LinkedIn</a> &nbsp;\u2022&nbsp; <a href='https://instagram.com/fw.nathannnnnn' target='_blank' style='color:var(--accent)'>Instagram</a> &nbsp;\u2022&nbsp; <a href='https://wa.me/6285725276231' target='_blank' style='color:var(--accent)'>WhatsApp</a>");
-                        break;
-                    case 'age': {
-                        const birth = new Date('2009-02-23');
-                        const now = new Date();
-                        const ageYears = now.getFullYear() - birth.getFullYear() - (now < new Date(now.getFullYear(), 1, 23) ? 1 : 0);
-                        printToTerminal(`Umur saya sekarang: <strong>${ageYears} tahun</strong> (lahir 23 Feb 2009).`);
-                        break;
-                    }
-                    case 'open 1':
-                    case 'open tembusptn':
-                        window.open('https://tembusptn.my.id', '_blank');
-                        printToTerminal("Membuka TembusPTN.my.id... \ud83d\ude80");
-                        break;
-                    case 'theme':
-                        document.getElementById('theme-toggle').click();
-                        printToTerminal("Tema diganti.");
-                        break;
-                    case 'contact':
-                        printToTerminal("Email: <a href='mailto:thannnajah@gmail.com' style='color:var(--accent)'>thannnajah@gmail.com</a><br>WhatsApp: <a href='https://wa.me/6285725276231' target='_blank' style='color:var(--accent)'>+62 857-2527-6231</a>");
-                        break;
-                    case 'sudo':
-                        printToTerminal("<span style='color:#f87171'>Permission denied. Ini bukan server prod.</span> \ud83d\ude02");
-                        break;
-                    case 'rm -rf /':
-                    case 'rm -rf':
-                        printToTerminal("<span style='color:#f87171'>Santai... portofolio ini masih butuh kamu.</span>");
-                        break;
-                    case 'hack':
-                        printToTerminal("Hacking in progress...<br><span style='color:#34d399'>ACCESS GRANTED.</span><br>Selamat datang di portofolio Nathan. Sudah dari tadi kok.");
-                        break;
-                    case 'clear':
-                        termOutput.innerHTML = '';
-                        break;
-                    case '':
-                        break;
-                    default:
-                        printToTerminal(`Command not found: <em>${cmd}</em>. Ketik <span class='highlight'>help</span> untuk daftar command.`);
-                }
-            }
-        });
-    }
-
 });
 
-    // ==========================================
-    // TAHAP 4: EASTER EGGS & POLISH
-    // ==========================================
-    
-    // 1. Konami Code (Matrix Mode)
-    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-    let konamiIndex = 0;
-    let matrixActive = false;
-    let matrixInterval = null;
+// 2. Project Modal Logic
+const projectModal = document.getElementById('project-modal');
+const projectModalClose = document.getElementById('project-close');
+const projectCardsDOM = document.querySelectorAll('.project-card');
+const projectModalTitle = document.getElementById('project-modal-title');
+const projectModalDesc = document.getElementById('project-modal-desc');
+const projectModalImgContainer = document.getElementById('project-modal-img-container');
+const projectModalLink = document.getElementById('project-modal-link');
 
-    document.addEventListener('keydown', (e) => {
-        const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
-        if (key === konamiCode[konamiIndex].toLowerCase() || key === konamiCode[konamiIndex]) {
-            konamiIndex++;
-            if (konamiIndex === konamiCode.length) {
-                activateMatrixMode();
-                konamiIndex = 0;
-            }
+projectCardsDOM.forEach(card => {
+    card.addEventListener('click', (e) => {
+        // Ignore if it's the WIP card
+        if (card.classList.contains('project-wip')) return;
+
+        e.preventDefault(); // Stop default anchor navigation
+
+        // Extract content
+        const titleEl = card.querySelector('.project-title');
+        const descEl = card.querySelector('.project-desc');
+        const imgEl = card.querySelector('.project-image img');
+
+        if (titleEl) projectModalTitle.innerHTML = titleEl.innerHTML;
+        if (descEl) projectModalDesc.innerHTML = descEl.innerHTML;
+
+        if (imgEl) {
+            projectModalImgContainer.innerHTML = `<img src="${imgEl.src}" alt="${titleEl ? titleEl.textContent : 'Project'}">`;
         } else {
-            konamiIndex = 0; // reset if wrong key
-        }
-    });
-
-    function activateMatrixMode() {
-        if (matrixActive) return;
-        matrixActive = true;
-        document.body.classList.add('matrix-mode');
-        
-        const canvas = document.getElementById('matrix-canvas');
-        if (!canvas) return;
-        
-        const ctx = canvas.getContext('2d');
-        canvas.style.display = 'block';
-        
-        setTimeout(() => {
-            canvas.style.opacity = '1';
-        }, 50);
-
-        const resizeCanvas = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        };
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロゴゾドボポヴッン';
-        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const nums = '0123456789';
-        const alphabet = katakana + latin + nums;
-
-        const fontSize = 16;
-        let columns = canvas.width / fontSize;
-        let drops = [];
-        for (let x = 0; x < columns; x++) {
-            drops[x] = 1;
+            projectModalImgContainer.innerHTML = '';
         }
 
-        const draw = () => {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const href = card.getAttribute('href');
+        if (href && href !== '#') {
+            projectModalLink.href = href;
+            projectModalLink.style.display = 'inline-block';
+        } else {
+            projectModalLink.style.display = 'none';
+        }
 
-            ctx.fillStyle = '#0F0';
-            ctx.font = fontSize + 'px monospace';
-            
-            if (drops.length < canvas.width / fontSize) {
-                for (let x = drops.length; x < canvas.width / fontSize; x++) drops[x] = 1;
-            }
+        if (projectModal) {
+            projectModal.showModal();
+            if (window.lenis) window.lenis.stop();
+        }
+    });
+});
 
-            for (let i = 0; i < drops.length; i++) {
-                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
-        };
-
-        matrixInterval = setInterval(draw, 30);
-        if (window.sfx && window.sfx.success) window.sfx.success();
-
-        // Deactivate after 15 seconds
+if (projectModalClose && projectModal) {
+    projectModalClose.addEventListener('click', () => {
+        projectModal.classList.add('closing');
         setTimeout(() => {
-            document.body.classList.remove('matrix-mode');
-            canvas.style.opacity = '0';
-            setTimeout(() => {
-                clearInterval(matrixInterval);
-                canvas.style.display = 'none';
-                window.removeEventListener('resize', resizeCanvas);
-                matrixActive = false;
-            }, 2000);
-        }, 15000);
-    }
-
-    // 2. Project Modal Logic
-    const projectModal = document.getElementById('project-modal');
-    const projectModalClose = document.getElementById('project-close');
-    const projectCardsDOM = document.querySelectorAll('.project-card');
-    const projectModalTitle = document.getElementById('project-modal-title');
-    const projectModalDesc = document.getElementById('project-modal-desc');
-    const projectModalImgContainer = document.getElementById('project-modal-img-container');
-    const projectModalLink = document.getElementById('project-modal-link');
-
-    projectCardsDOM.forEach(card => {
-        card.addEventListener('click', (e) => {
-            // Ignore if it's the WIP card
-            if (card.classList.contains('project-wip')) return;
-            
-            e.preventDefault(); // Stop default anchor navigation
-            
-            // Extract content
-            const titleEl = card.querySelector('.project-title');
-            const descEl = card.querySelector('.project-desc');
-            const imgEl = card.querySelector('.project-image img');
-            
-            if (titleEl) projectModalTitle.innerHTML = titleEl.innerHTML;
-            if (descEl) projectModalDesc.innerHTML = descEl.innerHTML;
-            
-            if (imgEl) {
-                projectModalImgContainer.innerHTML = `<img src="${imgEl.src}" alt="${titleEl ? titleEl.textContent : 'Project'}">`;
-            } else {
-                projectModalImgContainer.innerHTML = '';
-            }
-
-            const href = card.getAttribute('href');
-            if (href && href !== '#') {
-                projectModalLink.href = href;
-                projectModalLink.style.display = 'inline-block';
-            } else {
-                projectModalLink.style.display = 'none';
-            }
-            
-            if (projectModal) {
-                projectModal.showModal();
-                if (window.lenis) window.lenis.stop();
-            }
-        });
+            projectModal.close();
+            projectModal.classList.remove('closing');
+            if (window.lenis) window.lenis.start();
+        }, 300);
     });
 
-    if (projectModalClose && projectModal) {
-        projectModalClose.addEventListener('click', () => {
+    // Close when clicking outside
+    projectModal.addEventListener('click', (e) => {
+        const rect = projectModal.getBoundingClientRect();
+        if (
+            e.clientX < rect.left ||
+            e.clientX > rect.right ||
+            e.clientY < rect.top ||
+            e.clientY > rect.bottom
+        ) {
             projectModal.classList.add('closing');
             setTimeout(() => {
                 projectModal.close();
                 projectModal.classList.remove('closing');
                 if (window.lenis) window.lenis.start();
             }, 300);
-        });
-
-        // Close when clicking outside
-        projectModal.addEventListener('click', (e) => {
-            const rect = projectModal.getBoundingClientRect();
-            if (
-                e.clientX < rect.left ||
-                e.clientX > rect.right ||
-                e.clientY < rect.top ||
-                e.clientY > rect.bottom
-            ) {
-                projectModal.classList.add('closing');
-                setTimeout(() => {
-                    projectModal.close();
-                    projectModal.classList.remove('closing');
-                    if (window.lenis) window.lenis.start();
-                }, 300);
-            }
-        });
-    }
-
-    // 3. Scroll Reading Progress Bar
-    const scrollProgress = document.getElementById('scroll-progress');
-    if (scrollProgress) {
-        let isScrolling = false;
-        window.addEventListener('scroll', () => {
-            if (!isScrolling) {
-                window.requestAnimationFrame(() => {
-                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                    const scrolled = (winScroll / height) * 100;
-                    scrollProgress.style.width = scrolled + "%";
-                    isScrolling = false;
-                });
-                isScrolling = true;
-            }
-        });
-    }
-
-    // 4. Dynamic Favicon & Title
-    let originalTitle = document.title;
-    let originalFavicon = document.querySelector('link[rel="icon"]');
-    let originalFaviconHref = originalFavicon ? originalFavicon.href : '';
-    
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            document.title = 'Come back! 😢';
-            if (originalFavicon) {
-                originalFavicon.href = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>😢</text></svg>';
-            }
-        } else {
-            document.title = originalTitle;
-            if (originalFavicon) {
-                originalFavicon.href = originalFaviconHref;
-            }
         }
     });
-    // 5. Secret Terminal (sudo)
-    const sudoCode = ['s', 'u', 'd', 'o'];
-    let sudoIndex = 0;
-    const secretTerminal = document.getElementById('secret-terminal');
-    const terminalClose = document.getElementById('terminal-close');
-    const terminalInput = document.getElementById('terminal-input');
-    const terminalOutput = document.getElementById('terminal-output');
-    const terminalForm = document.getElementById('terminal-form');
+}
 
-    if (secretTerminal) {
-        document.addEventListener('keydown', (e) => {
-            // Only track if no input is currently focused
-            if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'textarea') {
-                return;
-            }
-            
-            if (e.key.toLowerCase() === sudoCode[sudoIndex]) {
-                sudoIndex++;
-                if (sudoIndex === sudoCode.length) {
-                    secretTerminal.showModal();
-                    setTimeout(() => terminalInput.focus(), 100);
-                    sudoIndex = 0;
-                    if (window.sfx && window.sfx.success) window.sfx.success();
-                    if (window.lenis) window.lenis.stop();
-                }
-            } else {
-                sudoIndex = 0; // reset
-            }
-        });
+// 3. Scroll Reading Progress Bar
+const scrollProgress = document.getElementById('scroll-progress');
+if (scrollProgress) {
+    let isScrolling = false;
+    window.addEventListener('scroll', () => {
+        if (!isScrolling) {
+            window.requestAnimationFrame(() => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                scrollProgress.style.width = scrolled + "%";
+                isScrolling = false;
+            });
+            isScrolling = true;
+        }
+    });
+}
 
-        terminalClose.addEventListener('click', () => {
-            secretTerminal.classList.add('closing');
-            setTimeout(() => {
-                secretTerminal.close();
-                secretTerminal.classList.remove('closing');
-                if (window.lenis) window.lenis.start();
-            }, 300);
-        });
+// 4. Dynamic Favicon & Title
+let originalTitle = document.title;
+let originalFavicon = document.querySelector('link[rel="icon"]');
+let originalFaviconHref = originalFavicon ? originalFavicon.href : '';
 
-        // Close on outside click
-        secretTerminal.addEventListener('click', (e) => {
-            const rect = secretTerminal.getBoundingClientRect();
-            if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
-                secretTerminal.classList.add('closing');
-                setTimeout(() => {
-                    secretTerminal.close();
-                    secretTerminal.classList.remove('closing');
-                    if (window.lenis) window.lenis.start();
-                }, 300);
-            }
-        });
-
-        terminalForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const cmd = terminalInput.value.trim().toLowerCase();
-            if (!cmd) return;
-            
-            // Print user command
-            const cmdDiv = document.createElement('div');
-            cmdDiv.innerHTML = `<span class="terminal-prompt">$</span> ${terminalInput.value}`;
-            terminalOutput.appendChild(cmdDiv);
-            
-            // Process command
-            const resDiv = document.createElement('div');
-            switch(cmd) {
-                case 'help':
-                    resDiv.innerHTML = 'Available commands:<br>- whoami: Print user info<br>- clear: Clear terminal<br>- contact: Show contact info<br>- matrix: ???';
-                    break;
-                case 'whoami':
-                    resDiv.textContent = 'guest_user (You are looking at my portfolio!)';
-                    break;
-                case 'clear':
-                    terminalOutput.innerHTML = '<div>Welcome to Portfolio OS v1.0.0.</div><div>Type \'help\' for a list of commands.</div>';
-                    resDiv.textContent = '';
-                    break;
-                case 'contact':
-                    resDiv.textContent = 'Initiating contact protocol... email me at me@example.com';
-                    break;
-                case 'matrix':
-                    if (typeof activateMatrixMode === 'function') {
-                        activateMatrixMode();
-                        resDiv.textContent = 'Wake up, Neo...';
-                        setTimeout(() => secretTerminal.close(), 1500);
-                    } else {
-                        resDiv.textContent = 'Matrix protocol not found.';
-                    }
-                    break;
-                case 'sudo':
-                    resDiv.textContent = 'Nice try. You already have root access here.';
-                    break;
-                default:
-                    resDiv.textContent = `Command not found: ${cmd}`;
-            }
-            
-            if (resDiv.textContent || resDiv.innerHTML) {
-                terminalOutput.appendChild(resDiv);
-            }
-            
-            terminalInput.value = '';
-            terminalOutput.scrollTop = terminalOutput.scrollHeight;
-        });
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        document.title = 'Come back! 😢';
+        if (originalFavicon) {
+            originalFavicon.href = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>😢</text></svg>';
+        }
+    } else {
+        document.title = originalTitle;
+        if (originalFavicon) {
+            originalFavicon.href = originalFaviconHref;
+        }
     }
+});
+
