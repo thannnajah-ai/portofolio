@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const circleReveal = document.getElementById('theme-reveal-circle');
 
     themeToggleBtn.addEventListener('click', (e) => {
-        playSound();
         const isLight = document.body.classList.contains('light-theme');
         
         // Batman Reveal Effect
