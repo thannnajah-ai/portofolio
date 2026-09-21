@@ -151,12 +151,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 // Preloader Logic
-window.addEventListener('load', () => {
-    // Add small delay for aesthetic effect
-    setTimeout(() => {
-        document.body.classList.add('loaded');
-    }, 500);
-});
+const hidePreloader = () => document.body.classList.add('loaded');
+const spline = document.querySelector('spline-viewer');
+if (spline) {
+    spline.addEventListener('load', hidePreloader);
+    setTimeout(hidePreloader, 3000); // Fallback
+} else {
+    window.addEventListener('load', hidePreloader);
+}
 
 // i18n Dictionary
 const i18n = {
@@ -216,7 +218,7 @@ const i18n = {
 
 // Language Toggle Logic
 const langToggleBtn = document.getElementById('lang-toggle');
-let currentLang = 'en'; // Default to EN for now, or ID if preferred
+let currentLang = localStorage.getItem('lang') || 'en';
 
 function setLanguage(lang) {
     showDynamicIsland(lang === 'id' ? 'Bahasa Indonesia Aktif' : 'English Activated');
@@ -251,6 +253,7 @@ setLanguage('en');
 
 langToggleBtn.addEventListener('click', () => {
     currentLang = currentLang === 'en' ? 'id' : 'en';
+    localStorage.setItem('lang', currentLang);
     setLanguage(currentLang);
 });
 
@@ -433,15 +436,18 @@ function handleParticles() {
 function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     handleParticles();
-    requestAnimationFrame(animateParticles);
+    if (particles.length > 0) {
+        requestAnimationFrame(animateParticles);
+    }
 }
-animateParticles();
 
 window.addEventListener('click', (e) => {
+    const wasEmpty = particles.length === 0;
     // Tweak to ignore clicks on language toggle to avoid blocking it, though pointer-events:none on canvas handles that.
     for (let i = 0; i < 20; i++) {
         particles.push(new Particle(e.clientX, e.clientY));
     }
+    if (wasEmpty) animateParticles();
 });
 
 window.addEventListener('resize', () => {
@@ -527,6 +533,16 @@ if (termInput) {
                 case 'projects':
                     printToTerminal("1. TembusPTN.my.id (Education Platform)<br>2. Scientific Research (Glucose Levels)");
                     break;
+                case 'theme':
+                    document.getElementById('theme-toggle').click();
+                    printToTerminal("Theme toggled.");
+                    break;
+                case 'contact':
+                    printToTerminal("Email: thannnajah@gmail.com<br>WhatsApp: +6285725276231");
+                    break;
+                case 'skills':
+                    printToTerminal("HTML, CSS, JS, Flutter, Design Engineering");
+                    break;
                 case 'clear':
                     termOutput.innerHTML = '';
                     break;
@@ -538,4 +554,28 @@ if (termInput) {
         }
     });
 }
+
+// Formspree AJAX
+const contactForm = document.querySelector('.contact-form');
+if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = contactForm.querySelector('button');
+        const ogText = btn.innerText;
+        btn.innerText = 'Sending...';
+        try {
+            await fetch(contactForm.action, {
+                method: 'POST',
+                body: new FormData(contactForm),
+                headers: { 'Accept': 'application/json' }
+            });
+            btn.innerText = 'Sent!';
+            contactForm.reset();
+        } catch (err) {
+            btn.innerText = 'Error';
+        }
+        setTimeout(() => btn.innerText = ogText, 3000);
+    });
+}
 });
+
