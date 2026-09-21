@@ -72,8 +72,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (entry.isIntersecting) {
                 // Add class to trigger CSS transition
                 entry.target.classList.add('is-visible');
-                // Unobserve after animating once to keep it clean
-                observer.unobserve(entry.target);
+            } else {
+                // Remove class to reverse animation when scrolled out of view
+                entry.target.classList.remove('is-visible');
             }
         });
     }, observerOptions);
