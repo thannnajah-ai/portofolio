@@ -49,14 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
             if (isLight) {
                 document.body.classList.remove('light-theme');
-                if (sunIcon) sunIcon.style.display = 'none';
-                if (moonIcon) moonIcon.style.display = 'block';
                 showDynamicIsland('Dark Mode Activated');
                 localStorage.setItem('theme', 'dark');
             } else {
                 document.body.classList.add('light-theme');
-                if (sunIcon) sunIcon.style.display = 'block';
-                if (moonIcon) moonIcon.style.display = 'none';
                 showDynamicIsland('Light Mode Activated');
                 localStorage.setItem('theme', 'light');
             }
@@ -73,11 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme === 'light') {
         document.body.classList.add('light-theme');
-        if (sunIcon) sunIcon.style.display = 'block';
-        if (moonIcon) moonIcon.style.display = 'none';
-    } else {
-        if (sunIcon) sunIcon.style.display = 'none';
-        if (moonIcon) moonIcon.style.display = 'block';
     }
     // Custom Cursor Logic
     const cursor = document.querySelector('.custom-cursor');
@@ -116,8 +107,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const magneticElements = document.querySelectorAll('.magnetic');
     
     magneticElements.forEach((el) => {
+        let rect = null;
+        el.addEventListener('mouseenter', () => {
+            rect = el.getBoundingClientRect();
+        });
+        
         el.addEventListener('mousemove', (e) => {
-            const rect = el.getBoundingClientRect();
+            if (!rect) return;
             const x = e.clientX - rect.left - rect.width / 2;
             const y = e.clientY - rect.top - rect.height / 2;
             
@@ -128,17 +124,15 @@ document.addEventListener("DOMContentLoaded", () => {
         el.addEventListener('mouseleave', () => {
             // Reset to default on leave
             el.style.transform = `translate(0px, 0px)`;
+            rect = null;
         });
     });
 
-    // Scroll Progress Logic
-    const progressBar = document.getElementById('scroll-progress');
-    window.addEventListener('scroll', () => {
-        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const progress = (scrollTop / scrollHeight) * 100;
-        progressBar.style.width = progress + '%';
-    });
+    // Dynamic Copyright Year
+    const copyrightYear = document.getElementById('copyright-year');
+    if (copyrightYear) {
+        copyrightYear.textContent = new Date().getFullYear();
+    }
 
     // Parallax Glow Background
     const glowBg = document.querySelector('.glow-bg');
@@ -260,25 +254,32 @@ langToggleBtn.addEventListener('click', () => {
 // 3D Tilt Effect on Cards
 const tiltCards = document.querySelectorAll('.tilt-card');
 tiltCards.forEach(card => {
+    let rect = null;
+    let centerX, centerY;
+    
+    card.addEventListener('mouseenter', () => {
+        rect = card.getBoundingClientRect();
+        centerX = rect.width / 2;
+        centerY = rect.height / 2;
+        card.style.transition = 'none'; // Remove transition for smooth tracking
+    });
+
     card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
+        if (!rect) return;
         const x = e.clientX - rect.left; // x position within the element.
         const y = e.clientY - rect.top;  // y position within the element.
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
         
         // Calculate rotation based on distance from center
         const rotateX = ((y - centerY) / centerY) * -5; // max 5 deg
         const rotateY = ((x - centerX) / centerX) * 5;  // max 5 deg
         
         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-        card.style.transition = 'none'; // Remove transition for smooth tracking
     });
 
     card.addEventListener('mouseleave', () => {
         card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
-        card.style.transition = 'transform 300ms ease'; // Smooth reset
+        card.style.transition = 'transform var(--speed-normal) ease'; // Smooth reset
+        rect = null;
     });
 });
 
@@ -330,7 +331,7 @@ document.getElementById('menu-theme')?.addEventListener('click', (e) => {
 
 document.getElementById('menu-terminal')?.addEventListener('click', () => {
     contextMenu.classList.add('hidden');
-    document.getElementById('terminal-overlay').classList.remove('hidden');
+    document.getElementById('terminal-dialog').showModal();
     document.getElementById('terminal-input').focus();
 });
 
@@ -488,23 +489,25 @@ if (blogContainer) {
 }
 
 // Secret Terminal
-const termOverlay = document.getElementById('terminal-overlay');
+const termOverlay = document.getElementById('terminal-dialog');
 const termInput = document.getElementById('terminal-input');
 const termOutput = document.getElementById('terminal-output');
 const termClose = document.getElementById('term-close');
 
 document.addEventListener('keydown', (e) => {
     if (e.key === '`') {
-        termOverlay.classList.toggle('hidden');
-        if (!termOverlay.classList.contains('hidden')) {
+        if (!termOverlay.open) {
+            termOverlay.showModal();
             termInput.focus();
+        } else {
+            termOverlay.close();
         }
     }
 });
 
 if (termClose) {
     termClose.addEventListener('click', () => {
-        termOverlay.classList.add('hidden');
+        termOverlay.close();
     });
 }
 

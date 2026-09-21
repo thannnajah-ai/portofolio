@@ -22,6 +22,12 @@
     /* Animation Easing (Emil-style spring physics feel) */
     --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.1);
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    
+    /* Animation Durations */
+    --speed-fast: 200ms;
+    --speed-normal: 300ms;
+    --speed-slow: 600ms;
+    --speed-x-slow: 800ms;
 }
 
 .light-theme {
@@ -314,8 +320,12 @@ section {
     border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: var(--space-md);
-    transition: transform 300ms var(--ease-out-expo), border-color 300ms ease;
+    transition: transform var(--speed-normal) var(--ease-out-expo), border-color var(--speed-normal) ease, opacity var(--speed-normal) ease, filter var(--speed-normal) ease;
     will-change: transform;
+}
+.projects-grid:has(.project-card:hover) .project-card:not(:hover) {
+    opacity: 0.5;
+    filter: blur(2px);
 }
 
 @media (min-width: 600px) {
@@ -583,11 +593,16 @@ section {
     align-items: center;
     justify-content: center;
     padding: 0.25rem;
-    transition: color 200ms ease, transform 200ms var(--ease-out-expo);
+    transition: color var(--speed-fast) ease, transform var(--speed-fast) var(--ease-out-expo);
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
 }
+
+.sun-icon { display: none; }
+.moon-icon { display: block; }
+.light-theme .sun-icon { display: block; }
+.light-theme .moon-icon { display: none; }
 
 .theme-toggle:hover {
     color: var(--text-primary);
@@ -642,7 +657,14 @@ body.loaded #preloader {
     background: var(--text-primary);
     width: 0%;
     z-index: 99998;
-    transition: width 0.1s linear;
+    animation: scroll-progress linear;
+    animation-timeline: scroll();
+    transform-origin: 0 50%;
+}
+
+@keyframes scroll-progress {
+    from { width: 0%; }
+    to { width: 100%; }
 }
 
 /* Noise Overlay */
@@ -790,23 +812,29 @@ body.loaded #preloader {
     background: rgba(0, 0, 0, 0.02);
 }
 
-/* Terminal Overlay */
-.terminal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
+/* Terminal Dialog */
+.terminal-dialog {
+    margin: auto;
+    width: 100%;
+    max-width: 700px;
+    background: transparent;
+    border: none;
+    z-index: 100000;
+}
+.terminal-dialog::backdrop {
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    z-index: 100000;
+}
+.terminal-dialog[open] {
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 1;
-    transition: opacity 300ms ease;
+    animation: fadeIn var(--speed-normal) ease;
 }
-.terminal-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 .terminal-window {
     width: 90%;
