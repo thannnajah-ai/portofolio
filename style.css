@@ -53,6 +53,10 @@
     outline-offset: 2px;
 }
 
+html, body {
+    overflow-x: hidden;
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--text-primary);
@@ -62,6 +66,8 @@ body {
     -moz-osx-font-smoothing: grayscale;
     /* Tabular nums for clean data representation if any */
     font-variant-numeric: tabular-nums;
+    /* Extra safeguard against horizontal scrolling */
+    max-width: 100vw;
 }
 
 /* Background aesthetic */
@@ -662,6 +668,38 @@ section {
 .nav-links {
     display: flex;
     gap: var(--space-md);
+}
+
+@media (max-width: 768px) {
+    .floating-nav {
+        width: 90%;
+        max-width: 400px;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding: 0.5rem 0.75rem;
+        gap: var(--space-sm);
+        /* Smooth scrolling on iOS */
+        -webkit-overflow-scrolling: touch;
+        /* Hide scrollbars */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .floating-nav::-webkit-scrollbar {
+        display: none;
+    }
+    .nav-links {
+        gap: var(--space-sm);
+    }
+    .nav-link {
+        white-space: nowrap;
+        font-size: 0.8rem;
+    }
+    .lang-toggle {
+        flex-shrink: 0;
+    }
+    .theme-toggle {
+        flex-shrink: 0;
+    }
 }
 
 .nav-link {
