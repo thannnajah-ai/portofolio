@@ -136,21 +136,19 @@
         <section id="about" class="fade-in-section">
             <h2 class="section-title" data-i18n="aboutMe">About Me</h2>
             <div class="about-card">
+                <div class="about-photo-col">
+                    <!-- Ganti src dengan path foto kamu -->
+                    <div class="about-avatar-wrap">
+                        <img src="photo.jpg" alt="Nathan Ferdwiansyah W." class="about-photo"
+                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <div class="about-avatar-fallback" style="display:none">NF</div>
+                    </div>
+                    <div class="about-status-pill"><span class="status-dot"></span><span data-i18n="available">Available
+                            for work</span></div>
+                </div>
                 <div class="about-text">
-                    <p data-i18n="aboutP1">
-                        Saya adalah pelajar di <strong class="highlight-marker">MA Mu'allimin Muhammadiyah
-                            Yogyakarta</strong> (Jurusan IPA) yang memiliki passion mendalam pada software engineering,
-                        khususnya di bidang Web dan Mobile (Flutter). Lahir pada 23 Februari 2009, perjalanan saya di
-                        dunia teknologi didorong oleh rasa ingin tahu terhadap bagaimana antarmuka digital dapat terasa
-                        hidup.
-                    </p>
-                    <p data-i18n="aboutP2">
-                        Saya sangat peduli pada detail antarmuka (UI). Dalam alur kerja sehari-hari, saya terbiasa
-                        menggunakan AI-assisted coding tools dan agentic workflows (seperti Claude Code CLI &
-                        Antigravity) di lingkungan local/proxy. Saya menggabungkan kecepatan AI dengan prinsip
-                        <em>Design Engineering</em> yang kuat untuk memastikan produk akhir tidak hanya fungsional,
-                        tetapi juga memiliki <em>good taste</em> dan pengalaman pengguna yang premium.
-                    </p>
+                    <p data-i18n="aboutP1"></p>
+                    <p data-i18n="aboutP2"></p>
                 </div>
             </div>
         </section>
@@ -214,14 +212,12 @@
                 <a href="https://tembusptn.my.id/" target="_blank" rel="noopener noreferrer"
                     class="project-card tilt-card">
                     <div class="project-image">
-                        <!-- Live preview using thum.io, using class for styling -->
                         <img src="https://image.thum.io/get/width/1000/crop/800/https://tembusptn.my.id/"
-                            alt="Preview TembusPTN" class="preview-img">
+                            alt="Preview TembusPTN" class="preview-img" loading="lazy">
                     </div>
                     <div class="project-info">
                         <h3 class="project-title" data-i18n="project1Title">TembusPTN.my.id</h3>
-                        <p class="project-desc" data-i18n="project1Desc">Platform belajar online UTBK/SNBT gratis dengan
-                            antarmuka yang clean dan responsif, dirancang untuk fokus tinggi penggunanya.</p>
+                        <p class="project-desc" data-i18n="project1Desc"></p>
                     </div>
                 </a>
 
@@ -241,11 +237,30 @@
                     </div>
                     <div class="project-info">
                         <h3 class="project-title" data-i18n="project2Title">Scientific Research</h3>
-                        <p class="project-desc" data-i18n="project2Desc">Karya tulis ilmiah sains terapan mengenai
-                            "Kadar Glukosa pada Nasi". Menunjukkan sisi analitis, metodologi riset, dan problem-solving.
-                        </p>
+                        <p class="project-desc" data-i18n="project2Desc"></p>
                     </div>
                 </a>
+
+                <!-- Project 3: WIP -->
+                <div class="project-card tilt-card project-wip">
+                    <div class="project-image">
+                        <div class="placeholder-img wip-placeholder">
+                            <div class="wip-inner">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#a78bfa"
+                                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 20h9" />
+                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                </svg>
+                                <span class="wip-label" data-i18n="wipLabel">Something's cooking...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="wip-badge" data-i18n="wipBadge">In Progress</div>
+                        <h3 class="project-title" data-i18n="project3Title">Next Project</h3>
+                        <p class="project-desc" data-i18n="project3Desc"></p>
+                    </div>
+                </div>
             </div>
         </section>
 

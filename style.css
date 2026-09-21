@@ -248,13 +248,6 @@ section {
 }
 
 /* About Section */
-.about-card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: var(--space-lg);
-}
-
 .about-text p {
     margin-bottom: var(--space-md);
 }
@@ -269,10 +262,71 @@ section {
 }
 
 .about-text em {
-    font-style: normal; /* No italic in UI, using weight instead */
+    font-style: normal;
     font-weight: 500;
     color: var(--text-primary);
 }
+
+/* About: Two-column layout with photo */
+.about-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: var(--space-lg);
+}
+@media (min-width: 600px) {
+    .about-card {
+        grid-template-columns: 160px 1fr;
+        align-items: start;
+    }
+}
+.about-photo-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+}
+.about-avatar-wrap {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--border-color);
+    flex-shrink: 0;
+}
+.about-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.about-avatar-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #1f2937, #111827);
+    color: #60a5fa;
+    letter-spacing: 0.05em;
+}
+.about-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 99px;
+    white-space: nowrap;
+}
+
 
 /* Skills Grid */
 .skills-grid {
@@ -386,6 +440,52 @@ section {
 .project-desc {
     font-size: 0.9rem;
 }
+
+/* WIP Project Card */
+.project-wip {
+    cursor: default;
+    border-style: dashed;
+    border-color: #333;
+    opacity: 0.75;
+    transition: opacity var(--speed-normal) ease, border-color var(--speed-normal) ease;
+}
+.project-wip:hover {
+    opacity: 1;
+    border-color: #a78bfa55;
+}
+.wip-placeholder {
+    background: linear-gradient(135deg, #0d0d1a, #12101e);
+}
+.wip-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+.wip-label {
+    font-size: 0.8rem;
+    color: #a78bfa;
+    opacity: 0.8;
+    animation: wipPulse 2.5s ease-in-out infinite;
+}
+@keyframes wipPulse {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 1;   }
+}
+.wip-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #a78bfa;
+    background: rgba(167, 139, 250, 0.1);
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    border-radius: 99px;
+    padding: 0.15rem 0.6rem;
+    margin-bottom: 0.5rem;
+}
+
 
 /* Footer */
 .footer {
