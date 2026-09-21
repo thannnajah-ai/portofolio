@@ -63,6 +63,22 @@
     <!-- Theme Reveal Circle -->
     <div id="theme-reveal-circle" class="theme-reveal-circle"></div>
 
+    <!-- Secret Terminal Dialog -->
+    <dialog id="secret-terminal" class="secret-terminal">
+        <div class="terminal-header">
+            <span class="terminal-title">user@portfolio:~</span>
+            <button id="terminal-close" class="terminal-close">&times;</button>
+        </div>
+        <div class="terminal-body" id="terminal-output">
+            <div>Welcome to Portfolio OS v1.0.0.</div>
+            <div>Type 'help' for a list of commands.</div>
+        </div>
+        <form id="terminal-form" class="terminal-input-line">
+            <span class="terminal-prompt">$</span>
+            <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" autofocus>
+        </form>
+    </dialog>
+
     <!-- Dynamic Island -->
     <aside id="dynamic-island" class="dynamic-island hidden-island">
         <span id="island-text"></span>

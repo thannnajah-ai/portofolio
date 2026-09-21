@@ -969,3 +969,123 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // 4. Dynamic Favicon & Title
+    let originalTitle = document.title;
+    let originalFavicon = document.querySelector('link[rel="icon"]');
+    let originalFaviconHref = originalFavicon ? originalFavicon.href : '';
+    
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            document.title = 'Come back! 😢';
+            if (originalFavicon) {
+                originalFavicon.href = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>😢</text></svg>';
+            }
+        } else {
+            document.title = originalTitle;
+            if (originalFavicon) {
+                originalFavicon.href = originalFaviconHref;
+            }
+        }
+    });
+    // 5. Secret Terminal (sudo)
+    const sudoCode = ['s', 'u', 'd', 'o'];
+    let sudoIndex = 0;
+    const secretTerminal = document.getElementById('secret-terminal');
+    const terminalClose = document.getElementById('terminal-close');
+    const terminalInput = document.getElementById('terminal-input');
+    const terminalOutput = document.getElementById('terminal-output');
+    const terminalForm = document.getElementById('terminal-form');
+
+    if (secretTerminal) {
+        document.addEventListener('keydown', (e) => {
+            // Only track if no input is currently focused
+            if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'textarea') {
+                return;
+            }
+            
+            if (e.key.toLowerCase() === sudoCode[sudoIndex]) {
+                sudoIndex++;
+                if (sudoIndex === sudoCode.length) {
+                    secretTerminal.showModal();
+                    setTimeout(() => terminalInput.focus(), 100);
+                    sudoIndex = 0;
+                    if (window.sfx && window.sfx.success) window.sfx.success();
+                    if (window.lenis) window.lenis.stop();
+                }
+            } else {
+                sudoIndex = 0; // reset
+            }
+        });
+
+        terminalClose.addEventListener('click', () => {
+            secretTerminal.classList.add('closing');
+            setTimeout(() => {
+                secretTerminal.close();
+                secretTerminal.classList.remove('closing');
+                if (window.lenis) window.lenis.start();
+            }, 300);
+        });
+
+        // Close on outside click
+        secretTerminal.addEventListener('click', (e) => {
+            const rect = secretTerminal.getBoundingClientRect();
+            if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
+                secretTerminal.classList.add('closing');
+                setTimeout(() => {
+                    secretTerminal.close();
+                    secretTerminal.classList.remove('closing');
+                    if (window.lenis) window.lenis.start();
+                }, 300);
+            }
+        });
+
+        terminalForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const cmd = terminalInput.value.trim().toLowerCase();
+            if (!cmd) return;
+            
+            // Print user command
+            const cmdDiv = document.createElement('div');
+            cmdDiv.innerHTML = `<span class="terminal-prompt">$</span> ${terminalInput.value}`;
+            terminalOutput.appendChild(cmdDiv);
+            
+            // Process command
+            const resDiv = document.createElement('div');
+            switch(cmd) {
+                case 'help':
+                    resDiv.innerHTML = 'Available commands:<br>- whoami: Print user info<br>- clear: Clear terminal<br>- contact: Show contact info<br>- matrix: ???';
+                    break;
+                case 'whoami':
+                    resDiv.textContent = 'guest_user (You are looking at my portfolio!)';
+                    break;
+                case 'clear':
+                    terminalOutput.innerHTML = '<div>Welcome to Portfolio OS v1.0.0.</div><div>Type \'help\' for a list of commands.</div>';
+                    resDiv.textContent = '';
+                    break;
+                case 'contact':
+                    resDiv.textContent = 'Initiating contact protocol... email me at me@example.com';
+                    break;
+                case 'matrix':
+                    if (typeof activateMatrixMode === 'function') {
+                        activateMatrixMode();
+                        resDiv.textContent = 'Wake up, Neo...';
+                        setTimeout(() => secretTerminal.close(), 1500);
+                    } else {
+                        resDiv.textContent = 'Matrix protocol not found.';
+                    }
+                    break;
+                case 'sudo':
+                    resDiv.textContent = 'Nice try. You already have root access here.';
+                    break;
+                default:
+                    resDiv.textContent = `Command not found: ${cmd}`;
+            }
+            
+            if (resDiv.textContent || resDiv.innerHTML) {
+                terminalOutput.appendChild(resDiv);
+            }
+            
+            terminalInput.value = '';
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        });
+    }

@@ -91,7 +91,17 @@ body {
     padding: env(safe-area-inset-top) max(var(--space-lg), env(safe-area-inset-right)) env(safe-area-inset-bottom) max(var(--space-lg), env(safe-area-inset-left));
 }
 
-/* Typography Base */
+/* Custom Text Highlight (Selection) */
+::selection {
+    background-color: var(--accent);
+    color: #000;
+}
+::-moz-selection {
+    background-color: var(--accent);
+    color: #000;
+}
+
+/* Base Typographic Styles */
 h1, h2, h3 {
     font-weight: 600;
     line-height: 1.2;
@@ -1982,4 +1992,85 @@ body.matrix-mode .noise-overlay { opacity: 0.15; }
     font-size: 1.1rem;
     color: var(--text-secondary);
     line-height: 1.6;
+}
+/* 7. Secret Terminal Dialog (Easter Egg 2) */
+.secret-terminal {
+    width: 90vw;
+    max-width: 600px;
+    background: rgba(10, 10, 10, 0.95);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 0;
+    color: #0f0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0, 255, 0, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.secret-terminal::backdrop {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.terminal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #222;
+    padding: 8px 15px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: 1px solid #333;
+}
+
+.terminal-title {
+    color: #ddd;
+    font-weight: bold;
+}
+
+.terminal-close {
+    background: none;
+    border: none;
+    color: #ff5f56;
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.terminal-close:hover {
+    color: #ff3b30;
+}
+
+.terminal-body {
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.terminal-body div {
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+
+.terminal-input-line {
+    display: flex;
+    padding: 0 15px 15px 15px;
+}
+
+.terminal-prompt {
+    margin-right: 10px;
+    color: #0f0;
+}
+
+#terminal-input {
+    background: transparent;
+    border: none;
+    color: #0f0;
+    font-family: inherit;
+    font-size: inherit;
+    flex-grow: 1;
+    outline: none;
 }
