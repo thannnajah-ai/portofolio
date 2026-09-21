@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     themeToggleBtn.addEventListener('click', (e) => {
         playSound();
-        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        const isLight = document.body.classList.contains('light-theme');
         
         // Batman Reveal Effect
         const x = e.clientX || window.innerWidth - 50;
@@ -43,23 +43,23 @@ document.addEventListener("DOMContentLoaded", () => {
         if (circleReveal) {
             circleReveal.style.left = x + 'px';
             circleReveal.style.top = y + 'px';
-            circleReveal.style.backgroundColor = isDark ? '#FAFAFA' : '#000000';
+            circleReveal.style.backgroundColor = isLight ? '#000000' : '#FAFAFA';
             circleReveal.classList.add('active');
         }
         
         setTimeout(() => {
-            if (isDark) {
-                document.body.removeAttribute('data-theme');
-                sunIcon.style.display = 'none';
-                moonIcon.style.display = 'block';
-                showDynamicIsland('Light Mode Activated');
-                localStorage.setItem('theme', 'light');
-            } else {
-                document.body.setAttribute('data-theme', 'dark');
-                sunIcon.style.display = 'block';
-                moonIcon.style.display = 'none';
+            if (isLight) {
+                document.body.classList.remove('light-theme');
+                if (sunIcon) sunIcon.style.display = 'none';
+                if (moonIcon) moonIcon.style.display = 'block';
                 showDynamicIsland('Dark Mode Activated');
                 localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.add('light-theme');
+                if (sunIcon) sunIcon.style.display = 'block';
+                if (moonIcon) moonIcon.style.display = 'none';
+                showDynamicIsland('Light Mode Activated');
+                localStorage.setItem('theme', 'light');
             }
             
             if (circleReveal) {
@@ -72,8 +72,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Initialize theme from storage
     const currentTheme = localStorage.getItem('theme');
-    if (currentTheme === 'dark') {
-        document.body.setAttribute('data-theme', 'dark');
+    if (currentTheme === 'light') {
+        document.body.classList.add('light-theme');
         if (sunIcon) sunIcon.style.display = 'block';
         if (moonIcon) moonIcon.style.display = 'none';
     } else {
