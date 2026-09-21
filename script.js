@@ -380,31 +380,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Converts raw commit messages into conversational language
     function humanizeCommit(msg) {
-        // Only use the first line (ignore multiline commit bodies)
+        // Only use the first line, strip the conventional commit type prefix
         const firstLine = msg.split('\n')[0].trim();
-        const match = firstLine.match(/^([^:(]+)[:(]\s*(.+)/);
-        if (!match) return firstLine;
+        const match = firstLine.match(/^[^:(]+[:(]\s*(.+)/);
+        const body = match ? match[1].replace(/[()]/g, '').trim() : firstLine;
 
-        const type = match[1].toLowerCase().trim();
-        const body = match[2].replace(/[()]/g, '').trim();
-        const cap = body.charAt(0).toUpperCase() + body.slice(1);
-
-        const map = {
-            'feat': [`Nambah fitur baru — ${cap} ✨`, ''],
-            'fitur': [`Selesai bikin ${cap} ✨`, ''],
-            'fix': [`Fix nih: ${cap} 🐛`, ''],
-            'perbaikan': [`Udah beres — ${cap} 🐛`, ''],
-            'config': [`Update config: ${cap} 🔧`, ''],
-            'konfigurasi': [`Update setting: ${cap} 🔧`, ''],
-            'refactor': [`Beresin struktur: ${cap} ♻️`, ''],
-            'style': [`Poles tampilan: ${cap} 🎨`, ''],
-            'docs': [`Update docs: ${cap} 📝`, ''],
-            'chore': [`${cap} 🔩`, ''],
-            'perf': [`Optimasi: ${cap} ⚡`, ''],
-            'animasi': [`Tambah animasi — ${cap} 🎬`, ''],
-        };
-
-        return map[type] ? map[type][0] : `${cap}`;
+        // Light pass: swap formal Bahasa Indonesia to everyday speech
+        return body
+            .replace(/\buntuk memungkinkan\b/gi, 'supaya')
+            .replace(/\bdemi\b/gi,               'biar')
+            .replace(/\bguna\b/gi,               'buat')
+            .replace(/\bagar\b/gi,               'supaya')
+            .replace(/\bsehingga\b/gi,           'jadi')
+            .replace(/\bmelakukan\b/gi,          'lakuin')
+            .replace(/\bmemperbarui\b/gi,        'perbarui')
+            .replace(/\bmenghapus\b/gi,          'hapus')
+            .replace(/\bmembuat\b/gi,            'buat')
+            .replace(/\bmenambahkan\b/gi,        'tambah')
+            .replace(/\bmenambah\b/gi,           'tambah')
+            .replace(/\bmemperbaiki\b/gi,        'benerin')
+            .replace(/\bmengubah\b/gi,           'ubah')
+            .replace(/\bmembangun\b/gi,          'bangun')
+            .replace(/\bmengimplementasikan\b/gi,'implementasi')
+            .replace(/\bmengembalikan\b/gi,      'kembaliin')
+            .replace(/\bmerapikan\b/gi,          'rapiin')
+            .replace(/\bdan merapikan\b/gi,      '& rapiin')
+            .replace(/\bdan menambah(kan)?\b/gi, '& tambah');
     }
 
     // 5. GitHub Logs Injector (Live)
