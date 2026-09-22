@@ -43,6 +43,60 @@
 </head>
 
 <body>
+
+    <!-- Scroll-Spy Nav -->
+    <nav class="scroll-spy-nav">
+        <ul>
+            <li><a href="#hero" class="spy-link active" data-target="hero"></a></li>
+            <li><a href="#about" class="spy-link" data-target="about"></a></li>
+            <li><a href="#projects" class="spy-link" data-target="projects"></a></li>
+            <li><a href="#contact" class="spy-link" data-target="contact"></a></li>
+        </ul>
+    </nav>
+
+    <!-- Selection Tooltip -->
+    <div id="selection-tooltip" class="selection-tooltip">
+        <button id="btn-copy-text" data-i18n="copyText">Copy</button>
+    </div>
+
+    <!-- Timeline Resume Dialog -->
+    <dialog id="resume-dialog" class="resume-dialog">
+        <div class="resume-window">
+            <div class="resume-header">
+                <h2>Interactive Resume</h2>
+                <button class="resume-close-btn" id="resume-close" aria-label="Close Resume">&times;</button>
+            </div>
+            <div class="resume-body">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Frontend Developer</h3>
+                            <span>2024 - Present</span>
+                            <p>Building high-performance, aesthetically pleasing web applications using modern stacks.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>UI/UX Enthusiast</h3>
+                            <span>2023 - 2024</span>
+                            <p>Studying human-computer interaction, wireframing, and creating design systems.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Self-Taught Programmer</h3>
+                            <span>2021 - 2023</span>
+                            <p>Learned algorithms, data structures, and the fundamentals of software engineering.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
     <!-- Scroll Progress Bar -->
     <div id="scroll-progress" style="position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: var(--text-primary); z-index: 99999; transition: width 0.1s ease-out; pointer-events: none;"></div>
 
@@ -96,7 +150,8 @@
             <a href="#projects" class="nav-link">Projects</a>
             <a href="#thoughts" class="nav-link" data-i18n="thoughtsTitle">Thoughts</a>
         </div>
-        <button id="lang-toggle" class="lang-toggle" aria-label="Toggle Language">ID</button>
+        <div class="local-time-widget" id="local-time-widget"><span id="time-text">--:--</span><span class="status-dot-time" id="time-status-dot"></span></div>
+          <button id="lang-toggle" class="lang-toggle" aria-label="Toggle Language">ID</button>
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
             <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -172,6 +227,7 @@
                             for work</span></div>
                 </div>
                 <div class="about-text">
+<button id="btn-view-cv" class="btn btn-secondary magnetic" style="margin-top: 1rem;">View Interactive CV</button>
                     <p data-i18n="aboutP1"></p>
                     <p data-i18n="aboutP2"></p>
                 </div>
@@ -457,6 +513,12 @@
     </dialog>
 
     <script src="script.js"></script>
+
+    <!-- WebGL Liquid Hover Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+    <script src="https://unpkg.com/hover-effect"></script>
+
 </body>
 
 </html>
