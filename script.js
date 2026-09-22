@@ -1180,27 +1180,4 @@ if (btnViewCv && resumeDialog) {
     });
 }
 
-// 5. WebGL Liquid Hover Distortion
-setTimeout(() => {
-    if (typeof hoverEffect !== 'undefined') {
-        const projectImages = document.querySelectorAll('.project-image');
-        projectImages.forEach((container) => {
-            const imgEl = container.querySelector('img.preview-img');
-            if (imgEl) {
-                let imgSrc = imgEl.src;
-                const displacementUrl = 'https://raw.githubusercontent.com/robin-dela/hover-effect/master/images/fluid.jpg';
-                
-                new hoverEffect({
-                    parent: container,
-                    intensity: 0.3,
-                    image1: imgSrc,
-                    image2: imgSrc,
-                    displacementImage: displacementUrl,
-                    hover: true
-                });
-            }
-        });
-    }
-}, 1000);
-
 });

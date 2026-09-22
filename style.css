@@ -2601,18 +2601,4 @@ body::after {
 .timeline-content span { font-size: 0.85rem; color: #60a5fa; font-weight: 600; display: block; margin-bottom: 1rem; }
 .timeline-content p { color: var(--text-secondary); margin: 0; line-height: 1.6; }
 
-/* WebGL Liquid Container overrides */
-.project-image {
-    position: relative;
-    overflow: hidden;
-    height: 250px; 
-}
-.project-image canvas {
-    display: block;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover;
-}
-.project-image img.preview-img {
-    display: none; 
-}
+

@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/thannnajah-ai/portofolio#readme",
   "dependencies": {
-    "puppeteer": "^25.11.0"
+    "puppeteer": "^25.11.0",
+    "sonner": "^2.0.8"
   }
 }
