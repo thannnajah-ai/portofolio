@@ -1028,36 +1028,21 @@ const updateLanguage = (lang) => {
         }
     });
     
-    // Update active state of language toggle buttons (we will create them dynamically)
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
-    });
+
 };
 
-// Create language toggle buttons in navbar
-const navLinks = document.querySelector('.nav-links');
-if (navLinks && !document.querySelector('.lang-switcher')) {
-    const langSwitcherHTML = `
-        <li class="lang-switcher" style="display:flex; gap: 0.5rem; margin-left: 1rem; align-items: center;">
-            <button class="lang-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; font-weight:bold;">EN</button>
-            <span style="color:var(--text-secondary);">|</span>
-            <button class="lang-btn ${currentLang === 'id' ? 'active' : ''}" data-lang="id" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; font-weight:bold;">ID</button>
-        </li>
-    `;
-    navLinks.insertAdjacentHTML('beforeend', langSwitcherHTML);
+// Hook into existing #lang-toggle button
+const existingLangToggle = document.getElementById('lang-toggle');
+if (existingLangToggle) {
+    // Set initial text: If we are in English, the button should offer to switch to ID, and vice versa.
+    existingLangToggle.textContent = currentLang === 'en' ? 'ID' : 'EN';
     
-    // Add CSS for active language
-    const style = document.createElement('style');
-    style.textContent = '.lang-btn.active { color: var(--text-primary) !important; text-decoration: underline; }';
-    document.head.appendChild(style);
-    
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const lang = btn.getAttribute('data-lang');
-            localStorage.setItem('lang', lang);
-            currentLang = lang;
-            updateLanguage(lang);
-        });
+    existingLangToggle.addEventListener('click', () => {
+        const newLang = currentLang === 'en' ? 'id' : 'en';
+        localStorage.setItem('lang', newLang);
+        currentLang = newLang;
+        updateLanguage(newLang);
+        existingLangToggle.textContent = newLang === 'en' ? 'ID' : 'EN';
     });
 }
 
