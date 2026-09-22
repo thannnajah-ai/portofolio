@@ -49,8 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const themeToggleBtn = document.getElementById('theme-toggle');
     const sunIcon = document.querySelector('.sun-icon');
     const moonIcon = document.querySelector('.moon-icon');
-    const circleReveal = document.getElementById('theme-reveal-circle');
-
     themeToggleBtn.addEventListener('click', (e) => {
         const isLight = document.body.classList.contains('light-theme');
 
@@ -60,33 +58,23 @@ document.addEventListener("DOMContentLoaded", () => {
         themeToggleBtn.classList.add('spin-anim');
         setTimeout(() => themeToggleBtn.classList.remove('spin-anim'), 650);
 
-        // Batman Reveal Effect
-        const x = e.clientX || window.innerWidth - 50;
-        const y = e.clientY || 50;
-        if (circleReveal) {
-            circleReveal.style.left = x + 'px';
-            circleReveal.style.top = y + 'px';
-            circleReveal.style.backgroundColor = isLight ? '#000000' : '#FAFAFA';
-            circleReveal.classList.add('active');
+        // Smooth CSS Transition
+        document.body.classList.add('theme-transitioning');
+        
+        if (isLight) {
+            document.body.classList.remove('light-theme');
+            if (typeof showDynamicIsland === 'function') showDynamicIsland('Dark Mode Activated');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.classList.add('light-theme');
+            if (typeof showDynamicIsland === 'function') showDynamicIsland('Light Mode Activated');
+            localStorage.setItem('theme', 'light');
         }
 
+        // Remove the transition class after animation completes (matches CSS 0.4s)
         setTimeout(() => {
-            if (isLight) {
-                document.body.classList.remove('light-theme');
-                if (typeof showDynamicIsland === 'function') showDynamicIsland('Dark Mode Activated');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.body.classList.add('light-theme');
-                if (typeof showDynamicIsland === 'function') showDynamicIsland('Light Mode Activated');
-                localStorage.setItem('theme', 'light');
-            }
-
-            if (circleReveal) {
-                setTimeout(() => {
-                    circleReveal.classList.remove('active');
-                }, 100);
-            }
-        }, 400); // Wait for circle to cover screen
+            document.body.classList.remove('theme-transitioning');
+        }, 400);
     });
 
     // Initialize theme from storage

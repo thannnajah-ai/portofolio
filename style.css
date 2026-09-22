@@ -2202,3 +2202,9 @@ dialog[open] .log-item:nth-child(5) { animation-delay: 0.5s; }
     width: 300vmax;
     height: 300vmax;
 }
+
+/* Smooth CSS Theme Transition */
+body.theme-transitioning,
+body.theme-transitioning * {
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, fill 0.4s ease, stroke 0.4s ease !important;
+}
