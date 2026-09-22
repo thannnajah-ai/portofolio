@@ -849,3 +849,20 @@ document.addEventListener('visibilitychange', () => {
     
     setupDownloadBtn('download-cv-btn');
     setupDownloadBtn('mobile-cv-btn');
+document.addEventListener('DOMContentLoaded', () => {
+
+
+    // Intersection Observer for Philosophy Cards (Staggered Animation on scroll)
+    const cardObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                cardObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+
+    const philCards = document.querySelectorAll('.philosophy-card');
+    philCards.forEach(card => cardObserver.observe(card));
+
+});
