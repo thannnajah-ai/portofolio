@@ -849,4 +849,3 @@ document.addEventListener('visibilitychange', () => {
     
     setupDownloadBtn('download-cv-btn');
     setupDownloadBtn('mobile-cv-btn');
-});
