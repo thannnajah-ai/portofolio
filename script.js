@@ -333,20 +333,20 @@ document.addEventListener("DOMContentLoaded", () => {
             showDynamicIsland(lang === 'id' ? 'Bahasa Indonesia Aktif' : 'English Activated');
         }
         const elementsToTranslate = document.querySelectorAll('[data-i18n]');
-        
+
         elementsToTranslate.forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (i18n[lang] && i18n[lang][key]) {
                 el.innerHTML = i18n[lang][key];
             }
         });
-        
+
         // Auto-stagger for hero title to give word-by-word reveal animation
         const heroSpans = document.querySelectorAll('.hero-title span[data-i18n]');
         heroSpans.forEach((span, spanIdx) => {
             const text = span.innerText.trim();
             span.innerHTML = ''; // clear raw text
-            
+
             // Rebuild with stagger masks
             const words = text.split(' ');
             words.forEach((word, index) => {
@@ -355,27 +355,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 mask.style.display = 'inline-block';
                 mask.style.overflow = 'hidden';
                 mask.style.verticalAlign = 'top';
-                
+
                 const inner = document.createElement('span');
                 inner.className = 'stagger-text';
                 inner.style.display = 'inline-block';
                 // Adjust delay based on span index and word index
-                inner.style.animationDelay = `${0.2 + (spanIdx * 0.2) + (index * 0.1)}s`; 
+                inner.style.animationDelay = `${0.2 + (spanIdx * 0.2) + (index * 0.1)}s`;
                 inner.style.animation = 'revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards';
                 inner.style.opacity = '0';
                 inner.style.transform = 'translateY(120%)';
-                
+
                 inner.textContent = word;
                 mask.appendChild(inner);
                 span.appendChild(mask);
-                
+
                 // Add space after word
                 if (index < words.length - 1) {
                     span.appendChild(document.createTextNode(' '));
                 }
             });
         });
-        
+
         const langToggleBtn = document.getElementById('lang-toggle');
         if (langToggleBtn) {
             langToggleBtn.innerText = lang.toUpperCase();
@@ -545,7 +545,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.title = "Come back! 🥺";
         } else {
             favicon.href = originalFavicon;
-            document.title = "Nathan Ferdwiansyah W. | Frontend & Mobile Developer";
+            document.title = "Portofolio Nathan";
         }
     });
 
@@ -925,68 +925,68 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
 
 
-// --- Project Filtering System ---
-const filterBtns = document.querySelectorAll('.filter-btn');
-const projectCards = document.querySelectorAll('.project-card');
+    // --- Project Filtering System ---
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
 
-filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Remove active class
-        filterBtns.forEach(b => b.classList.remove('active'));
-        // Add active class
-        btn.classList.add('active');
-        
-        const filter = btn.getAttribute('data-filter');
-        
-        projectCards.forEach(card => {
-            if (filter === 'all' || card.getAttribute('data-category') === filter) {
-                card.classList.remove('hide');
-                card.style.animation = 'revealUp 0.5s ease forwards'; // re-trigger animation
-            } else {
-                card.classList.add('hide');
-            }
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class
+            filterBtns.forEach(b => b.classList.remove('active'));
+            // Add active class
+            btn.classList.add('active');
+
+            const filter = btn.getAttribute('data-filter');
+
+            projectCards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                    card.classList.remove('hide');
+                    card.style.animation = 'revealUp 0.5s ease forwards'; // re-trigger animation
+                } else {
+                    card.classList.add('hide');
+                }
+            });
         });
     });
-});
 
-// --- Functional Contact Form (Formspree/EmailJS alternative using native fetch) ---
-// Note: We use a dummy endpoint for demonstration, but it simulates a real API call
-const contactForm = document.getElementById('contact-form');
-const formStatus = document.getElementById('form-status');
-const submitBtnText = document.querySelector('.btn-text');
-const btnLoader = document.querySelector('.btn-loader');
+    // --- Functional Contact Form (Formspree/EmailJS alternative using native fetch) ---
+    // Note: We use a dummy endpoint for demonstration, but it simulates a real API call
+    const contactForm = document.getElementById('contact-form');
+    const formStatus = document.getElementById('form-status');
+    const submitBtnText = document.querySelector('.btn-text');
+    const btnLoader = document.querySelector('.btn-loader');
 
-if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        // UI Loading State
-        submitBtnText.style.display = 'none';
-        btnLoader.style.display = 'inline-block';
-        formStatus.className = 'form-status';
-        
-        // Simulate Network Request (Since we don't have user's Formspree key)
-        await new Promise(r => setTimeout(r, 1500));
-        
-        // Simulate Success
-        contactForm.reset();
-        submitBtnText.style.display = 'inline-block';
-        btnLoader.style.display = 'none';
-        
-        formStatus.textContent = 'Message sent successfully! I will get back to you soon.';
-        formStatus.classList.add('success');
-        
-        setTimeout(() => {
-            formStatus.classList.remove('success');
-        }, 5000);
-    });
-}
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-// --- Live GitHub Stats Integration ---
-// Insert GitHub stats into the About section dynamically
-const aboutTextContainer = document.querySelector('.about-text');
-if (aboutTextContainer) {
-    const statsHTML = `
+            // UI Loading State
+            submitBtnText.style.display = 'none';
+            btnLoader.style.display = 'inline-block';
+            formStatus.className = 'form-status';
+
+            // Simulate Network Request (Since we don't have user's Formspree key)
+            await new Promise(r => setTimeout(r, 1500));
+
+            // Simulate Success
+            contactForm.reset();
+            submitBtnText.style.display = 'inline-block';
+            btnLoader.style.display = 'none';
+
+            formStatus.textContent = 'Message sent successfully! I will get back to you soon.';
+            formStatus.classList.add('success');
+
+            setTimeout(() => {
+                formStatus.classList.remove('success');
+            }, 5000);
+        });
+    }
+
+    // --- Live GitHub Stats Integration ---
+    // Insert GitHub stats into the About section dynamically
+    const aboutTextContainer = document.querySelector('.about-text');
+    if (aboutTextContainer) {
+        const statsHTML = `
         <div class="github-stats-container" id="github-stats">
             <div class="stat-card">
                 <h4 id="repo-count">--</h4>
@@ -998,186 +998,186 @@ if (aboutTextContainer) {
             </div>
         </div>
     `;
-    aboutTextContainer.insertAdjacentHTML('beforeend', statsHTML);
-    
-    // Fetch from GitHub API
-    fetch('https://api.github.com/users/thannnajah-ai')
-        .then(res => res.json())
-        .then(data => {
-            if(data.public_repos !== undefined) {
-                document.getElementById('repo-count').textContent = data.public_repos;
-                document.getElementById('follower-count').textContent = data.followers;
-            }
-        })
-        .catch(err => console.error('GitHub API failed:', err));
-}
+        aboutTextContainer.insertAdjacentHTML('beforeend', statsHTML);
 
-// --- Fully Functional Language Switcher (i18n) ---
-const i18nDict = {
-    'en': {
-        'available': 'Available for work',
-        'heroTitle': 'Frontend & Mobile Developer',
-        'heroSubtitle': 'Crafting Interfaces with Taste',
-        'heroDesc': 'Combining AI-assisted coding tools with strong Design Engineering principles to create highly aesthetic and fluid digital experiences.',
-        'viewProjects': 'View Projects',
-        'aboutMe': 'About Me',
-        'aboutTitle': 'Behind the Code',
-        'aboutP1': 'I am Nathan Ferdwiansyah W., a developer who believes that great software is a blend of logic and art.',
-        'filterAll': 'All',
-        'filterWeb': 'Web Dev',
-        'filterResearch': 'Research',
-        'filterConcept': 'Concept',
-        'projectsTitle': 'Featured Projects',
-        'contactTitle': 'Get In Touch',
-        'contactName': 'Your Name',
-        'contactEmail': 'Your Email',
-        'contactMessage': 'Your Message',
-        'contactSubmit': 'Send Message'
-    },
-    'id': {
-        'available': 'Tersedia untuk proyek',
-        'heroTitle': 'Pengembang Frontend & Mobile',
-        'heroSubtitle': 'Merancang Antarmuka dengan Cita Rasa',
-        'heroDesc': 'Menggabungkan alat bantu coding AI dengan prinsip Rekayasa Desain yang kuat untuk menciptakan pengalaman digital yang sangat estetis dan mulus.',
-        'viewProjects': 'Lihat Proyek',
-        'aboutMe': 'Tentang Saya',
-        'aboutTitle': 'Di Balik Kode',
-        'aboutP1': 'Saya Nathan Ferdwiansyah W., seorang pengembang yang percaya bahwa perangkat lunak hebat adalah perpaduan logika dan seni.',
-        'filterAll': 'Semua',
-        'filterWeb': 'Web Dev',
-        'filterResearch': 'Riset',
-        'filterConcept': 'Konsep',
-        'projectsTitle': 'Proyek Unggulan',
-        'contactTitle': 'Hubungi Saya',
-        'contactName': 'Nama Anda',
-        'contactEmail': 'Email Anda',
-        'contactMessage': 'Pesan Anda',
-        'contactSubmit': 'Kirim Pesan'
+        // Fetch from GitHub API
+        fetch('https://api.github.com/users/thannnajah-ai')
+            .then(res => res.json())
+            .then(data => {
+                if (data.public_repos !== undefined) {
+                    document.getElementById('repo-count').textContent = data.public_repos;
+                    document.getElementById('follower-count').textContent = data.followers;
+                }
+            })
+            .catch(err => console.error('GitHub API failed:', err));
     }
-};
 
-let currentLang = localStorage.getItem('lang') || 'en';
-const updateLanguage = (lang) => {
-    document.documentElement.lang = lang;
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (i18nDict[lang] && i18nDict[lang][key]) {
-            if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                // If we used placeholder we would update it here, but we use floating labels
-            } else {
-                el.textContent = i18nDict[lang][key];
-            }
-        }
-    });
-    
-
-};
-
-// Hook into existing #lang-toggle button
-const existingLangToggle = document.getElementById('lang-toggle');
-if (existingLangToggle) {
-    // Set initial text: If we are in English, the button should offer to switch to ID, and vice versa.
-    existingLangToggle.textContent = currentLang === 'en' ? 'ID' : 'EN';
-    
-    existingLangToggle.addEventListener('click', () => {
-        const newLang = currentLang === 'en' ? 'id' : 'en';
-        localStorage.setItem('lang', newLang);
-        currentLang = newLang;
-        updateLanguage(newLang);
-        existingLangToggle.textContent = newLang === 'en' ? 'ID' : 'EN';
-    });
-}
-
-// Initial language load
-updateLanguage(currentLang);
-
-// 1. Local Time & Status Indicator
-const timeText = document.getElementById('time-text');
-const timeStatusDot = document.getElementById('time-status-dot');
-if (timeText) {
-    const updateTime = () => {
-        const date = new Date();
-        const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false };
-        const formatter = new Intl.DateTimeFormat('en-US', options);
-        timeText.textContent = formatter.format(date) + ' WIB';
-        
-        const hour = parseInt(date.toLocaleString('en-US', { timeZone: 'Asia/Jakarta', hour: 'numeric', hour12: false }));
-        if (hour >= 23 || hour < 8) {
-            if (timeStatusDot) timeStatusDot.classList.add('sleeping');
-            timeText.title = 'Probably Sleeping 😴';
-        } else {
-            if (timeStatusDot) timeStatusDot.classList.remove('sleeping');
-            timeText.title = 'Awake & Coding 💻';
+    // --- Fully Functional Language Switcher (i18n) ---
+    const i18nDict = {
+        'en': {
+            'available': 'Available for work',
+            'heroTitle': 'Frontend & Mobile Developer',
+            'heroSubtitle': 'Crafting Interfaces with Taste',
+            'heroDesc': 'Combining AI-assisted coding tools with strong Design Engineering principles to create highly aesthetic and fluid digital experiences.',
+            'viewProjects': 'View Projects',
+            'aboutMe': 'About Me',
+            'aboutTitle': 'Behind the Code',
+            'aboutP1': 'I am Nathan Ferdwiansyah W., a developer who believes that great software is a blend of logic and art.',
+            'filterAll': 'All',
+            'filterWeb': 'Web Dev',
+            'filterResearch': 'Research',
+            'filterConcept': 'Concept',
+            'projectsTitle': 'Featured Projects',
+            'contactTitle': 'Get In Touch',
+            'contactName': 'Your Name',
+            'contactEmail': 'Your Email',
+            'contactMessage': 'Your Message',
+            'contactSubmit': 'Send Message'
+        },
+        'id': {
+            'available': 'Tersedia untuk proyek',
+            'heroTitle': 'Pengembang Frontend & Mobile',
+            'heroSubtitle': 'Merancang Antarmuka dengan Cita Rasa',
+            'heroDesc': 'Menggabungkan alat bantu coding AI dengan prinsip Rekayasa Desain yang kuat untuk menciptakan pengalaman digital yang sangat estetis dan mulus.',
+            'viewProjects': 'Lihat Proyek',
+            'aboutMe': 'Tentang Saya',
+            'aboutTitle': 'Di Balik Kode',
+            'aboutP1': 'Saya Nathan Ferdwiansyah W., seorang pengembang yang percaya bahwa perangkat lunak hebat adalah perpaduan logika dan seni.',
+            'filterAll': 'Semua',
+            'filterWeb': 'Web Dev',
+            'filterResearch': 'Riset',
+            'filterConcept': 'Konsep',
+            'projectsTitle': 'Proyek Unggulan',
+            'contactTitle': 'Hubungi Saya',
+            'contactName': 'Nama Anda',
+            'contactEmail': 'Email Anda',
+            'contactMessage': 'Pesan Anda',
+            'contactSubmit': 'Kirim Pesan'
         }
     };
-    updateTime();
-    setInterval(updateTime, 10000);
-}
 
-// 2. Custom Text-Select Tooltip
-const tooltip = document.getElementById('selection-tooltip');
-const btnCopyText = document.getElementById('btn-copy-text');
-if (tooltip) {
-    document.addEventListener('selectionchange', () => {
-        const selection = window.getSelection();
-        if (selection.toString().trim().length > 0) {
-            const range = selection.getRangeAt(0);
-            const rect = range.getBoundingClientRect();
-            tooltip.style.left = rect.left + (rect.width / 2) + 'px';
-            tooltip.style.top = rect.top - 10 + 'px';
-            tooltip.classList.add('show');
-        } else {
-            tooltip.classList.remove('show');
-        }
-    });
-    if(btnCopyText) {
-        btnCopyText.addEventListener('click', () => {
-            const text = window.getSelection().toString();
-            navigator.clipboard.writeText(text).then(() => {
-                btnCopyText.textContent = 'Copied!';
-                setTimeout(() => {
-                    btnCopyText.textContent = 'Copy';
-                    window.getSelection().removeAllRanges();
-                }, 1500);
-            });
-        });
-    }
-}
-
-// 3. Scroll-Spy Side Navigation
-const sections = document.querySelectorAll('section');
-const spyLinks = document.querySelectorAll('.spy-link');
-if (spyLinks.length > 0) {
-    const spyObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                spyLinks.forEach(link => link.classList.remove('active'));
-                const id = entry.target.getAttribute('id');
-                const activeLink = document.querySelector(`.spy-link[data-target="${id}"]`);
-                if(activeLink) activeLink.classList.add('active');
+    let currentLang = localStorage.getItem('lang') || 'en';
+    const updateLanguage = (lang) => {
+        document.documentElement.lang = lang;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (i18nDict[lang] && i18nDict[lang][key]) {
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    // If we used placeholder we would update it here, but we use floating labels
+                } else {
+                    el.textContent = i18nDict[lang][key];
+                }
             }
         });
-    }, { threshold: 0.5 });
-    
-    sections.forEach(sec => spyObserver.observe(sec));
-}
 
-// 4. Interactive Timeline Resume
-const btnViewCv = document.getElementById('btn-view-cv');
-const resumeDialog = document.getElementById('resume-dialog');
-const resumeClose = document.getElementById('resume-close');
-if (btnViewCv && resumeDialog) {
-    btnViewCv.addEventListener('click', () => {
-        resumeDialog.showModal();
-    });
-    if(resumeClose) {
-        resumeClose.addEventListener('click', () => {
-            resumeDialog.close();
+
+    };
+
+    // Hook into existing #lang-toggle button
+    const existingLangToggle = document.getElementById('lang-toggle');
+    if (existingLangToggle) {
+        // Set initial text: If we are in English, the button should offer to switch to ID, and vice versa.
+        existingLangToggle.textContent = currentLang === 'en' ? 'ID' : 'EN';
+
+        existingLangToggle.addEventListener('click', () => {
+            const newLang = currentLang === 'en' ? 'id' : 'en';
+            localStorage.setItem('lang', newLang);
+            currentLang = newLang;
+            updateLanguage(newLang);
+            existingLangToggle.textContent = newLang === 'en' ? 'ID' : 'EN';
         });
     }
-    resumeDialog.addEventListener('click', (e) => {
-        if (e.target === resumeDialog) resumeDialog.close();
-    });
-}
+
+    // Initial language load
+    updateLanguage(currentLang);
+
+    // 1. Local Time & Status Indicator
+    const timeText = document.getElementById('time-text');
+    const timeStatusDot = document.getElementById('time-status-dot');
+    if (timeText) {
+        const updateTime = () => {
+            const date = new Date();
+            const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false };
+            const formatter = new Intl.DateTimeFormat('en-US', options);
+            timeText.textContent = formatter.format(date) + ' WIB';
+
+            const hour = parseInt(date.toLocaleString('en-US', { timeZone: 'Asia/Jakarta', hour: 'numeric', hour12: false }));
+            if (hour >= 23 || hour < 8) {
+                if (timeStatusDot) timeStatusDot.classList.add('sleeping');
+                timeText.title = 'Probably Sleeping 😴';
+            } else {
+                if (timeStatusDot) timeStatusDot.classList.remove('sleeping');
+                timeText.title = 'Awake & Coding 💻';
+            }
+        };
+        updateTime();
+        setInterval(updateTime, 10000);
+    }
+
+    // 2. Custom Text-Select Tooltip
+    const tooltip = document.getElementById('selection-tooltip');
+    const btnCopyText = document.getElementById('btn-copy-text');
+    if (tooltip) {
+        document.addEventListener('selectionchange', () => {
+            const selection = window.getSelection();
+            if (selection.toString().trim().length > 0) {
+                const range = selection.getRangeAt(0);
+                const rect = range.getBoundingClientRect();
+                tooltip.style.left = rect.left + (rect.width / 2) + 'px';
+                tooltip.style.top = rect.top - 10 + 'px';
+                tooltip.classList.add('show');
+            } else {
+                tooltip.classList.remove('show');
+            }
+        });
+        if (btnCopyText) {
+            btnCopyText.addEventListener('click', () => {
+                const text = window.getSelection().toString();
+                navigator.clipboard.writeText(text).then(() => {
+                    btnCopyText.textContent = 'Copied!';
+                    setTimeout(() => {
+                        btnCopyText.textContent = 'Copy';
+                        window.getSelection().removeAllRanges();
+                    }, 1500);
+                });
+            });
+        }
+    }
+
+    // 3. Scroll-Spy Side Navigation
+    const sections = document.querySelectorAll('section');
+    const spyLinks = document.querySelectorAll('.spy-link');
+    if (spyLinks.length > 0) {
+        const spyObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    spyLinks.forEach(link => link.classList.remove('active'));
+                    const id = entry.target.getAttribute('id');
+                    const activeLink = document.querySelector(`.spy-link[data-target="${id}"]`);
+                    if (activeLink) activeLink.classList.add('active');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        sections.forEach(sec => spyObserver.observe(sec));
+    }
+
+    // 4. Interactive Timeline Resume
+    const btnViewCv = document.getElementById('btn-view-cv');
+    const resumeDialog = document.getElementById('resume-dialog');
+    const resumeClose = document.getElementById('resume-close');
+    if (btnViewCv && resumeDialog) {
+        btnViewCv.addEventListener('click', () => {
+            resumeDialog.showModal();
+        });
+        if (resumeClose) {
+            resumeClose.addEventListener('click', () => {
+                resumeDialog.close();
+            });
+        }
+        resumeDialog.addEventListener('click', (e) => {
+            if (e.target === resumeDialog) resumeDialog.close();
+        });
+    }
 
 });
