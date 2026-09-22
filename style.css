@@ -803,6 +803,7 @@ section {
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
+    white-space: nowrap;
 }
 
 .nav-link:hover {
@@ -2453,6 +2454,7 @@ body::after {
     border-radius: 50px;
     margin-right: 1rem;
     border: 1px solid rgba(255,255,255,0.1);
+    white-space: nowrap;
 }
 .light-theme .local-time-widget {
     background: rgba(0,0,0,0.05);
