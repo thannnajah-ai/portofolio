@@ -2273,3 +2273,150 @@ body::after {
     0% { opacity: 0; transform: translateY(120%); }
     100% { opacity: 1; transform: translateY(0); }
 }
+
+
+/* Project Filters */
+.project-filters {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+.filter-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+.filter-btn:hover, .filter-btn.active {
+    background: var(--text-primary);
+    color: var(--bg-color);
+    border-color: var(--text-primary);
+}
+.light-theme .filter-btn {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+.project-card.hide {
+    display: none;
+}
+
+/* Contact Form */
+.contact-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: left;
+}
+.form-group {
+    position: relative;
+}
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 1.2rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+.light-theme .form-group input, .light-theme .form-group textarea {
+    border: 1px solid rgba(0,0,0,0.1);
+}
+.form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+.form-group label {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+.form-group textarea ~ label {
+    top: 1.5rem;
+}
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label,
+.form-group textarea:focus ~ label,
+.form-group textarea:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    background: var(--bg-color);
+    padding: 0 0.4rem;
+    color: #60a5fa;
+}
+.btn-loader {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+.form-status {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    display: none;
+}
+.form-status.success {
+    display: block;
+    background: rgba(52, 211, 153, 0.1);
+    color: #34d399;
+}
+.form-status.error {
+    display: block;
+    background: rgba(248, 113, 113, 0.1);
+    color: #f87171;
+}
+
+/* GitHub Stats */
+.github-stats-container {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+.stat-card {
+    background: var(--card-bg);
+    padding: 1.5rem 2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    text-align: center;
+    min-width: 150px;
+}
+.stat-card h4 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+.stat-card p {
+    margin: 0.5rem 0 0 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}

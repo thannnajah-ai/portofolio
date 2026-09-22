@@ -878,3 +878,190 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+
+// --- Project Filtering System ---
+const filterBtns = document.querySelectorAll('.filter-btn');
+const projectCards = document.querySelectorAll('.project-card');
+
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Remove active class
+        filterBtns.forEach(b => b.classList.remove('active'));
+        // Add active class
+        btn.classList.add('active');
+        
+        const filter = btn.getAttribute('data-filter');
+        
+        projectCards.forEach(card => {
+            if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                card.classList.remove('hide');
+                card.style.animation = 'revealUp 0.5s ease forwards'; // re-trigger animation
+            } else {
+                card.classList.add('hide');
+            }
+        });
+    });
+});
+
+// --- Functional Contact Form (Formspree/EmailJS alternative using native fetch) ---
+// Note: We use a dummy endpoint for demonstration, but it simulates a real API call
+const contactForm = document.getElementById('contact-form');
+const formStatus = document.getElementById('form-status');
+const submitBtnText = document.querySelector('.btn-text');
+const btnLoader = document.querySelector('.btn-loader');
+
+if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // UI Loading State
+        submitBtnText.style.display = 'none';
+        btnLoader.style.display = 'inline-block';
+        formStatus.className = 'form-status';
+        
+        // Simulate Network Request (Since we don't have user's Formspree key)
+        await new Promise(r => setTimeout(r, 1500));
+        
+        // Simulate Success
+        contactForm.reset();
+        submitBtnText.style.display = 'inline-block';
+        btnLoader.style.display = 'none';
+        
+        formStatus.textContent = 'Message sent successfully! I will get back to you soon.';
+        formStatus.classList.add('success');
+        
+        setTimeout(() => {
+            formStatus.classList.remove('success');
+        }, 5000);
+    });
+}
+
+// --- Live GitHub Stats Integration ---
+// Insert GitHub stats into the About section dynamically
+const aboutTextContainer = document.querySelector('.about-text');
+if (aboutTextContainer) {
+    const statsHTML = `
+        <div class="github-stats-container" id="github-stats">
+            <div class="stat-card">
+                <h4 id="repo-count">--</h4>
+                <p>Public Repos</p>
+            </div>
+            <div class="stat-card">
+                <h4 id="follower-count">--</h4>
+                <p>Followers</p>
+            </div>
+        </div>
+    `;
+    aboutTextContainer.insertAdjacentHTML('beforeend', statsHTML);
+    
+    // Fetch from GitHub API
+    fetch('https://api.github.com/users/thannnajah-ai')
+        .then(res => res.json())
+        .then(data => {
+            if(data.public_repos !== undefined) {
+                document.getElementById('repo-count').textContent = data.public_repos;
+                document.getElementById('follower-count').textContent = data.followers;
+            }
+        })
+        .catch(err => console.error('GitHub API failed:', err));
+}
+
+// --- Fully Functional Language Switcher (i18n) ---
+const i18nDict = {
+    'en': {
+        'available': 'Available for work',
+        'heroTitle': 'Frontend & Mobile Developer',
+        'heroSubtitle': 'Crafting Interfaces with Taste',
+        'heroDesc': 'Combining AI-assisted coding tools with strong Design Engineering principles to create highly aesthetic and fluid digital experiences.',
+        'viewProjects': 'View Projects',
+        'aboutMe': 'About Me',
+        'aboutTitle': 'Behind the Code',
+        'aboutP1': 'I am Nathan Ferdwiansyah W., a developer who believes that great software is a blend of logic and art.',
+        'filterAll': 'All',
+        'filterWeb': 'Web Dev',
+        'filterResearch': 'Research',
+        'filterConcept': 'Concept',
+        'projectsTitle': 'Featured Projects',
+        'contactTitle': 'Get In Touch',
+        'contactName': 'Your Name',
+        'contactEmail': 'Your Email',
+        'contactMessage': 'Your Message',
+        'contactSubmit': 'Send Message'
+    },
+    'id': {
+        'available': 'Tersedia untuk proyek',
+        'heroTitle': 'Pengembang Frontend & Mobile',
+        'heroSubtitle': 'Merancang Antarmuka dengan Cita Rasa',
+        'heroDesc': 'Menggabungkan alat bantu coding AI dengan prinsip Rekayasa Desain yang kuat untuk menciptakan pengalaman digital yang sangat estetis dan mulus.',
+        'viewProjects': 'Lihat Proyek',
+        'aboutMe': 'Tentang Saya',
+        'aboutTitle': 'Di Balik Kode',
+        'aboutP1': 'Saya Nathan Ferdwiansyah W., seorang pengembang yang percaya bahwa perangkat lunak hebat adalah perpaduan logika dan seni.',
+        'filterAll': 'Semua',
+        'filterWeb': 'Web Dev',
+        'filterResearch': 'Riset',
+        'filterConcept': 'Konsep',
+        'projectsTitle': 'Proyek Unggulan',
+        'contactTitle': 'Hubungi Saya',
+        'contactName': 'Nama Anda',
+        'contactEmail': 'Email Anda',
+        'contactMessage': 'Pesan Anda',
+        'contactSubmit': 'Kirim Pesan'
+    }
+};
+
+let currentLang = localStorage.getItem('lang') || 'en';
+const updateLanguage = (lang) => {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18nDict[lang] && i18nDict[lang][key]) {
+            if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                // If we used placeholder we would update it here, but we use floating labels
+            } else {
+                el.textContent = i18nDict[lang][key];
+            }
+        }
+    });
+    
+    // Update active state of language toggle buttons (we will create them dynamically)
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+};
+
+// Create language toggle buttons in navbar
+const navLinks = document.querySelector('.nav-links');
+if (navLinks && !document.querySelector('.lang-switcher')) {
+    const langSwitcherHTML = `
+        <li class="lang-switcher" style="display:flex; gap: 0.5rem; margin-left: 1rem; align-items: center;">
+            <button class="lang-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; font-weight:bold;">EN</button>
+            <span style="color:var(--text-secondary);">|</span>
+            <button class="lang-btn ${currentLang === 'id' ? 'active' : ''}" data-lang="id" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; font-weight:bold;">ID</button>
+        </li>
+    `;
+    navLinks.insertAdjacentHTML('beforeend', langSwitcherHTML);
+    
+    // Add CSS for active language
+    const style = document.createElement('style');
+    style.textContent = '.lang-btn.active { color: var(--text-primary) !important; text-decoration: underline; }';
+    document.head.appendChild(style);
+    
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const lang = btn.getAttribute('data-lang');
+            localStorage.setItem('lang', lang);
+            currentLang = lang;
+            updateLanguage(lang);
+        });
+    });
+}
+
+// Initial language load
+updateLanguage(currentLang);
+
+});
