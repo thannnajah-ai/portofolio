@@ -9,117 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
             smooth: true
-        
-
-// 1. Local Time & Status Indicator
-const timeText = document.getElementById('time-text');
-const timeStatusDot = document.getElementById('time-status-dot');
-if (timeText) {
-    const updateTime = () => {
-        const date = new Date();
-        const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false };
-        const formatter = new Intl.DateTimeFormat('en-US', options);
-        timeText.textContent = formatter.format(date) + ' WIB';
-        
-        const hour = parseInt(date.toLocaleString('en-US', { timeZone: 'Asia/Jakarta', hour: 'numeric', hour12: false }));
-        if (hour >= 23 || hour < 8) {
-            timeStatusDot.classList.add('sleeping');
-            timeText.title = 'Probably Sleeping 😴';
-        } else {
-            timeStatusDot.classList.remove('sleeping');
-            timeText.title = 'Awake & Coding 💻';
-        }
-    };
-    updateTime();
-    setInterval(updateTime, 10000);
-}
-
-// 2. Custom Text-Select Tooltip
-const tooltip = document.getElementById('selection-tooltip');
-const btnCopyText = document.getElementById('btn-copy-text');
-if (tooltip) {
-    document.addEventListener('selectionchange', () => {
-        const selection = window.getSelection();
-        if (selection.toString().trim().length > 0) {
-            const range = selection.getRangeAt(0);
-            const rect = range.getBoundingClientRect();
-            tooltip.style.left = rect.left + (rect.width / 2) + 'px';
-            tooltip.style.top = rect.top - 10 + 'px';
-            tooltip.classList.add('show');
-        } else {
-            tooltip.classList.remove('show');
-        }
-    });
-    btnCopyText.addEventListener('click', () => {
-        const text = window.getSelection().toString();
-        navigator.clipboard.writeText(text).then(() => {
-            btnCopyText.textContent = 'Copied!';
-            setTimeout(() => {
-                btnCopyText.textContent = 'Copy';
-                window.getSelection().removeAllRanges();
-            }, 1500);
         });
-    });
-}
-
-// 3. Scroll-Spy Side Navigation
-const sections = document.querySelectorAll('section');
-const spyLinks = document.querySelectorAll('.spy-link');
-if (spyLinks.length > 0) {
-    const spyObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                spyLinks.forEach(link => link.classList.remove('active'));
-                const id = entry.target.getAttribute('id');
-                const activeLink = document.querySelector(`.spy-link[data-target="${id}"]`);
-                if(activeLink) activeLink.classList.add('active');
-            }
-        });
-    }, { threshold: 0.5 });
-    
-    sections.forEach(sec => spyObserver.observe(sec));
-}
-
-// 4. Interactive Timeline Resume
-const btnViewCv = document.getElementById('btn-view-cv');
-const resumeDialog = document.getElementById('resume-dialog');
-const resumeClose = document.getElementById('resume-close');
-if (btnViewCv && resumeDialog) {
-    btnViewCv.addEventListener('click', () => {
-        resumeDialog.showModal();
-    });
-    resumeClose.addEventListener('click', () => {
-        resumeDialog.close();
-    });
-    resumeDialog.addEventListener('click', (e) => {
-        if (e.target === resumeDialog) resumeDialog.close();
-    });
-}
-
-// 5. WebGL Liquid Hover Distortion
-setTimeout(() => {
-    if (typeof hoverEffect !== 'undefined') {
-        const projectImages = document.querySelectorAll('.project-image');
-        projectImages.forEach((container) => {
-            const imgEl = container.querySelector('img.preview-img');
-            if (imgEl) {
-                let imgSrc = imgEl.src;
-                const displacementUrl = 'https://raw.githubusercontent.com/robin-dela/hover-effect/master/images/fluid.jpg';
-                
-                new hoverEffect({
-                    parent: container,
-                    intensity: 0.3,
-                    image1: imgSrc,
-                    image2: imgSrc,
-                    displacementImage: displacementUrl,
-                    hover: true
-                });
-            }
-        });
-    }
-}, 1000);
-
-});
 
         function raf(time) {
             lenis.raf(time);
@@ -1158,5 +1048,117 @@ if (existingLangToggle) {
 
 // Initial language load
 updateLanguage(currentLang);
+
+// 1. Local Time & Status Indicator
+const timeText = document.getElementById('time-text');
+const timeStatusDot = document.getElementById('time-status-dot');
+if (timeText) {
+    const updateTime = () => {
+        const date = new Date();
+        const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false };
+        const formatter = new Intl.DateTimeFormat('en-US', options);
+        timeText.textContent = formatter.format(date) + ' WIB';
+        
+        const hour = parseInt(date.toLocaleString('en-US', { timeZone: 'Asia/Jakarta', hour: 'numeric', hour12: false }));
+        if (hour >= 23 || hour < 8) {
+            if (timeStatusDot) timeStatusDot.classList.add('sleeping');
+            timeText.title = 'Probably Sleeping 😴';
+        } else {
+            if (timeStatusDot) timeStatusDot.classList.remove('sleeping');
+            timeText.title = 'Awake & Coding 💻';
+        }
+    };
+    updateTime();
+    setInterval(updateTime, 10000);
+}
+
+// 2. Custom Text-Select Tooltip
+const tooltip = document.getElementById('selection-tooltip');
+const btnCopyText = document.getElementById('btn-copy-text');
+if (tooltip) {
+    document.addEventListener('selectionchange', () => {
+        const selection = window.getSelection();
+        if (selection.toString().trim().length > 0) {
+            const range = selection.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            tooltip.style.left = rect.left + (rect.width / 2) + 'px';
+            tooltip.style.top = rect.top - 10 + 'px';
+            tooltip.classList.add('show');
+        } else {
+            tooltip.classList.remove('show');
+        }
+    });
+    if(btnCopyText) {
+        btnCopyText.addEventListener('click', () => {
+            const text = window.getSelection().toString();
+            navigator.clipboard.writeText(text).then(() => {
+                btnCopyText.textContent = 'Copied!';
+                setTimeout(() => {
+                    btnCopyText.textContent = 'Copy';
+                    window.getSelection().removeAllRanges();
+                }, 1500);
+            });
+        });
+    }
+}
+
+// 3. Scroll-Spy Side Navigation
+const sections = document.querySelectorAll('section');
+const spyLinks = document.querySelectorAll('.spy-link');
+if (spyLinks.length > 0) {
+    const spyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                spyLinks.forEach(link => link.classList.remove('active'));
+                const id = entry.target.getAttribute('id');
+                const activeLink = document.querySelector(`.spy-link[data-target="${id}"]`);
+                if(activeLink) activeLink.classList.add('active');
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    sections.forEach(sec => spyObserver.observe(sec));
+}
+
+// 4. Interactive Timeline Resume
+const btnViewCv = document.getElementById('btn-view-cv');
+const resumeDialog = document.getElementById('resume-dialog');
+const resumeClose = document.getElementById('resume-close');
+if (btnViewCv && resumeDialog) {
+    btnViewCv.addEventListener('click', () => {
+        resumeDialog.showModal();
+    });
+    if(resumeClose) {
+        resumeClose.addEventListener('click', () => {
+            resumeDialog.close();
+        });
+    }
+    resumeDialog.addEventListener('click', (e) => {
+        if (e.target === resumeDialog) resumeDialog.close();
+    });
+}
+
+// 5. WebGL Liquid Hover Distortion
+setTimeout(() => {
+    if (typeof hoverEffect !== 'undefined') {
+        const projectImages = document.querySelectorAll('.project-image');
+        projectImages.forEach((container) => {
+            const imgEl = container.querySelector('img.preview-img');
+            if (imgEl) {
+                let imgSrc = imgEl.src;
+                const displacementUrl = 'https://raw.githubusercontent.com/robin-dela/hover-effect/master/images/fluid.jpg';
+                
+                new hoverEffect({
+                    parent: container,
+                    intensity: 0.3,
+                    image1: imgSrc,
+                    image2: imgSrc,
+                    displacementImage: displacementUrl,
+                    hover: true
+                });
+            }
+        });
+    }
+}, 1000);
 
 });
