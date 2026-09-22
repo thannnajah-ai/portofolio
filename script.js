@@ -329,15 +329,57 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentLang = localStorage.getItem('lang') || 'en';
 
     function setLanguage(lang) {
-        showDynamicIsland(lang === 'id' ? 'Bahasa Indonesia Aktif' : 'English Activated');
+        if (typeof showDynamicIsland === 'function') {
+            showDynamicIsland(lang === 'id' ? 'Bahasa Indonesia Aktif' : 'English Activated');
+        }
         const elementsToTranslate = document.querySelectorAll('[data-i18n]');
+        
         elementsToTranslate.forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (i18n[lang] && i18n[lang][key]) {
                 el.innerHTML = i18n[lang][key];
             }
         });
-        langToggleBtn.innerText = lang.toUpperCase();
+        
+        // Auto-stagger for hero title to give word-by-word reveal animation
+        const heroSpans = document.querySelectorAll('.hero-title span[data-i18n]');
+        heroSpans.forEach((span, spanIdx) => {
+            const text = span.innerText.trim();
+            span.innerHTML = ''; // clear raw text
+            
+            // Rebuild with stagger masks
+            const words = text.split(' ');
+            words.forEach((word, index) => {
+                const mask = document.createElement('span');
+                mask.className = 'stagger-mask visible';
+                mask.style.display = 'inline-block';
+                mask.style.overflow = 'hidden';
+                mask.style.verticalAlign = 'top';
+                
+                const inner = document.createElement('span');
+                inner.className = 'stagger-text';
+                inner.style.display = 'inline-block';
+                // Adjust delay based on span index and word index
+                inner.style.animationDelay = `${0.2 + (spanIdx * 0.2) + (index * 0.1)}s`; 
+                inner.style.animation = 'revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                inner.style.opacity = '0';
+                inner.style.transform = 'translateY(120%)';
+                
+                inner.textContent = word;
+                mask.appendChild(inner);
+                span.appendChild(mask);
+                
+                // Add space after word
+                if (index < words.length - 1) {
+                    span.appendChild(document.createTextNode(' '));
+                }
+            });
+        });
+        
+        const langToggleBtn = document.getElementById('lang-toggle');
+        if (langToggleBtn) {
+            langToggleBtn.innerText = lang.toUpperCase();
+        }
     }
 
     // 3. Dynamic Island Logic (Moved up)
