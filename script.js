@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Smooth CSS Transition
         document.body.classList.add('theme-transitioning');
-        
+
         if (isLight) {
             document.body.classList.remove('light-theme');
             if (typeof showDynamicIsland === 'function') showDynamicIsland('Dark Mode Activated');
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            
+
             if (!isCursorVisible) {
                 cursor.style.opacity = '1';
                 isCursorVisible = true;
@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
             heroDesc: "Saya pakai AI buat nulis kode lebih cepat, tapi yang pegang kendali desainnya tetap saya.",
             viewProjects: "Lihat Proyek",
             aboutMe: "Tentang Saya",
-            aboutP1: "Masih pelajar di <strong>MA Mu'allimin Muhammadiyah Yogyakarta</strong>, jurusan IPA. Lahir 23 Februari 2009. Mulai tertarik coding karena penasaran kenapa ada antarmuka yang kerasa hidup dan ada yang kerasa datar — terus nggak bisa berhenti.",
+            aboutP1: "Masih pelajar di <strong>MA Mu'allimin Muhammadiyah Yogyakarta</strong>, jurusan IPA. Lahir 23 Februari 2009, Sleman. Mulai tertarik coding karena penasaran kenapa ada antarmuka yang kerasa hidup dan ada yang kerasa datar — terus nggak bisa berhenti.",
             aboutP2: "Sehari-hari saya pakai Claude Code CLI sama Antigravity buat akselerasi. Tapi keputusan desainnya tetap saya yang ambil. Saya pegang prinsip <em>Design Engineering</em> — produk yang keluar harus punya <em>good taste</em>, bukan cuma jalan.",
             skillsTitle: "Kemampuan & Selera",
             skill1Desc: "HTML5, CSS3, Vanilla JS — tanpa framework yang nambah beban. Flutter buat mobile cross-platform.",
@@ -762,85 +762,85 @@ document.addEventListener('visibilitychange', () => {
 
 
 
-    // 7. Parallax Depth Scrolling & Staggered Reveal
-    // Parallax on Hero elements
-    const heroTitle = document.querySelector('.hero-title');
-    const heroSubtitle = document.querySelector('.hero-subtitle');
-    if (heroTitle) heroTitle.dataset.parallaxSpeed = '0.25';
-    if (heroSubtitle) heroSubtitle.dataset.parallaxSpeed = '0.1';
+// 7. Parallax Depth Scrolling & Staggered Reveal
+// Parallax on Hero elements
+const heroTitle = document.querySelector('.hero-title');
+const heroSubtitle = document.querySelector('.hero-subtitle');
+if (heroTitle) heroTitle.dataset.parallaxSpeed = '0.25';
+if (heroSubtitle) heroSubtitle.dataset.parallaxSpeed = '0.1';
 
-    let isParallaxing = false;
-    window.addEventListener('scroll', () => {
-        if (!isParallaxing) {
-            window.requestAnimationFrame(() => {
-                const scrolled = window.pageYOffset || document.documentElement.scrollTop;
-                document.querySelectorAll('[data-parallax-speed]').forEach(el => {
-                    const speed = parseFloat(el.dataset.parallaxSpeed);
-                    el.style.transform = `translateY(${scrolled * speed}px)`;
-                });
-                isParallaxing = false;
+let isParallaxing = false;
+window.addEventListener('scroll', () => {
+    if (!isParallaxing) {
+        window.requestAnimationFrame(() => {
+            const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+            document.querySelectorAll('[data-parallax-speed]').forEach(el => {
+                const speed = parseFloat(el.dataset.parallaxSpeed);
+                el.style.transform = `translateY(${scrolled * speed}px)`;
             });
-            isParallaxing = true;
+            isParallaxing = false;
+        });
+        isParallaxing = true;
+    }
+});
+
+const maskObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            // Add visible class to the mask
+            const mask = entry.target.querySelector('.stagger-mask');
+            if (mask) mask.classList.add('visible');
+            maskObserver.unobserve(entry.target);
         }
     });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-    const maskObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Add visible class to the mask
-                const mask = entry.target.querySelector('.stagger-mask');
-                if (mask) mask.classList.add('visible');
-                maskObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+const sectionTitles = document.querySelectorAll('.section-title');
+sectionTitles.forEach(el => {
+    maskObserver.observe(el);
+});
 
-    const sectionTitles = document.querySelectorAll('.section-title');
-    sectionTitles.forEach(el => {
-        maskObserver.observe(el);
-    });
+// 8. Interactive Download CV Button
+const setupDownloadBtn = (btnId) => {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
 
-    // 8. Interactive Download CV Button
-    const setupDownloadBtn = (btnId) => {
-        const btn = document.getElementById(btnId);
-        if (!btn) return;
-        
-        btn.addEventListener('click', (e) => {
-            if (btn.classList.contains('loading') || btn.classList.contains('success')) {
-                e.preventDefault();
-                return;
-            }
-            
-            e.preventDefault(); // Mencegah download langsung untuk animasi
-            btn.classList.add('loading');
-            
-            // Simulasi proses download 1.5 detik
+    btn.addEventListener('click', (e) => {
+        if (btn.classList.contains('loading') || btn.classList.contains('success')) {
+            e.preventDefault();
+            return;
+        }
+
+        e.preventDefault(); // Mencegah download langsung untuk animasi
+        btn.classList.add('loading');
+
+        // Simulasi proses download 1.5 detik
+        setTimeout(() => {
+            btn.classList.remove('loading');
+            btn.classList.add('success');
+
+            // Trigger download aslinya
+            const a = document.createElement('a');
+            a.href = 'CV_Nathan.pdf';
+            a.download = 'CV_Nathan_Ferdwiansyah.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            // Kembalikan tombol ke semula setelah 3 detik
             setTimeout(() => {
-                btn.classList.remove('loading');
-                btn.classList.add('success');
-                
-                // Trigger download aslinya
-                const a = document.createElement('a');
-                a.href = 'CV_Nathan.pdf';
-                a.download = 'CV_Nathan_Ferdwiansyah.pdf';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                
-                // Kembalikan tombol ke semula setelah 3 detik
-                setTimeout(() => {
-                    btn.classList.remove('success');
-                }, 3000);
-            }, 1500);
-        });
-    };
-    
-    setupDownloadBtn('download-cv-btn');
-    setupDownloadBtn('mobile-cv-btn');
+                btn.classList.remove('success');
+            }, 3000);
+        }, 1500);
+    });
+};
+
+setupDownloadBtn('download-cv-btn');
+setupDownloadBtn('mobile-cv-btn');
 document.addEventListener('DOMContentLoaded', () => {
     let staggerDelay = 0;
     let staggerTimeout;
-    
+
     // Intersection Observer for Philosophy Cards (Smart Staggered Animation)
     const cardObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -852,7 +852,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 staggerDelay++;
             }
         });
-        
+
         // Reset stagger counter after the batch is processed
         clearTimeout(staggerTimeout);
         staggerTimeout = setTimeout(() => {
@@ -862,4 +862,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const philCards = document.querySelectorAll('.philosophy-card');
     philCards.forEach(card => cardObserver.observe(card));
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+
+
+    // Premium Scroll-Driven Parallax for Spline Background
+    const splineBg = document.querySelector('.spline-bg');
+    if (splineBg) {
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            // Move the background slower than the scroll speed
+            splineBg.style.transform = `translateY(${scrollY * 0.35}px)`;
+        }, { passive: true });
+    }
+
 });

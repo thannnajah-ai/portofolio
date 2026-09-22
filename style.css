@@ -2252,3 +2252,24 @@ body::after {
 .light-theme body::after {
     opacity: 0.05;
 }
+
+
+/* Premium Preloader Transition */
+#preloader {
+    transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1) !important;
+}
+
+/* Enhancing Text Reveal Masking */
+.hero-title {
+    overflow: hidden;
+    padding-bottom: 0.2em; /* prevent clipping descending letters */
+}
+
+.hero-title span {
+    transform: translateY(120%);
+}
+
+@keyframes revealUp {
+    0% { opacity: 0; transform: translateY(120%); }
+    100% { opacity: 1; transform: translateY(0); }
+}
