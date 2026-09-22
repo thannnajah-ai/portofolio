@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Aturan Pesan Commit
-Pengguna telah menginstruksikan bahwa **setiap pesan commit git harus ditulis menggunakan Bahasa Indonesia**.
+Pengguna telah menginstruksikan bahwa **setiap selesai melakukan perubahan selalu commit dan pesan commit git harus ditulis menggunakan Bahasa Indonesia**.
 Selalu ingat aturan ini saat menjalankan perintah `git commit`.

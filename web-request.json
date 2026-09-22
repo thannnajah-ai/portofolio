@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Alur Web Request dengan Cache Miss",
+    "output": "web-request.html",
+    "viewBox": [1080, 560],
+    "column_fit": "spread",
+    "animation": "trace",
+    "quality_profile": "showcase"
+  },
+  "participants": [
+    { "id": "browser", "type": "frontend", "label": "Browser", "sublabel": "Klien Web" },
+    { "id": "api", "type": "backend", "label": "API", "sublabel": "Server Utama" },
+    { "id": "redis", "type": "database", "label": "Redis", "sublabel": "Layer Cache" },
+    { "id": "postgres", "type": "database", "label": "PostgreSQL", "sublabel": "Database Utama" }
+  ],
+  "segments": [
+    { "from": 150, "to": 200, "label": "Permintaan Awal" },
+    { "from": 210, "to": 310, "label": "Cache Miss & Fallback" },
+    { "from": 320, "to": 450, "label": "Mengisi Cache & Respons" }
+  ],
+  "messages": [
+    { "id": "req-api", "from": "browser", "to": "api", "y": 160, "label": "GET /data", "variant": "emphasis" },
+    { "id": "cache-read", "from": "api", "to": "redis", "y": 190, "label": "Cek Cache", "variant": "default" },
+    { "id": "cache-miss", "from": "redis", "to": "api", "y": 230, "label": "Cache Miss (Kosong)", "variant": "return" },
+    { "id": "db-query", "from": "api", "to": "postgres", "y": 270, "label": "Query Data", "variant": "emphasis" },
+    { "id": "db-result", "from": "postgres", "to": "api", "y": 300, "label": "Hasil Row Data", "variant": "return" },
+    { "id": "cache-write", "from": "api", "to": "redis", "y": 350, "label": "Simpan ke Cache", "variant": "dashed" },
+    { "id": "cache-ok", "from": "redis", "to": "api", "y": 380, "label": "OK", "variant": "return" },
+    { "id": "res-browser", "from": "api", "to": "browser", "y": 420, "label": "200 OK (Data)", "variant": "return" }
+  ],
+  "activations": [
+    { "participant": "browser", "from": 155, "to": 430, "type": "frontend" },
+    { "participant": "api", "from": 160, "to": 425, "type": "backend" },
+    { "participant": "redis", "from": 185, "to": 235, "type": "database" },
+    { "participant": "postgres", "from": 265, "to": 305, "type": "database" },
+    { "participant": "redis", "from": 345, "to": 385, "type": "database" }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Alur Permintaan",
+      "items": [
+        "Browser memanggil API untuk mendapatkan data.",
+        "API pertama kali memeriksa ketersediaan data di dalam Redis."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Penanganan Cache Miss",
+      "items": [
+        "Jika data tidak ditemukan di Redis (Cache Miss), API akan meminta data langsung ke PostgreSQL."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Pengisian Cache",
+      "items": [
+        "Setelah PostgreSQL memberikan data, API secara asinkron/sinkron menyimpannya ke Redis agar request selanjutnya menjadi Cache Hit."
+      ]
+    }
+  ]
+}
