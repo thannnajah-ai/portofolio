@@ -2042,22 +2042,52 @@ dialog[open] .log-item:nth-child(5) { animation-delay: 0.5s; }
 
 .philosophy-slider {
     width: 100%;
-    padding: 1rem 0.5rem 3rem 0.5rem;
+    padding: 1rem 0 2rem 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    scroll-snap-type: x mandatory;
+}
+
+/* Custom Transparent Scrollbar */
+.philosophy-slider::-webkit-scrollbar {
+    height: 6px;
+    background: transparent;
+}
+.philosophy-slider::-webkit-scrollbar-track {
+    background: transparent;
+}
+.philosophy-slider::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+.philosophy-slider::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.light-theme .philosophy-slider::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+}
+.light-theme .philosophy-slider::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+.light-theme .philosophy-slider {
+    scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
 }
 
 .philosophy-track {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
     gap: 1.5rem;
-}
-
-@media (min-width: 768px) {
-    .philosophy-track {
-        grid-template-columns: repeat(3, 1fr);
-    }
+    padding: 0 1rem;
+    width: max-content;
 }
 
 .philosophy-card {
+    flex: 0 0 auto;
+    width: 85vw;
+    max-width: 380px;
+    scroll-snap-align: center;
     background: var(--card-bg);
     border-radius: 24px;
     padding: 2.5rem 1.5rem;
