@@ -2083,9 +2083,6 @@ dialog[open] .log-item:nth-child(5) { animation-delay: 0.5s; }
     animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.philosophy-card.in-view:nth-child(1) { animation-delay: 0.2s; }
-.philosophy-card.in-view:nth-child(2) { animation-delay: 0.4s; }
-.philosophy-card.in-view:nth-child(3) { animation-delay: 0.6s; }
 
 
 .light-theme .philosophy-card {

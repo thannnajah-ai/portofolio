@@ -850,19 +850,28 @@ document.addEventListener('visibilitychange', () => {
     setupDownloadBtn('download-cv-btn');
     setupDownloadBtn('mobile-cv-btn');
 document.addEventListener('DOMContentLoaded', () => {
-
-
-    // Intersection Observer for Philosophy Cards (Staggered Animation on scroll)
+    let staggerDelay = 0;
+    let staggerTimeout;
+    
+    // Intersection Observer for Philosophy Cards (Smart Staggered Animation)
     const cardObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
+                // Apply dynamic delay for batched elements (e.g. desktop)
+                entry.target.style.animationDelay = (0.1 + staggerDelay * 0.2) + 's';
                 entry.target.classList.add('in-view');
                 cardObserver.unobserve(entry.target);
+                staggerDelay++;
             }
         });
-    }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+        
+        // Reset stagger counter after the batch is processed
+        clearTimeout(staggerTimeout);
+        staggerTimeout = setTimeout(() => {
+            staggerDelay = 0;
+        }, 100);
+    }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
 
     const philCards = document.querySelectorAll('.philosophy-card');
     philCards.forEach(card => cardObserver.observe(card));
-
 });
