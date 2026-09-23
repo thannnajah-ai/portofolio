@@ -106,11 +106,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         const animateCursor = () => {
-            // Linear interpolation for smooth spring effect
-            cursorX += (mouseX - cursorX) * 0.2;
-            cursorY += (mouseY - cursorY) * 0.2;
+            // Increased interpolation factor (0.8) for less delay while keeping it smooth
+            cursorX += (mouseX - cursorX) * 0.8;
+            cursorY += (mouseY - cursorY) * 0.8;
 
-            cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+            cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
+            
             requestAnimationFrame(animateCursor);
         };
         animateCursor();
