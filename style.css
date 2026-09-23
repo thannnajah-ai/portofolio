@@ -3261,8 +3261,10 @@ body::after {
     display: block;
     margin-bottom: 1rem;
 }
-
-    box-shadow: 0 0 8px #60a5fa;
+.timeline-content p {
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
 }
 
 /* Scroll-Spy Side Nav */
