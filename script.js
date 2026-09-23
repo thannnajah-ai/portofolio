@@ -1694,7 +1694,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 400);
         });
 
-        contactSubmitBtn.addEventListener('click', () => {
+        contactSubmitBtn.addEventListener('click', async () => {
             const msgInput = document.getElementById('contact-message');
             if (msgInput.value.trim() === '') {
                 msgInput.style.borderColor = 'red';
@@ -1704,9 +1704,40 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const name = document.getElementById('contact-name').value.trim();
             const message = msgInput.value.trim();
-            const mailtoLink = `mailto:thannnajah@gmail.com?subject=Hello from ${encodeURIComponent(name)}&body=${encodeURIComponent(message)}`;
             
-            document.getElementById('contact-mailto-link').href = mailtoLink;
+            // Show loading state
+            const originalText = contactSubmitBtn.textContent;
+            contactSubmitBtn.textContent = 'Sending...';
+            contactSubmitBtn.style.opacity = '0.7';
+            contactSubmitBtn.style.pointerEvents = 'none';
+
+            try {
+                const response = await fetch('https://formspree.io/f/xqpabzjl', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, message })
+                });
+
+                if (response.ok) {
+                    document.getElementById('contact-success-title').textContent = 'Message Sent!';
+                    document.getElementById('contact-success-desc').textContent = 'Thank you for reaching out. I\'ll get back to you as soon as possible.';
+                    document.getElementById('contact-success-icon').innerHTML = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>';
+                    document.getElementById('contact-success-icon').setAttribute('stroke', 'var(--primary-color)');
+                } else {
+                    throw new Error('Formspree returned an error');
+                }
+            } catch (error) {
+                document.getElementById('contact-success-title').textContent = 'Oops!';
+                document.getElementById('contact-success-desc').textContent = 'Something went wrong while sending your message. Please try again later.';
+                document.getElementById('contact-success-icon').innerHTML = '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>';
+                document.getElementById('contact-success-icon').setAttribute('stroke', '#ff4757');
+            }
+
+            contactSubmitBtn.textContent = originalText;
+            contactSubmitBtn.style.opacity = '1';
+            contactSubmitBtn.style.pointerEvents = 'auto';
             
             document.getElementById('contact-step-2').classList.remove('active');
             setTimeout(() => {
@@ -1714,9 +1745,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('contact-step-3').style.display = 'block';
                 setTimeout(() => document.getElementById('contact-step-3').classList.add('active'), 50);
             }, 400);
-            
-            // Auto open the mail client
-            window.location.href = mailtoLink;
         });
 
         contactResetBtn.addEventListener('click', () => {

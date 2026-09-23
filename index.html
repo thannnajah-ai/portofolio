@@ -503,14 +503,13 @@
                 </div>
 
                 <div id="contact-step-3" class="contact-step" style="display: none;">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;">
+                    <svg id="contact-success-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem; transition: stroke 0.3s;">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
-                    <h3 style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);">Ready to send!</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Your email client should have opened. If not, click below.</p>
-                    <a id="contact-mailto-link" href="#" class="btn btn-primary">Open Email Client</a>
-                    <button class="btn btn-secondary" id="contact-reset" style="margin-top: 1rem; display: block; margin-left: auto; margin-right: auto; background: transparent; border: none; color: var(--text-secondary);">Start Over</button>
+                    <h3 id="contact-success-title" style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);">Message Sent!</h3>
+                    <p id="contact-success-desc" style="color: var(--text-secondary); margin-bottom: 1.5rem;">Thank you for reaching out. I'll get back to you as soon as possible.</p>
+                    <button class="btn btn-secondary" id="contact-reset" style="margin-top: 1rem; display: block; margin-left: auto; margin-right: auto; background: transparent; border: none; color: var(--text-secondary);">Send Another Message</button>
                 </div>
             </div>
         </section>
