@@ -1339,43 +1339,89 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // === Task 7: Guestbook (Local Storage) ===
+    // === Supabase Client Initialization ===
+    let supabaseClient = null;
+    if (window.supabase) {
+        const supabaseUrl = 'https://mdjlisdsbamfdftuybky.supabase.co';
+        const supabaseKey = 'sb_publishable_FK9Gdil-FbhiZbvePi0wPA_NYYovLn6';
+        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+    }
+
+    // === Task 7: Guestbook (Online with Supabase) ===
     const btnSignGuestbook = document.getElementById('btn-sign-guestbook');
     const guestNameInput = document.getElementById('guest-name');
     const guestMsgInput = document.getElementById('guest-message');
     const guestbookEntries = document.getElementById('guestbook-entries');
     
-    if (btnSignGuestbook && guestbookEntries) {
-        const loadGuestbook = () => {
-            const entries = JSON.parse(localStorage.getItem('guestbook') || '[]');
-            guestbookEntries.innerHTML = '';
-            entries.reverse().forEach(entry => {
-                const div = document.createElement('div');
-                div.style.padding = '1rem';
-                div.style.background = 'rgba(255,255,255,0.05)';
-                div.style.borderRadius = '8px';
-                div.innerHTML = `<strong style="color: var(--text-primary);">${entry.name}</strong> <span style="font-size: 0.8rem; color: var(--text-secondary);">${entry.date}</span><p style="margin-top: 4px; font-size: 0.9rem;">${entry.message}</p>`;
-                guestbookEntries.appendChild(div);
-            });
-            if (entries.length === 0) {
-                guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">No entries yet. Be the first!</div>';
+    if (btnSignGuestbook && guestbookEntries && supabaseClient) {
+        const loadGuestbook = async () => {
+            try {
+                guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Loading messages...</div>';
+                
+                const { data: entries, error } = await supabaseClient
+                    .from('guestbook')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+
+                guestbookEntries.innerHTML = '';
+                
+                if (!entries || entries.length === 0) {
+                    guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">No entries yet. Be the first!</div>';
+                    return;
+                }
+
+                entries.forEach(entry => {
+                    const div = document.createElement('div');
+                    div.style.padding = '1rem';
+                    div.style.background = 'rgba(255,255,255,0.05)';
+                    div.style.borderRadius = '8px';
+                    const dateStr = new Date(entry.created_at).toLocaleDateString();
+                    
+                    // Escape HTML to prevent XSS
+                    const safeName = entry.name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                    const safeMsg = entry.message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                    
+                    div.innerHTML = `<strong style="color: var(--text-primary);">${safeName}</strong> <span style="font-size: 0.8rem; color: var(--text-secondary);">${dateStr}</span><p style="margin-top: 4px; font-size: 0.9rem; word-break: break-word;">${safeMsg}</p>`;
+                    guestbookEntries.appendChild(div);
+                });
+            } catch (err) {
+                console.error("Error loading guestbook:", err);
+                guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Failed to load messages.</div>';
             }
         };
         loadGuestbook();
         
-        btnSignGuestbook.addEventListener('click', () => {
+        btnSignGuestbook.addEventListener('click', async () => {
             const name = guestNameInput.value.trim();
             const msg = guestMsgInput.value.trim();
             if (name && msg) {
-                const entries = JSON.parse(localStorage.getItem('guestbook') || '[]');
-                entries.push({ name, message: msg, date: new Date().toLocaleDateString() });
-                localStorage.setItem('guestbook', JSON.stringify(entries));
-                guestNameInput.value = '';
-                guestMsgInput.value = '';
-                loadGuestbook();
-                if (typeof showDynamicIsland === 'function') showDynamicIsland('Pesan Tersimpan');
+                btnSignGuestbook.disabled = true;
+                btnSignGuestbook.textContent = '...';
+                
+                try {
+                    const { error } = await supabaseClient
+                        .from('guestbook')
+                        .insert([{ name: name, message: msg }]);
+                        
+                    if (error) throw error;
+                    
+                    guestNameInput.value = '';
+                    guestMsgInput.value = '';
+                    loadGuestbook();
+                    if (typeof showDynamicIsland === 'function') showDynamicIsland('Pesan Tersimpan');
+                } catch (err) {
+                    console.error("Error saving guestbook:", err);
+                    if (typeof showDynamicIsland === 'function') showDynamicIsland('Gagal mengirim pesan');
+                } finally {
+                    btnSignGuestbook.disabled = false;
+                    btnSignGuestbook.textContent = 'Sign';
+                }
             }
         });
+    } else if (btnSignGuestbook && guestbookEntries) {
+        guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Guestbook offline (Supabase not loaded)</div>';
     }
 
     // === Task 8: Dynamic Now Page ===
