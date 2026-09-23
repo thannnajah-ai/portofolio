@@ -1337,26 +1337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // === Task 2: Live GitHub Stats API ===
-    const ghRepos = document.getElementById('gh-repos');
-    const ghFollowers = document.getElementById('gh-followers');
-    if (ghRepos && ghFollowers) {
-        fetch('https://api.github.com/users/thannnajah-ai')
-            .then(res => res.json())
-            .then(data => {
-                if (data.public_repos !== undefined) {
-                    ghRepos.textContent = data.public_repos;
-                    ghFollowers.textContent = data.followers;
-                } else {
-                    ghRepos.textContent = 'API Limit';
-                    ghFollowers.textContent = 'API Limit';
-                }
-            })
-            .catch(() => {
-                ghRepos.textContent = 'Err';
-                ghFollowers.textContent = 'Err';
-            });
-    }
+
 
     // === Task 7: Guestbook (Local Storage) ===
     const btnSignGuestbook = document.getElementById('btn-sign-guestbook');
@@ -1399,16 +1380,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === Task 8: Dynamic Now Page ===
     const nowWeather = document.getElementById('now-weather');
-    const nowTime = document.getElementById('now-time');
     
-    if (nowWeather && nowTime) {
-        // Update Time
-        setInterval(() => {
-            nowTime.textContent = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB';
-        }, 1000);
-        
-        // Fetch Weather (Jakarta coordinates)
-        fetch('https://api.open-meteo.com/v1/forecast?latitude=-6.2088&longitude=106.8456&current_weather=true')
+    if (nowWeather) {
+        // Fetch Weather (Yogyakarta coordinates)
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=-7.7956&longitude=110.3695&current_weather=true')
             .then(res => res.json())
             .then(data => {
                 const w = data.current_weather;

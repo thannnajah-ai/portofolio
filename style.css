@@ -3560,6 +3560,17 @@ body.light-theme .contact-input {
 body.light-theme .error-404-dialog::backdrop {
     background: rgba(255, 255, 255, 0.8);
 }
+/* Inner Widgets (Bento Grid) */
+.inner-widget {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+body.light-theme .inner-widget {
+    background: rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
 /* Social Media Widget Styles */
 .social-icon {
     color: var(--text-secondary);
