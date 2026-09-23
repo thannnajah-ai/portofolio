@@ -453,78 +453,9 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
-
-        <!-- Contact Section -->
-        <section id="contact" class="fade-in-section">
-            <h2 class="section-title"><span class="stagger-mask"><span class="stagger-text" data-i18n="contactTitle">Get
-                        In Touch</span></span></h2>
-            <div class="contact-card"
-                style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 2rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
-                <form id="contact-form" class="contact-form">
-                    <div class="form-group">
-                        <input type="text" id="name" name="name" required placeholder=" " />
-                        <label for="name" data-i18n="contactName">Your Name</label>
-                    </div>
-                    <div class="form-group">
-                        <input type="email" id="email" name="email" required placeholder=" " />
-                        <label for="email" data-i18n="contactEmail">Your Email</label>
-                    </div>
-                    <div class="form-group">
-                        <textarea id="message" name="message" required placeholder=" " rows="5"></textarea>
-                        <label for="message" data-i18n="contactMessage">Your Message</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary magnetic" id="submit-btn" style="width: 100%;">
-                        <span class="btn-text" data-i18n="contactSubmit">Send Message</span>
-                        <span class="btn-loader" style="display: none;"></span>
-                    </button>
-                    <div id="form-status" class="form-status"></div>
-                </form>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="container footer-content">
-            <div class="footer-left">
-                <p>&copy; <span id="copyright-year">2026</span> Nathan Ferdwiansyah W. <br>Crafted with Coffee.</p>
-            </div>
-            <div class="footer-links">
-                <a href="https://github.com/thannnajah-ai" target="_blank" rel="noopener noreferrer"
-                    class="footer-link magnetic">GitHub</a>
-                <a href="https://www.linkedin.com/in/thannnajah" target="_blank" rel="noopener noreferrer"
-                    class="footer-link magnetic">LinkedIn</a>
-                <a href="https://instagram.com/fw.nathannnnnn" target="_blank" rel="noopener noreferrer"
-                    class="footer-link magnetic">Instagram</a>
-                <a href="https://wa.me/6285725276231" target="_blank" rel="noopener noreferrer"
-                    class="footer-link magnetic">WhatsApp</a>
-                <a href="mailto:thannnajah@gmail.com" class="footer-link magnetic">Email</a>
-                <!-- Link Download CV -->
-                <button id="download-cv-btn" class="footer-link btn-download magnetic">
-                    <span class="btn-text" data-i18n="downloadCV">Download CV</span>
-                    <span class="btn-progress"></span>
-                    <svg class="btn-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </footer>
 
 
 
-    <!-- Custom Context Menu -->
-    <menu id="custom-context-menu" class="custom-context-menu hidden">
-        <div class="menu-item" id="menu-theme"><span data-i18n="menuTheme">Toggle Theme</span></div>
-        <button id="mobile-cv-btn" class="menu-item btn-download-mobile">
-            <span class="btn-text" data-i18n="menuCV">Download CV</span>
-            <svg class="btn-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-                stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; display: none;">
-                <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-        </button>
-    </menu>
 
     <!-- Project Detail Dialog -->
     <dialog id="project-modal" class="project-modal">
@@ -551,8 +482,63 @@
         </div>
     </dialog>
 
+        <!-- Conversational Contact Section -->
+        <section id="contact" class="fade-in-section" style="margin-bottom: 4rem;">
+            <h2 class="section-title"><span class="stagger-mask"><span class="stagger-text" data-i18n="contactTitle">Get In Touch</span></span></h2>
+            <div class="contact-container tilt-card" style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 2rem; border-radius: 24px; border: 1px solid var(--border-color); text-align: center;">
+                
+                <div id="contact-step-1" class="contact-step active">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);">What's your name?</h3>
+                    <input type="text" id="contact-name" class="contact-input" placeholder="John Doe" autocomplete="off">
+                    <button class="btn btn-primary contact-next-btn" data-next="2" style="margin-top: 1rem;">Next</button>
+                </div>
+
+                <div id="contact-step-2" class="contact-step" style="display: none;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);">What do you want to talk about?</h3>
+                    <textarea id="contact-message" class="contact-input" rows="3" placeholder="I have a project idea..." style="resize: none;"></textarea>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
+                        <button class="btn btn-secondary contact-prev-btn" data-prev="1">Back</button>
+                        <button class="btn btn-primary contact-submit-btn" id="contact-submit">Draft Email</button>
+                    </div>
+                </div>
+
+                <div id="contact-step-3" class="contact-step" style="display: none;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <h3 style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);">Ready to send!</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Your email client should have opened. If not, click below.</p>
+                    <a id="contact-mailto-link" href="#" class="btn btn-primary">Open Email Client</a>
+                    <button class="btn btn-secondary" id="contact-reset" style="margin-top: 1rem; display: block; margin-left: auto; margin-right: auto; background: transparent; border: none; color: var(--text-secondary);">Start Over</button>
+                </div>
+            </div>
+        </section>
     </main>
 
+    <!-- Footer with Last Updated -->
+    <footer style="text-align: center; padding: 2rem; border-top: 1px solid var(--border-color); margin-top: 2rem;">
+        <div style="font-size: 0.9rem; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span id="last-updated-text">Checking latest updates...</span>
+        </div>
+        <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.7;">
+            Designed & Engineered with ❤️ and Vanilla JS
+        </div>
+    </footer>
+
+    <!-- Custom 404 Error Dialog -->
+    <dialog id="error-404-dialog" class="error-404-dialog" style="padding: 0; background: transparent; border: none; max-width: 400px; width: 90%;">
+        <div style="background: var(--card-bg); border-radius: 24px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); padding: 3rem 2rem;">
+            <div style="font-size: 4rem; font-weight: 800; color: var(--primary-color); line-height: 1; margin-bottom: 1rem;">404</div>
+            <h3 style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 0.5rem;">Not Found</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">The section you're looking for doesn't exist or has been moved.</p>
+            <button class="btn btn-primary" id="error-404-home" style="width: 100%;">Take Me Home</button>
+        </div>
+    </dialog>
 
 
     <!-- Custom Context Menu -->

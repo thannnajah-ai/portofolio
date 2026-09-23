@@ -130,8 +130,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 400);
     });
 
-    // Initialize theme from storage
-    const currentTheme = localStorage.getItem('theme');
+    // Initialize theme from storage or system preference
+    let currentTheme = localStorage.getItem('theme');
+    if (!currentTheme) {
+        currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        localStorage.setItem('theme', currentTheme);
+    }
+    
     if (currentTheme === 'light') {
         document.body.classList.add('light-theme');
     }
@@ -1586,6 +1591,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(!analytics.views) analytics.views = [];
                 analytics.views.push({ route: targetId, time: Date.now() });
                 localStorage.setItem('agy_analytics', JSON.stringify(analytics));
+            } else {
+                // Feature 20: Custom 404 Fallback
+                const errorDialog = document.getElementById('error-404-dialog');
+                if (errorDialog) {
+                    errorDialog.showModal();
+                    
+                    const homeBtn = document.getElementById('error-404-home');
+                    if (homeBtn) {
+                        homeBtn.onclick = () => {
+                            errorDialog.close();
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            history.pushState(null, '', ' ');
+                        };
+                    }
+                }
             }
         }
     });
@@ -1601,6 +1621,99 @@ document.addEventListener('DOMContentLoaded', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
+
+    // Feature 13: Auto 'Last Updated' Status from GitHub API
+    const lastUpdatedText = document.getElementById('last-updated-text');
+    if (lastUpdatedText) {
+        fetch('https://api.github.com/repos/thannnajah-ai/portofolio/commits?per_page=1')
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch commits');
+                return res.json();
+            })
+            .then(data => {
+                if (data && data.length > 0) {
+                    const date = new Date(data[0].commit.author.date);
+                    const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                    lastUpdatedText.textContent = `Last updated on ${formattedDate}`;
+                } else {
+                    lastUpdatedText.textContent = 'Last updated recently';
+                }
+            })
+            .catch(() => {
+                lastUpdatedText.textContent = 'Actively maintained';
+            });
+    }
+
+    // Feature 14: Conversational Contact Form Logic
+    const contactNextBtn = document.querySelector('.contact-next-btn');
+    const contactPrevBtn = document.querySelector('.contact-prev-btn');
+    const contactSubmitBtn = document.getElementById('contact-submit');
+    const contactResetBtn = document.getElementById('contact-reset');
+    
+    if (contactNextBtn && contactPrevBtn && contactSubmitBtn) {
+        contactNextBtn.addEventListener('click', () => {
+            const nameInput = document.getElementById('contact-name');
+            if (nameInput.value.trim() === '') {
+                nameInput.style.borderColor = 'red';
+                setTimeout(() => nameInput.style.borderColor = 'var(--border-color)', 1000);
+                return;
+            }
+            document.getElementById('contact-step-1').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('contact-step-1').style.display = 'none';
+                document.getElementById('contact-step-2').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('contact-step-2').classList.add('active');
+                    document.getElementById('contact-message').focus();
+                }, 50);
+            }, 400);
+        });
+
+        contactPrevBtn.addEventListener('click', () => {
+            document.getElementById('contact-step-2').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('contact-step-2').style.display = 'none';
+                document.getElementById('contact-step-1').style.display = 'block';
+                setTimeout(() => document.getElementById('contact-step-1').classList.add('active'), 50);
+            }, 400);
+        });
+
+        contactSubmitBtn.addEventListener('click', () => {
+            const msgInput = document.getElementById('contact-message');
+            if (msgInput.value.trim() === '') {
+                msgInput.style.borderColor = 'red';
+                setTimeout(() => msgInput.style.borderColor = 'var(--border-color)', 1000);
+                return;
+            }
+            
+            const name = document.getElementById('contact-name').value.trim();
+            const message = msgInput.value.trim();
+            const mailtoLink = `mailto:thannnajah@gmail.com?subject=Hello from ${encodeURIComponent(name)}&body=${encodeURIComponent(message)}`;
+            
+            document.getElementById('contact-mailto-link').href = mailtoLink;
+            
+            document.getElementById('contact-step-2').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('contact-step-2').style.display = 'none';
+                document.getElementById('contact-step-3').style.display = 'block';
+                setTimeout(() => document.getElementById('contact-step-3').classList.add('active'), 50);
+            }, 400);
+            
+            // Auto open the mail client
+            window.location.href = mailtoLink;
+        });
+
+        contactResetBtn.addEventListener('click', () => {
+            document.getElementById('contact-name').value = '';
+            document.getElementById('contact-message').value = '';
+            document.getElementById('contact-step-3').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('contact-step-3').style.display = 'none';
+                document.getElementById('contact-step-1').style.display = 'block';
+                setTimeout(() => document.getElementById('contact-step-1').classList.add('active'), 50);
+            }, 400);
+        });
+    }
 
 
 

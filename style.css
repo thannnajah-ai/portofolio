@@ -3487,3 +3487,74 @@ body::after {
     background: rgba(255,255,255,0.05);
     color: var(--text-primary) !important;
 }
+
+/* Feature 15: Mobile Scroll-Snapping Carousel for Blog */
+@media (max-width: 768px) {
+    .blog-grid {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+    
+    .blog-grid::-webkit-scrollbar {
+        height: 6px;
+    }
+    .blog-grid::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+    .blog-grid::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+    }
+    
+    .blog-card {
+        min-width: 85vw;
+        scroll-snap-align: center;
+        flex: 0 0 auto;
+    }
+}
+
+/* Feature 14: Conversational Contact Form Styles */
+.contact-step {
+    transition: all 0.4s var(--ease-out-expo);
+    opacity: 0;
+    transform: translateY(20px);
+}
+.contact-step.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+.contact-input {
+    width: 100%;
+    padding: 1.2rem;
+    font-size: 1.2rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.3s;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+.contact-input:focus {
+    border-color: var(--primary-color);
+}
+body.light-theme .contact-input {
+    background: rgba(0,0,0,0.03);
+}
+
+/* Feature 20: 404 Error Dialog */
+.error-404-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+}
+body.light-theme .error-404-dialog::backdrop {
+    background: rgba(255, 255, 255, 0.8);
+}
