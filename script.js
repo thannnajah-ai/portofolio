@@ -1527,7 +1527,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 dummyCount++;
                 const newCard = document.createElement('a');
                 newCard.href = "#";
-                newCard.className = 'project-card tilt-card project-wip fade-in-section';
+                newCard.className = 'project-card tilt-card project-wip';
+                newCard.style.animation = 'revealUp 0.8s var(--ease-out-expo) forwards';
                 newCard.setAttribute('data-category', 'concept');
                 newCard.innerHTML = `
                     <div class="project-image">
