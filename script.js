@@ -281,118 +281,38 @@ document.addEventListener("DOMContentLoaded", () => {
     // Always hide after the greeting sequence (2.8s)
     setTimeout(hidePreloader, 2800);
 
-    // i18n Dictionary
-    const i18n = {
-        id: {
-            available: "Tersedia untuk kerja",
-            heroTitle: "Frontend & Mobile Developer",
-            heroSubtitle: "Bikin Antarmuka yang Berasa",
-            heroDesc: "Saya pakai AI buat nulis kode lebih cepat, tapi yang pegang kendali desainnya tetap saya.",
-            viewProjects: "Lihat Proyek",
-            aboutMe: "Tentang Saya",
-            aboutP1: "Masih pelajar di <strong>MA Mu'allimin Muhammadiyah Yogyakarta</strong>, jurusan IPA. Lahir 23 Februari 2009, Sleman. Mulai tertarik coding karena penasaran kenapa ada antarmuka yang kerasa hidup dan ada yang kerasa datar — terus nggak bisa berhenti.",
-            aboutP2: "Sehari-hari saya pakai Claude Code CLI sama Antigravity buat akselerasi. Tapi keputusan desainnya tetap saya yang ambil. Saya pegang prinsip <em>Design Engineering</em> — produk yang keluar harus punya <em>good taste</em>, bukan cuma jalan.",
-            skillsTitle: "Kemampuan & Selera",
-            skill1Desc: "HTML5, CSS3, Vanilla JS — tanpa framework yang nambah beban. Flutter buat mobile cross-platform.",
-            skill2Desc: "Animasi berbasis physics, custom easing, tactile feedback. Interaksinya kerasa presisi, bukan asal gerak.",
-            skill3Desc: "Tipografi yang pas, spacing yang proporsional, desain yang punya karakter. Saya benci tampilan template.",
-            projectsTitle: "Proyek Pilihan",
-            project1Title: "TembusPTN.my.id",
-            project1Desc: "Platform belajar UTBK/SNBT gratis. Antarmukanya saya rancang supaya orang bisa fokus belajar, bukan fokus navigasi.",
-            project2Title: "Karya Tulis Ilmiah",
-            project2Desc: "Penelitian tentang pengaruh cara konsumsi terhadap kadar glukosa nasi putih. Sisi saya yang lain di luar coding.",
-            project3Title: "Proyek Berikutnya",
-            project3Desc: "Masih digarap. Nantikan.",
-            wipBadge: "Dalam Pengerjaan",
-            wipLabel: "Lagi dimasak...",
-            thoughtsTitle: "Catatan & Pikiran",
-            contactTitle: "Hubungi Saya",
-            sendBtn: "Kirim Pesan",
-            blog1Title: "Kenapa Animasi UI Itu Penting",
-            blog1Date: "20 Mei 2026",
-            blog1Content: "<p>Banyak yang mikir animasi itu cuma hiasan. Padahal animasi yang dirancang dengan <em>good taste</em> punya fungsi konkret: <strong>feedback visual dan spasial</strong>.</p><p>Waktu kamu tekan tombol dan tombolnya merespons dengan ripple atau spring yang mulus, otak kamu merasa terhubung secara fisik sama layar. Itu yang bikin aplikasi terasa enak dipakai, bukan sekadar fungsional.</p><p>Detail mikro interaksi kayak gini yang saya kejar di setiap project.</p>",
-            blog2Title: "Kenapa Saya Tinggalkan React dan Balik ke Vanilla JS",
-            blog2Date: "15 April 2026",
-            blog2Content: "<p>Ekosistem JavaScript sekarang kayaknya wajib pakai React, Next.js, atau Vue. Tapi untuk website statis kayak portofolio, semua framework itu cuma nambah beban tanpa manfaat yang sebanding.</p><p>Portofolio ini 100% Vanilla JS dan CSS murni. Hasilnya: nggak ada hydration yang lambat, nggak ada bundle file gila-gilaan, dan 60fps stabil bahkan di HP kelas bawah.</p><p>Kadang pilihan paling sederhana itu yang paling tepat.</p>",
-            blog3Title: "Gimana Rasanya Coding Pakai AI Setiap Hari",
-            blog3Date: "10 Sep 2026",
-            blog3Content: "<p>Saya pakai Claude Code CLI dan Antigravity hampir setiap hari. Dan ini bukan magic — AI bisa salah, nulis kode yang nggak nyambung, atau malah nambah kompleksitas yang nggak perlu.</p><p>Yang menentukan hasilnya adalah cara pakainya. Kalau kamu cuma <em>paste output AI mentah-mentah</em>, hasilnya kelihatan — generik dan susah di-maintain. Cara saya: AI buat akselerasi, keputusan desain tetap di tangan saya.</p><p>Taste, judgment, sense of quality — itu yang nggak bisa didelegasikan ke AI.</p>",
-            blog4Title: "Kenapa Saya Pilih Flutter buat Mobile",
-            blog4Date: "1 Agt 2026",
-            blog4Content: "<p>Yang pertama bikin saya tertarik sama Flutter bukan fitur-fiturnya, tapi filosofinya. Satu codebase, jalan di mana aja, dan UI-nya dikontrol penuh pixel by pixel.</p><p>React Native masih ngandalin native components, jadi ada batasan visual yang nggak bisa kamu tembus. Flutter punya canvas-nya sendiri — semua yang keliatan di layar itu Flutter yang gambar. Kalau kamu ngerti desain, kamu bisa bikin apapun yang kamu mau.</p><p>Buat saya yang obsesi sama UI detail, ini bedanya besar.</p>",
-            philosophyTitle: "Filosofi Kerja",
-            phil1Title: "Pixel Perfect",
-            phil1Desc: "Desain bukan cuma soal tampilan, tapi tentang bagaimana setiap elemen memiliki proporsi dan fungsi yang tepat.",
-            phil2Title: "Performance First",
-            phil2Desc: "Animasi sekeren apa pun nggak ada artinya kalau bikin web lambat. Performa dan fluiditas adalah kunci.",
-            phil3Title: "User Centric",
-            phil3Desc: "Kode yang saya tulis selalu memprioritaskan empati terhadap end-user. Aksesibilitas dan kenyamanan nomor satu.",
-            downloadCV: "Unduh CV",
-            menuCV: "Unduh CV"
-        },
-        en: {
-            available: "Available for work",
-            heroTitle: "Frontend & Mobile Developer",
-            heroSubtitle: "Building Interfaces That Feel Right",
-            heroDesc: "I use AI to write code faster, but the design decisions stay with me.",
-            viewProjects: "View Projects",
-            aboutMe: "About Me",
-            aboutP1: "Still a student at <strong>MA Mu'allimin Muhammadiyah Yogyakarta</strong> — science track. Born February 23, 2009. I got into coding because I kept noticing why some interfaces feel alive and others don't, and couldn't stop pulling at that thread.",
-            aboutP2: "I work with Claude Code CLI and Antigravity daily for speed. But I make the design calls myself. I hold to <em>Design Engineering</em> principles — what ships has to have <em>good taste</em>, not just work.",
-            skillsTitle: "Capabilities & Taste",
-            skill1Desc: "HTML5, CSS3, Vanilla JS — no bloated framework in the middle. Flutter for cross-platform mobile.",
-            skill2Desc: "Physics-based animations, custom easing, tactile feedback. Interactions feel precise, not generic.",
-            skill3Desc: "Typography that fits, spacing that breathes, design with character. I avoid templates.",
-            projectsTitle: "Featured Projects",
-            project1Title: "TembusPTN.my.id",
-            project1Desc: "Free UTBK/SNBT study platform. I designed the interface so people can focus on studying, not on navigating.",
-            project2Title: "Scientific Research",
-            project2Desc: "Research on how consumption method affects glucose levels in white rice. A different side of me outside coding.",
-            project3Title: "Next Project",
-            project3Desc: "Still in the works. Stay tuned.",
-            wipBadge: "In Progress",
-            wipLabel: "Something's cooking...",
-            thoughtsTitle: "Thoughts & Logs",
-            contactTitle: "Get In Touch",
-            sendBtn: "Send Message",
-            blog1Title: "Why UI Animation Matters",
-            blog1Date: "May 20, 2026",
-            blog1Content: "<p>A lot of people treat UI animations as decoration. Animation built with <em>good taste</em> does something concrete: it provides <strong>visual and spatial feedback</strong>.</p><p>When you press a button and it responds with a smooth ripple or spring, you feel a physical connection to the screen. That's what makes an app feel good to use, not just functional.</p><p>That micro-interaction detail is what I chase in every project.</p>",
-            blog2Title: "Why I Left React and Went Back to Vanilla JS",
-            blog2Date: "April 15, 2026",
-            blog2Content: "<p>The JavaScript ecosystem says you have to use React, Next.js, or Vue. But for a static site like a portfolio, that framework overhead adds weight without a real payoff.</p><p>This portfolio is 100% Vanilla JS and pure CSS. No slow hydration, no massive bundle files, 60fps performance even on budget phones.</p><p>Sometimes the simpler choice is the right one.</p>",
-            blog3Title: "What It's Actually Like to Code with AI Every Day",
-            blog3Date: "Sep 10, 2026",
-            blog3Content: "<p>I use Claude Code CLI and Antigravity almost every day. It's not magic — AI gets things wrong, writes code that doesn't fit, or adds complexity you didn't ask for.</p><p>What determines the output is how you use it. If you paste AI output raw, it shows — generic and hard to maintain. My approach: AI for speed, design decisions are mine.</p><p>Taste, judgment, sense of quality — those don't delegate well.</p>",
-            blog4Title: "Why I Chose Flutter for Mobile",
-            blog4Date: "Aug 1, 2026",
-            blog4Content: "<p>What got me interested in Flutter wasn't the feature list. It was the philosophy. One codebase, runs anywhere, and the UI is fully controlled pixel by pixel.</p><p>React Native still depends on native components, so there are visual limits you can't push past. Flutter has its own canvas — everything on screen, Flutter drew it. If you understand design, you can build exactly what you picture.</p><p>For someone obsessed with UI detail, that difference matters.</p>",
-            philosophyTitle: "Work Philosophy",
-            phil1Title: "Pixel Perfect",
-            phil1Desc: "Design is not just what it looks like. It's about how every element has its exact proportion and function.",
-            phil2Title: "Performance First",
-            phil2Desc: "Cool animations mean nothing if they make the web slow. Performance and fluidity are key.",
-            phil3Title: "User Centric",
-            phil3Desc: "The code I write always prioritizes empathy for the end-user. Accessibility and comfort are number one.",
-            downloadCV: "Download CV",
-            menuCV: "Download CV"
-        }
-    };
+    // i18n dictionary is now dynamically fetched from /i18n/{lang}.json
 
     // Language Toggle Logic
     const langToggleBtn = document.getElementById('lang-toggle');
     let currentLang = localStorage.getItem('lang') || 'en';
 
-    function setLanguage(lang) {
+    let i18nCache = {};
+
+    async function setLanguage(lang) {
         if (typeof showDynamicIsland === 'function') {
             showDynamicIsland(lang === 'id' ? 'Bahasa Indonesia Aktif' : 'English Activated');
         }
+        
+        let dict = i18nCache[lang];
+        if (!dict) {
+            try {
+                const response = await fetch(`./i18n/${lang}.json`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                dict = await response.json();
+                i18nCache[lang] = dict;
+            } catch (e) {
+                console.error("Failed to load language file:", e);
+                return;
+            }
+        }
+
         const elementsToTranslate = document.querySelectorAll('[data-i18n]');
 
         elementsToTranslate.forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (i18n[lang] && i18n[lang][key]) {
-                el.innerHTML = i18n[lang][key];
+            if (dict[key]) {
+                el.innerHTML = dict[key];
             }
         });
 
