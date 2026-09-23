@@ -236,31 +236,42 @@
                         Interactive CV</button>
                     <p data-i18n="aboutP1"></p>
                     <p data-i18n="aboutP2"></p>
-                    <div class="about-widgets" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
-                        <!-- Task 8: Dynamic Now Page -->
-                        <div id="dynamic-now-card" class="now-card" style="flex: 1; min-width: 200px; padding: 1rem; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 1rem;">
-                            <div class="now-icon" style="font-size: 1.5rem;">🌍</div>
+                    <div class="bento-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                        <!-- Right Now Widget -->
+                        <div id="dynamic-now-card" class="inner-widget" style="padding: 1.5rem; border-radius: 16px; display: flex; align-items: center; gap: 1rem;">
+                            <div class="now-icon" style="font-size: 2rem;">🌍</div>
                             <div class="now-info">
-                                <span style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Right Now in Jakarta</span>
-                                <div id="now-weather" style="font-weight: 500; font-size: 0.9rem; margin-top: 2px;">Fetching weather...</div>
+                                <span style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;">Right Now in Jakarta</span>
+                                <div id="now-weather" style="font-weight: 600; font-size: 1rem; margin-top: 4px; color: var(--text-primary);">Fetching weather...</div>
                                 <div id="now-time" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px;">--:--</div>
                             </div>
                         </div>
 
                         <!-- Social Media Widget -->
-                        <div class="social-widget" style="flex: 1; min-width: 200px; padding: 1rem; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-evenly;">
+                        <div class="social-widget inner-widget" style="padding: 1.5rem; border-radius: 16px; display: flex; align-items: center; justify-content: space-evenly; gap: 0.5rem; flex-wrap: wrap;">
                             <a href="#" target="_blank" rel="noopener noreferrer" class="social-icon magnetic" aria-label="GitHub">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
                             </a>
                             <a href="#" target="_blank" rel="noopener noreferrer" class="social-icon magnetic" aria-label="LinkedIn">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                             </a>
                             <a href="#" target="_blank" rel="noopener noreferrer" class="social-icon magnetic" aria-label="X / Twitter">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733-16z"></path><path d="M4 20l6.768-6.768m2.46-2.46l6.772-6.772"></path></svg>
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733-16z"></path><path d="M4 20l6.768-6.768m2.46-2.46l6.772-6.772"></path></svg>
                             </a>
                             <a href="#" target="_blank" rel="noopener noreferrer" class="social-icon magnetic" aria-label="Instagram">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                             </a>
+                        </div>
+                        
+                        <!-- GitHub Stats Widget -->
+                        <div class="inner-widget" style="padding: 1.5rem; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                            <div style="font-size: 2.5rem; font-weight: 800; color: var(--text-primary); line-height: 1;" id="gh-repos">--</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.75rem; font-weight: 600;">Public Repos</div>
+                        </div>
+                        
+                        <div class="inner-widget" style="padding: 1.5rem; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                            <div style="font-size: 2.5rem; font-weight: 800; color: var(--text-primary); line-height: 1;" id="gh-followers">--</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.75rem; font-weight: 600;">Followers</div>
                         </div>
                     </div>
                 </div>
@@ -432,20 +443,7 @@
         <section id="thoughts" class="fade-in-section">
             <h2 class="section-title"><span class="stagger-mask"><span class="stagger-text"
                         data-i18n="thoughtsTitle">Thoughts & Logs</span></span></h2>
-            <!-- Task 2: Live GitHub Stats API -->
-            <div class="github-stats">
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-primary);">Live GitHub Stats (API)</h3>
-                <div id="github-stats-container" class="github-stats-container" style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <div style="flex: 1; padding: 1rem; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color);">
-                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary);" id="gh-repos">--</div>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Public Repos</div>
-                    </div>
-                    <div style="flex: 1; padding: 1rem; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color);">
-                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary);" id="gh-followers">--</div>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Followers</div>
-                    </div>
-                </div>
-            </div>
+            <!-- Task 2: Live GitHub Stats API moved to About Section -->
 
             <!-- Task 7: Guestbook (Local) -->
             <div class="guestbook-section" style="margin-top: 3rem;">
