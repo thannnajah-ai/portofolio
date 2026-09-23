@@ -1521,43 +1521,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsGrid = document.querySelector('.projects-grid');
     if (projectsGrid) {
         let dummyCount = 0;
+        let isLoading = false;
+        
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.style.textAlign = 'center';
+        loadingIndicator.style.padding = '2rem';
+        loadingIndicator.style.color = 'var(--text-secondary)';
+        loadingIndicator.style.display = 'none';
+        loadingIndicator.innerHTML = '<span class="btn-loader" style="border-top-color: var(--text-secondary); width: 20px; height: 20px; display: inline-block;"></span>';
+        projectsGrid.parentElement.appendChild(loadingIndicator);
+
         const observer = new IntersectionObserver((entries) => {
             const lastEntry = entries[entries.length - 1];
-            if (lastEntry.isIntersecting && dummyCount < 6) { // limit to 6 extra items
-                dummyCount++;
-                const newCard = document.createElement('a');
-                newCard.href = "#";
-                newCard.className = 'project-card tilt-card project-wip';
-                newCard.style.animation = 'revealUp 0.8s var(--ease-out-expo) forwards';
-                newCard.setAttribute('data-category', 'concept');
-                newCard.innerHTML = `
-                    <div class="project-image">
-                        <div class="placeholder-img wip-placeholder">
-                            <div class="wip-inner">
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                                </svg>
-                                <span class="wip-label">Archived Concept ${dummyCount}</span>
+            if (lastEntry.isIntersecting && dummyCount < 4 && !isLoading) { // limit to 4 extra items
+                isLoading = true;
+                observer.disconnect();
+                loadingIndicator.style.display = 'block';
+                
+                setTimeout(() => {
+                    dummyCount++;
+                    const newCard = document.createElement('a');
+                    newCard.href = "#";
+                    newCard.className = 'project-card tilt-card project-wip';
+                    newCard.style.animation = 'revealUp 0.8s var(--ease-out-expo) forwards';
+                    newCard.setAttribute('data-category', 'concept');
+                    newCard.innerHTML = `
+                        <div class="project-image">
+                            <div class="placeholder-img wip-placeholder">
+                                <div class="wip-inner">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                    </svg>
+                                    <span class="wip-label">Archived Concept ${dummyCount}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="project-info">
-                        <div class="wip-badge">Archive</div>
-                        <h3 class="project-title">Project ${Math.floor(Math.random() * 1000)}</h3>
-                        <p class="project-desc">Exploration concept loaded via infinite scroll.</p>
-                    </div>
-                `;
-                projectsGrid.appendChild(newCard);
-                observer.disconnect();
-                observer.observe(newCard);
-                
-                // Track infinite scroll trigger in analytics
-                let analytics = JSON.parse(localStorage.getItem('agy_analytics') || '{"scrolls":[]}');
-                if(!analytics.scrolls) analytics.scrolls = [];
-                analytics.scrolls.push({ event: 'infinite_scroll_trigger', page: dummyCount, time: Date.now() });
-                localStorage.setItem('agy_analytics', JSON.stringify(analytics));
+                        <div class="project-info">
+                            <div class="wip-badge">Archive</div>
+                            <h3 class="project-title">Project Exploration ${Math.floor(Math.random() * 1000)}</h3>
+                            <p class="project-desc">Exploration concept loaded via infinite scroll to demonstrate dynamic DOM insertion and intersection observers.</p>
+                        </div>
+                    `;
+                    projectsGrid.appendChild(newCard);
+                    loadingIndicator.style.display = 'none';
+                    isLoading = false;
+                    
+                    observer.observe(newCard);
+                    
+                    // Track infinite scroll trigger in analytics
+                    let analytics = JSON.parse(localStorage.getItem('agy_analytics') || '{"scrolls":[]}');
+                    if(!analytics.scrolls) analytics.scrolls = [];
+                    analytics.scrolls.push({ event: 'infinite_scroll_trigger', page: dummyCount, time: Date.now() });
+                    localStorage.setItem('agy_analytics', JSON.stringify(analytics));
+                }, 800); // 800ms simulated delay
             }
-        }, { rootMargin: '100px' });
+        }, { rootMargin: '50px' });
         
         const lastCard = projectsGrid.lastElementChild;
         if (lastCard) observer.observe(lastCard);
