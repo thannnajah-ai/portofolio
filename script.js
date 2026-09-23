@@ -107,11 +107,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const animateCursor = () => {
             // Increased interpolation factor (0.8) for less delay while keeping it smooth
-            cursorX += (mouseX - cursorX) * 0.8;
-            cursorY += (mouseY - cursorY) * 0.8;
+            cursorX += (mouseX - cursorX) * 1;
+            cursorY += (mouseY - cursorY) * 1;
 
             cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
-            
+
             requestAnimationFrame(animateCursor);
         };
         animateCursor();
