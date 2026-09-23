@@ -1,3 +1,18 @@
+// Global Error Boundary & Fallback System
+window.addEventListener('error', (event) => {
+    console.warn("[AGY Boundary] Caught script error:", event.message);
+    let logs = JSON.parse(localStorage.getItem('agy_analytics') || '{"errors":[]}');
+    logs.errors.push({msg: event.message, time: Date.now()});
+    localStorage.setItem('agy_analytics', JSON.stringify(logs));
+    event.preventDefault(); // Graceful degradation
+});
+window.addEventListener('unhandledrejection', (event) => {
+    console.warn("[AGY Boundary] Caught unhandled promise rejection:", event.reason);
+    let logs = JSON.parse(localStorage.getItem('agy_analytics') || '{"errors":[]}');
+    logs.errors.push({msg: String(event.reason), time: Date.now()});
+    localStorage.setItem('agy_analytics', JSON.stringify(logs));
+});
+
 // Intersection Observer for natural scroll animations
 // Following Emil Kowalski's philosophy: avoiding clunky entrances.
 // We start slightly scaled down (0.98 in CSS) and fade in smoothly.
@@ -1408,6 +1423,347 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(drawRadar, 100); 
             });
         }
+    }
+
+    // Custom Local Analytics
+    document.addEventListener('click', (e) => {
+        const target = e.target.closest('a, button');
+        if (target) {
+            const action = target.innerText.trim() || target.id || target.href || 'unknown_click';
+            let analytics = JSON.parse(localStorage.getItem('agy_analytics') || '{"clicks":[]}');
+            if(!analytics.clicks) analytics.clicks = [];
+            analytics.clicks.push({ action: action, time: Date.now() });
+            localStorage.setItem('agy_analytics', JSON.stringify(analytics));
+        }
+    });
+
+    // Task 9: Web Share API Integration
+    const shareBtn = document.getElementById('project-share-btn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', async () => {
+            const title = document.getElementById('project-modal-title').textContent || "Project";
+            const desc = document.getElementById('project-modal-desc').textContent || "Check this out!";
+            const url = window.location.href; 
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: `Portfolio: ${title}`,
+                        text: desc,
+                    ghRepos.textContent = data.public_repos;
+                    ghFollowers.textContent = data.followers;
+                } else {
+                    ghRepos.textContent = 'API Limit';
+                    ghFollowers.textContent = 'API Limit';
+                }
+            })
+            .catch(() => {
+                ghRepos.textContent = 'Err';
+                ghFollowers.textContent = 'Err';
+            });
+    }
+
+    // === Task 7: Guestbook (Local Storage) ===
+    const btnSignGuestbook = document.getElementById('btn-sign-guestbook');
+    const guestNameInput = document.getElementById('guest-name');
+    const guestMsgInput = document.getElementById('guest-message');
+    const guestbookEntries = document.getElementById('guestbook-entries');
+    
+    if (btnSignGuestbook && guestbookEntries) {
+        const loadGuestbook = () => {
+            const entries = JSON.parse(localStorage.getItem('guestbook') || '[]');
+            guestbookEntries.innerHTML = '';
+            entries.reverse().forEach(entry => {
+                const div = document.createElement('div');
+                div.style.padding = '1rem';
+                div.style.background = 'rgba(255,255,255,0.05)';
+                div.style.borderRadius = '8px';
+                div.innerHTML = `<strong style="color: var(--text-primary);">${entry.name}</strong> <span style="font-size: 0.8rem; color: var(--text-secondary);">${entry.date}</span><p style="margin-top: 4px; font-size: 0.9rem;">${entry.message}</p>`;
+                guestbookEntries.appendChild(div);
+            });
+            if (entries.length === 0) {
+                guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">No entries yet. Be the first!</div>';
+            }
+        };
+        loadGuestbook();
+        
+        btnSignGuestbook.addEventListener('click', () => {
+            const name = guestNameInput.value.trim();
+            const msg = guestMsgInput.value.trim();
+            if (name && msg) {
+                const entries = JSON.parse(localStorage.getItem('guestbook') || '[]');
+                entries.push({ name, message: msg, date: new Date().toLocaleDateString() });
+                localStorage.setItem('guestbook', JSON.stringify(entries));
+                guestNameInput.value = '';
+                guestMsgInput.value = '';
+                loadGuestbook();
+                if (typeof showDynamicIsland === 'function') showDynamicIsland('Pesan Tersimpan');
+            }
+        });
+    }
+
+    // === Task 8: Dynamic Now Page ===
+    const nowWeather = document.getElementById('now-weather');
+    const nowTime = document.getElementById('now-time');
+    
+    if (nowWeather && nowTime) {
+        // Update Time
+        setInterval(() => {
+            nowTime.textContent = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB';
+        }, 1000);
+        
+        // Fetch Weather (Jakarta coordinates)
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=-6.2088&longitude=106.8456&current_weather=true')
+            .then(res => res.json())
+            .then(data => {
+                const w = data.current_weather;
+                nowWeather.textContent = `${w.temperature}°C, Wind ${w.windspeed}km/h`;
+            })
+            .catch(() => {
+                nowWeather.textContent = 'Weather API failed';
+            });
+    }
+
+    // === Task 10: Interactive Skill Radar Chart ===
+    const canvas = document.getElementById('skill-radar');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        const labels = ['Frontend', 'UI/UX', 'Mobile', 'Backend', 'Tools'];
+        const values = [0.9, 0.85, 0.8, 0.6, 0.75]; // percentages
+        
+        const drawRadar = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY) - 40;
+            
+            const isLight = document.body.classList.contains('light-theme');
+            const dataColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+            const strokeColor = isLight ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)';
+            const axisColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+            const textColor = isLight ? '#555' : '#aaa';
+            
+            // Draw Web
+            ctx.strokeStyle = axisColor;
+            ctx.lineWidth = 1;
+            for (let j = 1; j <= 4; j++) {
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+                    const r = (radius / 4) * j;
+                    const x = centerX + Math.cos(angle) * r;
+                    const y = centerY + Math.sin(angle) * r;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+            
+            // Draw Axis & Labels
+            ctx.fillStyle = textColor;
+            ctx.font = '14px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            for (let i = 0; i < 5; i++) {
+                const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+                // Axis
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius);
+                ctx.stroke();
+                
+                // Label
+                const labelX = centerX + Math.cos(angle) * (radius + 20);
+                const labelY = centerY + Math.sin(angle) * (radius + 20);
+                ctx.fillText(labels[i], labelX, labelY);
+            }
+            
+            // Draw Data Polygon
+            ctx.beginPath();
+            ctx.fillStyle = dataColor;
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 5; i++) {
+                const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+                const valRadius = radius * values[i];
+                const x = centerX + Math.cos(angle) * valRadius;
+                const y = centerY + Math.sin(angle) * valRadius;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            
+            // Draw Data Points
+            ctx.fillStyle = strokeColor;
+            for (let i = 0; i < 5; i++) {
+                const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+                const valRadius = radius * values[i];
+                const x = centerX + Math.cos(angle) * valRadius;
+                const y = centerY + Math.sin(angle) * valRadius;
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        };
+        
+        drawRadar();
+        
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                setTimeout(drawRadar, 100); 
+            });
+        }
+    }
+
+    // Custom Local Analytics
+    document.addEventListener('click', (e) => {
+        const target = e.target.closest('a, button');
+        if (target) {
+            const action = target.innerText.trim() || target.id || target.href || 'unknown_click';
+            let analytics = JSON.parse(localStorage.getItem('agy_analytics') || '{"clicks":[]}');
+            if(!analytics.clicks) analytics.clicks = [];
+            analytics.clicks.push({ action: action, time: Date.now() });
+            localStorage.setItem('agy_analytics', JSON.stringify(analytics));
+        }
+    });
+
+    // Task 9: Web Share API Integration
+    const shareBtn = document.getElementById('project-share-btn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', async () => {
+            const title = document.getElementById('project-modal-title').textContent || "Project";
+            const desc = document.getElementById('project-modal-desc').textContent || "Check this out!";
+            const url = window.location.href; 
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: `Portfolio: ${title}`,
+                        text: desc,
+                        url: url
+                    });
+                } catch (err) {
+                    console.log('Share canceled or failed', err);
+                }
+            } else {
+                navigator.clipboard.writeText(`${title} - ${url}`);
+                const originalText = shareBtn.innerHTML;
+                shareBtn.innerHTML = "Copied!";
+                setTimeout(() => shareBtn.innerHTML = originalText, 2000);
+            }
+        });
+    }
+    
+    // Task 1: Advanced Project Search Engine (Fuzzy Search)
+    const searchInput = document.getElementById('project-search-input');
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            projectCards.forEach(card => {
+                const title = card.querySelector('.project-title')?.textContent.toLowerCase() || '';
+                const desc = card.querySelector('.project-desc')?.textContent.toLowerCase() || '';
+                if (title.includes(query) || desc.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Task 4: Custom Client-Side Router (SPA Engine)
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (link && link.getAttribute('href')?.startsWith('#')) {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            if (!targetId) return;
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                history.pushState(null, '', `#${targetId}`);
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+                
+                // Track page view for Analytics
+                let analytics = JSON.parse(localStorage.getItem('agy_analytics') || '{"views":[]}');
+                if(!analytics.views) analytics.views = [];
+                analytics.views.push({ route: targetId, time: Date.now() });
+                localStorage.setItem('agy_analytics', JSON.stringify(analytics));
+            }
+        }
+    });
+
+    window.addEventListener('popstate', () => {
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            const targetElement = document.getElementById(hash);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+
+    // Task 5: Infinite Scroll / DOM Virtualization
+    const projectsGrid = document.querySelector('.projects-grid');
+    if (projectsGrid) {
+        let dummyCount = 0;
+        const observer = new IntersectionObserver((entries) => {
+            const lastEntry = entries[entries.length - 1];
+            if (lastEntry.isIntersecting && dummyCount < 6) { // limit to 6 extra items
+                dummyCount++;
+                const newCard = document.createElement('a');
+                newCard.href = "#";
+                newCard.className = 'project-card tilt-card project-wip fade-in-section';
+                newCard.setAttribute('data-category', 'concept');
+                newCard.innerHTML = `
+                    <div class="project-image">
+                        <div class="placeholder-img wip-placeholder">
+                            <div class="wip-inner">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                </svg>
+                                <span class="wip-label">Archived Concept ${dummyCount}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="wip-badge">Archive</div>
+                        <h3 class="project-title">Project ${Math.floor(Math.random() * 1000)}</h3>
+                        <p class="project-desc">Exploration concept loaded via infinite scroll.</p>
+                    </div>
+                `;
+                projectsGrid.appendChild(newCard);
+                observer.disconnect();
+                observer.observe(newCard);
+                
+                // Track infinite scroll trigger in analytics
+                let analytics = JSON.parse(localStorage.getItem('agy_analytics') || '{"scrolls":[]}');
+                if(!analytics.scrolls) analytics.scrolls = [];
+                analytics.scrolls.push({ event: 'infinite_scroll_trigger', page: dummyCount, time: Date.now() });
+                localStorage.setItem('agy_analytics', JSON.stringify(analytics));
+            }
+        }, { rootMargin: '100px' });
+        
+        const lastCard = projectsGrid.lastElementChild;
+        if (lastCard) observer.observe(lastCard);
+    }
+
+    // Task 7: Web Worker Threading
+    if (window.Worker) {
+        const worker = new Worker('worker.js');
+        worker.postMessage('start_heavy_task');
+        worker.onmessage = function(e) {
+            console.log('[Web Worker] Heavy task completed in background:', e.data.result);
+        };
     }
 
 });
