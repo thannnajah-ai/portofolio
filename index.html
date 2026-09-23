@@ -236,6 +236,15 @@
                         Interactive CV</button>
                     <p data-i18n="aboutP1"></p>
                     <p data-i18n="aboutP2"></p>
+                    <!-- Task 8: Dynamic Now Page -->
+                    <div id="dynamic-now-card" class="now-card" style="margin-top: 1.5rem; padding: 1rem; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 1rem;">
+                        <div class="now-icon" style="font-size: 1.5rem;">🌍</div>
+                        <div class="now-info">
+                            <span style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Right Now in Jakarta</span>
+                            <div id="now-weather" style="font-weight: 500; font-size: 0.9rem; margin-top: 2px;">Fetching weather...</div>
+                            <div id="now-time" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px;">--:--</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -289,6 +298,10 @@
                         presisi, proporsi spacing sempurna, dan desain asimetris. Menghindari tampilan "boilerplate"
                         khas template.</p>
                 </div>
+            </div>
+            <!-- Task 10: Interactive Skill Radar Chart -->
+            <div class="radar-container tilt-card" style="margin-top: 2rem; max-width: 400px; margin-left: auto; margin-right: auto; aspect-ratio: 1/1; position: relative; background: var(--card-bg); border-radius: 24px; border: 1px solid rgba(255,255,255,0.05);">
+                <canvas id="skill-radar" width="400" height="400" style="width: 100%; height: 100%; padding: 1rem;"></canvas>
             </div>
         </section>
 
@@ -392,9 +405,32 @@
         <section id="thoughts" class="fade-in-section">
             <h2 class="section-title"><span class="stagger-mask"><span class="stagger-text"
                         data-i18n="thoughtsTitle">Thoughts & Logs</span></span></h2>
+            <!-- Task 2: Live GitHub Stats API -->
             <div class="github-stats">
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--text);">GitHub Contributions</h3>
-                <img src="https://ghchart.rshah.org/thannnajah-ai" alt="GitHub Contributions" class="gh-chart">
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-primary);">Live GitHub Stats (API)</h3>
+                <div id="github-stats-container" class="github-stats-container" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div style="flex: 1; padding: 1rem; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color);">
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary);" id="gh-repos">--</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Public Repos</div>
+                    </div>
+                    <div style="flex: 1; padding: 1rem; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color);">
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary);" id="gh-followers">--</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Followers</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task 7: Guestbook (Local) -->
+            <div class="guestbook-section" style="margin-top: 3rem;">
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-primary);">Guestbook</h3>
+                <div class="guestbook-form" style="display: flex; gap: 10px; margin-bottom: 1rem;">
+                    <input type="text" id="guest-name" placeholder="Name" style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); outline: none;">
+                    <input type="text" id="guest-message" placeholder="Leave a message..." style="flex: 2; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); outline: none;">
+                    <button id="btn-sign-guestbook" class="btn btn-primary magnetic" style="border: none;">Sign</button>
+                </div>
+                <div id="guestbook-entries" class="guestbook-entries" style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; padding-right: 10px;">
+                    <!-- Injected via JS -->
+                </div>
             </div>
 
             <div class="logs-container">
@@ -543,6 +579,19 @@
                         style="display:inline-block; padding: 0.8rem 1.5rem; text-decoration: none;">View Live /
                         Download</a>
                 </div>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Task 1: Command Palette Dialog -->
+    <dialog id="command-palette-dialog" class="command-palette-dialog" style="padding: 0; background: transparent; border: none; max-width: 600px; width: 90%;">
+        <div style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+            <input type="text" id="cmd-input" placeholder="Type a command or search..." style="padding: 1.5rem; font-size: 1.2rem; background: transparent; border: none; border-bottom: 1px solid var(--border-color); color: var(--text-primary); outline: none; width: 100%; box-sizing: border-box;">
+            <div id="cmd-list" style="max-height: 300px; overflow-y: auto; padding: 0.5rem 0; width: 100%;">
+                <div class="cmd-item" data-action="toggle-theme" style="padding: 1rem 1.5rem; cursor: pointer; color: var(--text-secondary); transition: background 0.2s;">Toggle Dark/Light Mode</div>
+                <div class="cmd-item" data-action="download-cv" style="padding: 1rem 1.5rem; cursor: pointer; color: var(--text-secondary); transition: background 0.2s;">Download CV</div>
+                <div class="cmd-item" data-action="goto-projects" style="padding: 1rem 1.5rem; cursor: pointer; color: var(--text-secondary); transition: background 0.2s;">Go to Projects</div>
+                <div class="cmd-item" data-action="copy-email" style="padding: 1rem 1.5rem; cursor: pointer; color: var(--text-secondary); transition: background 0.2s;">Copy Email to Clipboard</div>
             </div>
         </div>
     </dialog>
