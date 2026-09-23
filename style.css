@@ -529,6 +529,8 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: transparent; /* Hides alt text if image fails to load */
+    background: var(--card-bg); /* Fallback background */
     /* Scale up slightly to allow parallax room */
     scale: 1.1;
     translate: 0 var(--parallax-y, 0px);

@@ -165,8 +165,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const animateCursor = () => {
             // Increased interpolation factor (0.8) for less delay while keeping it smooth
-            cursorX += (mouseX - cursorX) * 1;
-            cursorY += (mouseY - cursorY) * 1;
+            cursorX += (mouseX - cursorX) * 0.8;
+            cursorY += (mouseY - cursorY) * 0.8;
 
             cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
 
@@ -1584,7 +1584,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (targetElement) {
                 history.pushState(null, '', `#${targetId}`);
-                targetElement.scrollIntoView({ behavior: 'smooth' });
+                if (window.lenis) {
+                    window.lenis.scrollTo(targetElement);
+                } else {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
                 
                 // Track page view for Analytics
                 let analytics = JSON.parse(localStorage.getItem('agy_analytics') || '{"views":[]}');
@@ -1601,7 +1605,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (homeBtn) {
                         homeBtn.onclick = () => {
                             errorDialog.close();
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            if (window.lenis) {
+                                window.lenis.scrollTo(0);
+                            } else {
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }
                             history.pushState(null, '', ' ');
                         };
                     }
@@ -1615,10 +1623,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (hash) {
             const targetElement = document.getElementById(hash);
             if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth' });
+                if (window.lenis) {
+                    window.lenis.scrollTo(targetElement);
+                } else {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
             }
         } else {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (window.lenis) {
+                window.lenis.scrollTo(0);
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
     });
 
