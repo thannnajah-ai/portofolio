@@ -11,8 +11,39 @@ document.addEventListener("DOMContentLoaded", () => {
             smooth: true
         });
 
+        // Setup for Velocity Marquee and Image Parallax
+        const marqueeContent = document.querySelector('.marquee-content');
+        if (marqueeContent) marqueeContent.style.animation = 'none';
+        let marqueePos = 0;
+        
+        const parallaxImages = document.querySelectorAll('.project-image > *');
+
         function raf(time) {
             lenis.raf(time);
+            
+            // 1. Velocity Marquee
+            if (marqueeContent) {
+                const velocity = lenis.velocity || 0;
+                marqueePos -= 0.5 + Math.abs(velocity * 0.05); // Base speed + scroll momentum
+                
+                // Wrap around at 50% for infinite scroll
+                const maxScroll = marqueeContent.scrollWidth / 2;
+                if (Math.abs(marqueePos) >= maxScroll) {
+                    marqueePos = 0;
+                }
+                marqueeContent.style.transform = `translate3d(${marqueePos}px, 0, 0)`;
+            }
+
+            // 2. Image Parallax
+            if (parallaxImages.length > 0) {
+                parallaxImages.forEach(img => {
+                    const rect = img.parentElement.getBoundingClientRect();
+                    const centerOffset = (window.innerHeight / 2) - (rect.top + rect.height / 2);
+                    const y = centerOffset * -0.15; // 15% parallax effect
+                    img.style.setProperty('--parallax-y', `${y}px`);
+                });
+            }
+
             requestAnimationFrame(raf);
         }
         requestAnimationFrame(raf);
