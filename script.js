@@ -3,6 +3,13 @@
 // We start slightly scaled down (0.98 in CSS) and fade in smoothly.
 
 document.addEventListener("DOMContentLoaded", () => {
+    // 0. Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW fail:', err));
+        });
+    }
+
     // 0. Initialize Lenis Smooth Scroll (Design Engineering touch)
     if (typeof Lenis !== 'undefined') {
         const lenis = new Lenis({
@@ -148,8 +155,24 @@ document.addEventListener("DOMContentLoaded", () => {
         animateCursor();
 
         interactables.forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('active'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('active');
+                if (el.classList.contains('project-card')) {
+                    const img = el.querySelector('.preview-img, .placeholder-img');
+                    if (img && img.nodeName === 'IMG') {
+                        cursor.style.backgroundImage = `url(${img.src})`;
+                        cursor.classList.add('reveal-image');
+                    } else if (img) {
+                        cursor.innerHTML = "<span style='color: black; font-weight: 600; font-size: 0.9rem;'>View</span>";
+                        cursor.classList.add('reveal-text');
+                    }
+                }
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('active', 'reveal-image', 'reveal-text');
+                cursor.style.backgroundImage = 'none';
+                cursor.innerHTML = '';
+            });
         });
 
         // 5. Ripple Click Effect
@@ -762,7 +785,11 @@ projectCardsDOM.forEach(card => {
         }
 
         if (projectModal) {
-            projectModal.showModal();
+            if (document.startViewTransition) {
+                document.startViewTransition(() => projectModal.showModal());
+            } else {
+                projectModal.showModal();
+            }
             if (window.lenis) window.lenis.stop();
         }
     });
@@ -770,12 +797,19 @@ projectCardsDOM.forEach(card => {
 
 if (projectModalClose && projectModal) {
     projectModalClose.addEventListener('click', () => {
-        projectModal.classList.add('closing');
-        setTimeout(() => {
-            projectModal.close();
-            projectModal.classList.remove('closing');
-            if (window.lenis) window.lenis.start();
-        }, 300);
+        if (document.startViewTransition) {
+            document.startViewTransition(() => {
+                projectModal.close();
+                if (window.lenis) window.lenis.start();
+            });
+        } else {
+            projectModal.classList.add('closing');
+            setTimeout(() => {
+                projectModal.close();
+                projectModal.classList.remove('closing');
+                if (window.lenis) window.lenis.start();
+            }, 300);
+        }
     });
 
     // Close when clicking outside
@@ -787,12 +821,19 @@ if (projectModalClose && projectModal) {
             e.clientY < rect.top ||
             e.clientY > rect.bottom
         ) {
-            projectModal.classList.add('closing');
-            setTimeout(() => {
-                projectModal.close();
-                projectModal.classList.remove('closing');
-                if (window.lenis) window.lenis.start();
-            }, 300);
+            if (document.startViewTransition) {
+                document.startViewTransition(() => {
+                    projectModal.close();
+                    if (window.lenis) window.lenis.start();
+                });
+            } else {
+                projectModal.classList.add('closing');
+                setTimeout(() => {
+                    projectModal.close();
+                    projectModal.classList.remove('closing');
+                    if (window.lenis) window.lenis.start();
+                }, 300);
+            }
         }
     });
 }
@@ -894,6 +935,10 @@ const setupDownloadBtn = (btnId) => {
             btn.classList.add('success');
 
             // Trigger download aslinya
+            if (typeof showDynamicIsland === 'function') {
+                const isId = document.documentElement.lang === 'id';
+                showDynamicIsland(isId ? 'CV Berhasil Diunduh' : 'CV Downloaded');
+            }
             const a = document.createElement('a');
             a.href = 'CV_Nathan.pdf';
             a.download = 'CV_Nathan_Ferdwiansyah.pdf';
@@ -1167,6 +1212,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const text = window.getSelection().toString();
                 navigator.clipboard.writeText(text).then(() => {
                     btnCopyText.textContent = 'Copied!';
+                    if (typeof showDynamicIsland === 'function') {
+                        showDynamicIsland('Teks Disalin');
+                    }
                     setTimeout(() => {
                         btnCopyText.textContent = 'Copy';
                         window.getSelection().removeAllRanges();
