@@ -146,6 +146,10 @@
 
     <!-- Floating Navigation -->
     <nav class="floating-nav">
+        <button id="nav-toggle-btn" class="nav-toggle-btn" aria-label="Toggle Navigation Menu" aria-expanded="false">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
         <div class="nav-links">
             <a href="#hero" class="nav-link">Home</a>
             <a href="#about" class="nav-link">About</a>
@@ -488,12 +492,10 @@
             <!-- Task 7: Guestbook (Local) -->
             <div class="guestbook-section" style="margin-top: 3rem;">
                 <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-primary);">Guestbook</h3>
-                <div class="guestbook-form" style="display: flex; gap: 10px; margin-bottom: 1rem;">
-                    <input type="text" id="guest-name" placeholder="Name"
-                        style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); outline: none;">
-                    <input type="text" id="guest-message" placeholder="Leave a message..."
-                        style="flex: 2; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); outline: none;">
-                    <button id="btn-sign-guestbook" class="btn btn-primary magnetic" style="border: none;">Sign</button>
+                <div class="guestbook-form">
+                    <input type="text" id="guest-name" placeholder="Name">
+                    <input type="text" id="guest-message" placeholder="Leave a message...">
+                    <button id="btn-sign-guestbook" class="btn btn-primary magnetic">Sign</button>
                 </div>
                 <div id="guestbook-entries" class="guestbook-entries"
                     style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; padding-right: 10px;">

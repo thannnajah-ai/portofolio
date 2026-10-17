@@ -606,13 +606,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    // Local Time Widget (Yogyakarta Time)
-    const localTimeEl = document.getElementById('local-time');
-    setInterval(() => {
-        const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-        const formatter = new Intl.DateTimeFormat('en-US', options);
-        localTimeEl.innerText = `📍 Yogyakarta, ID • ${formatter.format(new Date())}`;
-    }, 1000);
 
     // Dynamic SVG Favicon & Title
     const favicon = document.getElementById('favicon');
@@ -1193,27 +1186,66 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial language load
     updateLanguage(currentLang);
 
-    // 1. Local Time & Status Indicator
+    // 1. Local Time & Status Indicator (Unified Yogyakarta Time Updater)
     const timeText = document.getElementById('time-text');
+    const localTimeEl = document.getElementById('local-time');
     const timeStatusDot = document.getElementById('time-status-dot');
-    if (timeText) {
+
+    if (timeText || localTimeEl) {
         const updateTime = () => {
             const date = new Date();
             const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false };
             const formatter = new Intl.DateTimeFormat('en-US', options);
-            timeText.textContent = formatter.format(date) + ' WIB';
+            const timeFormatted = formatter.format(date);
 
-            const hour = parseInt(date.toLocaleString('en-US', { timeZone: 'Asia/Jakarta', hour: 'numeric', hour12: false }));
-            if (hour >= 23 || hour < 8) {
-                if (timeStatusDot) timeStatusDot.classList.add('sleeping');
-                timeText.title = 'Probably Sleeping 😴';
-            } else {
-                if (timeStatusDot) timeStatusDot.classList.remove('sleeping');
-                timeText.title = 'Awake & Coding 💻';
+            if (timeText) {
+                timeText.textContent = `${timeFormatted} WIB`;
+            }
+            if (localTimeEl) {
+                localTimeEl.textContent = `📍 Yogyakarta, ID • ${timeFormatted} WIB`;
+            }
+
+            const hour = parseInt(date.toLocaleString('en-US', { timeZone: 'Asia/Jakarta', hour: 'numeric', hour12: false }), 10);
+            if (timeStatusDot) {
+                if (hour >= 23 || hour < 8) {
+                    timeStatusDot.classList.add('sleeping');
+                    if (timeText) timeText.title = 'Probably Sleeping 😴';
+                } else {
+                    timeStatusDot.classList.remove('sleeping');
+                    if (timeText) timeText.title = 'Awake & Coding 💻';
+                }
             }
         };
         updateTime();
         setInterval(updateTime, 10000);
+    }
+
+    // Mobile Navigation Drawer Toggle
+    const navToggleBtn = document.getElementById('nav-toggle-btn');
+    const navLinks = document.querySelector('.nav-links');
+    if (navToggleBtn && navLinks) {
+        navToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = navLinks.classList.toggle('is-open');
+            navToggleBtn.classList.toggle('is-active', isOpen);
+            navToggleBtn.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        navLinks.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('is-open');
+                navToggleBtn.classList.remove('is-active');
+                navToggleBtn.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.floating-nav')) {
+                navLinks.classList.remove('is-open');
+                navToggleBtn.classList.remove('is-active');
+                navToggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
     }
 
     // 2. Custom Text-Select Tooltip
