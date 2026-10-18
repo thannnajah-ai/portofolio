@@ -120,5 +120,19 @@
     "contactNameAria": "Your Name",
     "contactMsgAria": "Your Message",
     "cmdInputAria": "Search or enter a command",
-    "guestCooldown": "Please wait {seconds}s before submitting again."
+    "guestCooldown": "Please wait {seconds}s before submitting again.",
+    "downloadCvPdf": "Download CV (PDF)",
+    "liveDemo": "Live Demo",
+    "readPaper": "Read Paper (PDF)",
+    "viewDetails": "Details",
+    "directContactTitle": "Prefer direct email?",
+    "copyEmail": "Copy Email",
+    "emailCopied": "Email copied!",
+    "skillsCategorized": "Skill Matrix",
+    "skillCat1Title": "Core Web Stack",
+    "skillCat1Desc": "Semantic HTML5, modern CSS architecture, and Vanilla JavaScript without bloated frameworks.",
+    "skillCat2Title": "UI & Interaction Craft",
+    "skillCat2Desc": "Fluid typography, responsive mobile-first layouts, and accessible motion systems.",
+    "skillCat3Title": "Engineering & Tooling",
+    "skillCat3Desc": "Git version control, Service Worker caching, and Core Web Vitals optimization."
 }

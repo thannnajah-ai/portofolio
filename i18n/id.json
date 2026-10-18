@@ -120,5 +120,19 @@
     "contactNameAria": "Nama Anda",
     "contactMsgAria": "Pesan Anda",
     "cmdInputAria": "Cari atau ketik perintah",
-    "guestCooldown": "Harap tunggu {seconds} detik sebelum mengirim pesan lagi."
+    "guestCooldown": "Harap tunggu {seconds} detik sebelum mengirim pesan lagi.",
+    "downloadCvPdf": "Unduh CV (PDF)",
+    "liveDemo": "Lihat Demo",
+    "readPaper": "Baca Karya Tulis (PDF)",
+    "viewDetails": "Detail",
+    "directContactTitle": "Ingin menghubungi langsung?",
+    "copyEmail": "Salin Email",
+    "emailCopied": "Email disalin!",
+    "skillsCategorized": "Matriks Keahlian",
+    "skillCat1Title": "Fondasi Web Inti",
+    "skillCat1Desc": "HTML5 semantik, arsitektur CSS3 modern, dan Vanilla JavaScript tanpa framework berlebih.",
+    "skillCat2Title": "Desain UI & Interaksi",
+    "skillCat2Desc": "Tipografi dinamis, tata letak mobile-first yang responsif, dan sistem animasi yang aksesibel.",
+    "skillCat3Title": "Rekayasa & Perangkat Kerja",
+    "skillCat3Desc": "Pengelolaan versi Git, caching Service Worker, dan optimasi performa Core Web Vitals."
 }

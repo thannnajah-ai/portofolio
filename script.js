@@ -748,9 +748,16 @@ document.addEventListener("DOMContentLoaded", () => {
         logsTimeline.innerHTML = `<div style="color: var(--text-muted); font-size: 0.9rem;">${lang === 'id' ? 'Memuat commit terbaru dari GitHub...' : 'Fetching live commits from GitHub...'}</div>`;
 
         fetch('https://api.github.com/repos/thannnajah-ai/portofolio/commits')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.json();
+            })
             .then(data => {
                 logsTimeline.innerHTML = ''; // clear loading text
+
+                if (!Array.isArray(data)) {
+                    throw new Error('Unexpected response format');
+                }
 
                 // Get latest 4 commits
                 const commits = data.slice(0, 4);
@@ -944,59 +951,83 @@ const projectModalTitle = document.getElementById('project-modal-title');
 const projectModalDesc = document.getElementById('project-modal-desc');
 const projectModalImgContainer = document.getElementById('project-modal-img-container');
 const projectModalLink = document.getElementById('project-modal-link');
+let lastActiveProjectTrigger = null;
 
-projectCardsDOM.forEach(card => {
-    card.addEventListener('click', (e) => {
-        // Ignore if it's the WIP card
-        if (card.classList.contains('project-wip')) return;
+function shouldResumeLenis() {
+    if (!window.lenis) return false;
+    const cmdPalette = document.getElementById('cmd-palette');
+    if (cmdPalette && cmdPalette.open) return false;
+    if (!document.body.classList.contains('loaded')) return false;
+    return true;
+}
 
-        e.preventDefault(); // Stop default anchor navigation
+function openProjectModal(card, triggerEl) {
+    if (!card || card.classList.contains('project-wip') || !projectModal || projectModal.open) return;
+    lastActiveProjectTrigger = triggerEl || card;
 
-        // Extract content
-        const titleEl = card.querySelector('.project-title');
-        const descEl = card.querySelector('.project-desc');
-        const imgEl = card.querySelector('.project-image img');
-        const svgEl = card.querySelector('.project-image .placeholder-img');
+    // Extract content
+    const titleEl = card.querySelector('.project-title');
+    const descEl = card.querySelector('.project-desc');
+    const imgEl = card.querySelector('.project-image img');
+    const svgEl = card.querySelector('.project-image .placeholder-img');
+    const mockupEl = card.querySelector('.project-image .project-mockup');
 
-        if (titleEl) projectModalTitle.innerHTML = titleEl.innerHTML;
-        if (descEl) projectModalDesc.innerHTML = descEl.innerHTML;
+    if (titleEl) projectModalTitle.innerHTML = titleEl.innerHTML;
+    if (descEl) projectModalDesc.innerHTML = descEl.innerHTML;
 
-        if (imgEl) {
-            projectModalImgContainer.innerHTML = `<img src="${imgEl.src}" alt="${titleEl ? titleEl.textContent : 'Project'}">`;
-        } else if (svgEl) {
-            projectModalImgContainer.innerHTML = `<div class="placeholder-img" style="background: linear-gradient(135deg, #1f2937, #111827); height: 180px; display: flex; align-items: center; justify-content: center;">${svgEl.innerHTML}</div>`;
-        } else {
-            projectModalImgContainer.innerHTML = '';
-        }
+    if (mockupEl) {
+        projectModalImgContainer.innerHTML = `<div style="padding: 1rem; background: var(--card-bg); border-radius: 12px; display: flex; justify-content: center;">${mockupEl.outerHTML}</div>`;
+    } else if (imgEl) {
+        projectModalImgContainer.innerHTML = `<img src="${imgEl.src}" alt="${titleEl ? titleEl.textContent : 'Project'}">`;
+    } else if (svgEl) {
+        projectModalImgContainer.innerHTML = `<div class="placeholder-img" style="background: linear-gradient(135deg, #1f2937, #111827); height: 180px; display: flex; align-items: center; justify-content: center;">${svgEl.innerHTML}</div>`;
+    } else {
+        projectModalImgContainer.innerHTML = '';
+    }
 
-        const href = card.getAttribute('href');
-        if (href && href !== '#') {
-            projectModalLink.href = href;
-            projectModalLink.style.display = 'inline-block';
-            const isId = document.documentElement.lang === 'id';
-            projectModalLink.textContent = isId ? 'Kunjungi Proyek / Buka Dokumen' : 'Visit Project / View Document';
-        } else {
-            projectModalLink.style.display = 'none';
-        }
+    const primaryAction = card.querySelector('.project-actions a');
+    const href = primaryAction ? primaryAction.getAttribute('href') : card.getAttribute('href');
+    if (href && href !== '#') {
+        projectModalLink.href = href;
+        projectModalLink.style.display = 'inline-block';
+        const isId = document.documentElement.lang === 'id';
+        projectModalLink.textContent = isId ? 'Kunjungi Proyek / Buka Dokumen' : 'Visit Project / View Document';
+    } else {
+        projectModalLink.style.display = 'none';
+    }
 
-        const safeViewTransition = (callback) => {
-            if (document.startViewTransition) {
-                try {
-                    const vt = document.startViewTransition(callback);
-                    if (vt && vt.finished) vt.finished.catch(() => {});
-                    return vt;
-                } catch (e) {
-                    callback();
-                }
-            } else {
+    const safeViewTransition = (callback) => {
+        if (document.startViewTransition) {
+            try {
+                const vt = document.startViewTransition(callback);
+                if (vt && vt.finished) vt.finished.catch(() => {});
+                return vt;
+            } catch (e) {
                 callback();
             }
-        };
-
-        if (projectModal) {
-            safeViewTransition(() => projectModal.showModal());
-            if (window.lenis) window.lenis.stop();
+        } else {
+            callback();
         }
+    };
+
+    safeViewTransition(() => {
+        projectModal.showModal();
+        if (window.lenis) window.lenis.stop();
+    });
+}
+
+document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+        // If clicking a direct link or external action button, allow default behavior
+        if (e.target.closest('a')) return;
+        const detailsBtn = e.target.closest('.btn-project-details');
+        if (detailsBtn) {
+            e.preventDefault();
+            openProjectModal(card, detailsBtn);
+            return;
+        }
+        // If clicking anywhere else on card, open modal
+        openProjectModal(card, card);
     });
 });
 
@@ -1015,23 +1046,24 @@ if (projectModalClose && projectModal) {
         }
     };
 
-    projectModalClose.addEventListener('click', () => {
+    const closeProjectModal = () => {
+        if (!projectModal || !projectModal.open) return;
         if (document.startViewTransition) {
             safeViewTransition(() => {
                 projectModal.close();
-                if (window.lenis) window.lenis.start();
             });
         } else {
             projectModal.classList.add('closing');
             setTimeout(() => {
                 projectModal.close();
                 projectModal.classList.remove('closing');
-                if (window.lenis) window.lenis.start();
             }, 300);
         }
-    });
+    };
 
-    // Close when clicking outside
+    projectModalClose.addEventListener('click', closeProjectModal);
+
+    // Close when clicking outside modal box
     projectModal.addEventListener('click', (e) => {
         const rect = projectModal.getBoundingClientRect();
         if (
@@ -1040,19 +1072,22 @@ if (projectModalClose && projectModal) {
             e.clientY < rect.top ||
             e.clientY > rect.bottom
         ) {
-            if (document.startViewTransition) {
-                safeViewTransition(() => {
-                    projectModal.close();
-                    if (window.lenis) window.lenis.start();
-                });
-            } else {
-                projectModal.classList.add('closing');
-                setTimeout(() => {
-                    projectModal.close();
-                    projectModal.classList.remove('closing');
-                    if (window.lenis) window.lenis.start();
-                }, 300);
-            }
+            closeProjectModal();
+        }
+    });
+
+    // Single unified closure handler for scroll recovery and focus restoration
+    projectModal.addEventListener('close', () => {
+        if (shouldResumeLenis()) {
+            window.lenis.start();
+        }
+        const trigger = lastActiveProjectTrigger;
+        if (trigger && trigger.isConnected && typeof trigger.focus === 'function') {
+            setTimeout(() => {
+                if (trigger.isConnected) {
+                    trigger.focus();
+                }
+            }, 50);
         }
     });
 }
@@ -1509,6 +1544,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 navToggleBtn.setAttribute('aria-expanded', 'false');
             }
         });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navLinks.classList.contains('is-open')) {
+                navLinks.classList.remove('is-open');
+                navToggleBtn.classList.remove('is-active');
+                navToggleBtn.setAttribute('aria-expanded', 'false');
+                navToggleBtn.focus();
+            }
+        });
     }
 
     // 2. Custom Text-Select Tooltip
@@ -1625,10 +1669,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else if (action === 'goto-projects') {
                     document.querySelector('.spy-link[data-target="projects"]')?.click();
                 } else if (action === 'copy-email') {
-                    navigator.clipboard.writeText('thannnajah@gmail.com');
+                    const email = 'thannnajah@gmail.com';
                     const curLang = currentLang || localStorage.getItem('lang') || 'en';
-                    if (typeof showDynamicIsland === 'function') {
-                        showDynamicIsland(curLang === 'id' ? 'Email Disalin ke Clipboard!' : 'Email Copied to Clipboard!');
+                    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                        navigator.clipboard.writeText(email).then(() => {
+                            if (typeof showDynamicIsland === 'function') {
+                                showDynamicIsland(curLang === 'id' ? 'Email Disalin ke Clipboard!' : 'Email Copied to Clipboard!');
+                            }
+                        }).catch(() => {
+                            window.location.href = `mailto:${email}`;
+                        });
+                    } else {
+                        window.location.href = `mailto:${email}`;
                     }
                 }
                 cmdPalette.close();
@@ -2142,7 +2194,13 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 document.getElementById('contact-step-2').style.display = 'none';
                 document.getElementById('contact-step-1').style.display = 'block';
-                setTimeout(() => document.getElementById('contact-step-1').classList.add('active'), 50);
+                setTimeout(() => {
+                    document.getElementById('contact-step-1').classList.add('active');
+                    const nameInput = document.getElementById('contact-name');
+                    if (nameInput && nameInput.isConnected) {
+                        nameInput.focus();
+                    }
+                }, 50);
             }, 400);
         });
 
@@ -2210,6 +2268,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('contact-step-1').style.display = 'block';
                 setTimeout(() => document.getElementById('contact-step-1').classList.add('active'), 50);
             }, 400);
+        });
+
+        // Keyboard navigation: Enter in contact-name triggers next step
+        const contactNameInput = document.getElementById('contact-name');
+        if (contactNameInput) {
+            contactNameInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    contactNextBtn.click();
+                }
+            });
+        }
+
+        // Keyboard navigation: Ctrl+Enter / Cmd+Enter in message textarea triggers submission
+        const contactMsgInput = document.getElementById('contact-message');
+        if (contactMsgInput) {
+            contactMsgInput.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    contactSubmitBtn.click();
+                }
+            });
+        }
+    }
+
+    // Direct Email Copy Button
+    const btnCopyEmail = document.getElementById('btn-copy-email');
+    if (btnCopyEmail) {
+        btnCopyEmail.addEventListener('click', () => {
+            const email = 'thannnajah@gmail.com';
+            const curLang = currentLang || localStorage.getItem('lang') || 'en';
+            const t = (i18nData && i18nData[curLang]) ? i18nData[curLang] : (i18nData ? i18nData.en : {});
+
+            const handleSuccess = () => {
+                const copiedText = curLang === 'id' ? 'Email Disalin!' : 'Email Copied!';
+                btnCopyEmail.textContent = copiedText;
+                if (typeof showDynamicIsland === 'function') {
+                    showDynamicIsland(copiedText);
+                }
+                setTimeout(() => {
+                    btnCopyEmail.textContent = t.copyEmail || 'Copy Email';
+                }, 2000);
+            };
+
+            const handleFallback = () => {
+                window.location.href = `mailto:${email}`;
+            };
+
+            if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                navigator.clipboard.writeText(email)
+                    .then(handleSuccess)
+                    .catch(handleFallback);
+            } else {
+                handleFallback();
+            }
         });
     }
 
