@@ -748,9 +748,16 @@ document.addEventListener("DOMContentLoaded", () => {
         logsTimeline.innerHTML = `<div style="color: var(--text-muted); font-size: 0.9rem;">${lang === 'id' ? 'Memuat commit terbaru dari GitHub...' : 'Fetching live commits from GitHub...'}</div>`;
 
         fetch('https://api.github.com/repos/thannnajah-ai/portofolio/commits')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.json();
+            })
             .then(data => {
                 logsTimeline.innerHTML = ''; // clear loading text
+
+                if (!Array.isArray(data)) {
+                    throw new Error('Unexpected response format');
+                }
 
                 // Get latest 4 commits
                 const commits = data.slice(0, 4);
@@ -945,58 +952,71 @@ const projectModalDesc = document.getElementById('project-modal-desc');
 const projectModalImgContainer = document.getElementById('project-modal-img-container');
 const projectModalLink = document.getElementById('project-modal-link');
 
-projectCardsDOM.forEach(card => {
-    card.addEventListener('click', (e) => {
-        // Ignore if it's the WIP card
-        if (card.classList.contains('project-wip')) return;
+function openProjectModal(card) {
+    if (!card || card.classList.contains('project-wip') || !projectModal) return;
 
-        e.preventDefault(); // Stop default anchor navigation
+    // Extract content
+    const titleEl = card.querySelector('.project-title');
+    const descEl = card.querySelector('.project-desc');
+    const imgEl = card.querySelector('.project-image img');
+    const svgEl = card.querySelector('.project-image .placeholder-img');
+    const mockupEl = card.querySelector('.project-image .project-mockup');
 
-        // Extract content
-        const titleEl = card.querySelector('.project-title');
-        const descEl = card.querySelector('.project-desc');
-        const imgEl = card.querySelector('.project-image img');
-        const svgEl = card.querySelector('.project-image .placeholder-img');
+    if (titleEl) projectModalTitle.innerHTML = titleEl.innerHTML;
+    if (descEl) projectModalDesc.innerHTML = descEl.innerHTML;
 
-        if (titleEl) projectModalTitle.innerHTML = titleEl.innerHTML;
-        if (descEl) projectModalDesc.innerHTML = descEl.innerHTML;
+    if (mockupEl) {
+        projectModalImgContainer.innerHTML = `<div style="padding: 1rem; background: var(--card-bg); border-radius: 12px; display: flex; justify-content: center;">${mockupEl.outerHTML}</div>`;
+    } else if (imgEl) {
+        projectModalImgContainer.innerHTML = `<img src="${imgEl.src}" alt="${titleEl ? titleEl.textContent : 'Project'}">`;
+    } else if (svgEl) {
+        projectModalImgContainer.innerHTML = `<div class="placeholder-img" style="background: linear-gradient(135deg, #1f2937, #111827); height: 180px; display: flex; align-items: center; justify-content: center;">${svgEl.innerHTML}</div>`;
+    } else {
+        projectModalImgContainer.innerHTML = '';
+    }
 
-        if (imgEl) {
-            projectModalImgContainer.innerHTML = `<img src="${imgEl.src}" alt="${titleEl ? titleEl.textContent : 'Project'}">`;
-        } else if (svgEl) {
-            projectModalImgContainer.innerHTML = `<div class="placeholder-img" style="background: linear-gradient(135deg, #1f2937, #111827); height: 180px; display: flex; align-items: center; justify-content: center;">${svgEl.innerHTML}</div>`;
-        } else {
-            projectModalImgContainer.innerHTML = '';
-        }
+    const primaryAction = card.querySelector('.project-actions a');
+    const href = primaryAction ? primaryAction.getAttribute('href') : card.getAttribute('href');
+    if (href && href !== '#') {
+        projectModalLink.href = href;
+        projectModalLink.style.display = 'inline-block';
+        const isId = document.documentElement.lang === 'id';
+        projectModalLink.textContent = isId ? 'Kunjungi Proyek / Buka Dokumen' : 'Visit Project / View Document';
+    } else {
+        projectModalLink.style.display = 'none';
+    }
 
-        const href = card.getAttribute('href');
-        if (href && href !== '#') {
-            projectModalLink.href = href;
-            projectModalLink.style.display = 'inline-block';
-            const isId = document.documentElement.lang === 'id';
-            projectModalLink.textContent = isId ? 'Kunjungi Proyek / Buka Dokumen' : 'Visit Project / View Document';
-        } else {
-            projectModalLink.style.display = 'none';
-        }
-
-        const safeViewTransition = (callback) => {
-            if (document.startViewTransition) {
-                try {
-                    const vt = document.startViewTransition(callback);
-                    if (vt && vt.finished) vt.finished.catch(() => {});
-                    return vt;
-                } catch (e) {
-                    callback();
-                }
-            } else {
+    const safeViewTransition = (callback) => {
+        if (document.startViewTransition) {
+            try {
+                const vt = document.startViewTransition(callback);
+                if (vt && vt.finished) vt.finished.catch(() => {});
+                return vt;
+            } catch (e) {
                 callback();
             }
-        };
-
-        if (projectModal) {
-            safeViewTransition(() => projectModal.showModal());
-            if (window.lenis) window.lenis.stop();
+        } else {
+            callback();
         }
+    };
+
+    safeViewTransition(() => {
+        projectModal.showModal();
+        if (window.lenis) window.lenis.stop();
+    });
+}
+
+document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+        // If clicking a direct link or external action button, allow default behavior
+        if (e.target.closest('a')) return;
+        if (e.target.closest('.btn-project-details')) {
+            e.preventDefault();
+            openProjectModal(card);
+            return;
+        }
+        // If clicking anywhere else on card, open modal
+        openProjectModal(card);
     });
 });
 
@@ -1507,6 +1527,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 navLinks.classList.remove('is-open');
                 navToggleBtn.classList.remove('is-active');
                 navToggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navLinks.classList.contains('is-open')) {
+                navLinks.classList.remove('is-open');
+                navToggleBtn.classList.remove('is-active');
+                navToggleBtn.setAttribute('aria-expanded', 'false');
+                navToggleBtn.focus();
             }
         });
     }
@@ -2210,6 +2239,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('contact-step-1').style.display = 'block';
                 setTimeout(() => document.getElementById('contact-step-1').classList.add('active'), 50);
             }, 400);
+        });
+
+        // Keyboard navigation: Enter in contact-name triggers next step
+        const contactNameInput = document.getElementById('contact-name');
+        if (contactNameInput) {
+            contactNameInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    contactNextBtn.click();
+                }
+            });
+        }
+    }
+
+    // Direct Email Copy Button
+    const btnCopyEmail = document.getElementById('btn-copy-email');
+    if (btnCopyEmail) {
+        btnCopyEmail.addEventListener('click', () => {
+            navigator.clipboard.writeText('thannnajah@gmail.com').then(() => {
+                const curLang = currentLang || localStorage.getItem('lang') || 'en';
+                const copiedText = curLang === 'id' ? 'Email Disalin!' : 'Email Copied!';
+                btnCopyEmail.textContent = copiedText;
+                if (typeof showDynamicIsland === 'function') {
+                    showDynamicIsland(copiedText);
+                }
+                setTimeout(() => {
+                    const lang = currentLang || localStorage.getItem('lang') || 'en';
+                    const t = (i18nData && i18nData[lang]) ? i18nData[lang] : (i18nData ? i18nData.en : {});
+                    btnCopyEmail.textContent = t.copyEmail || 'Copy Email';
+                }, 2000);
+            }).catch(() => {
+                window.location.href = 'mailto:thannnajah@gmail.com';
+            });
         });
     }
 

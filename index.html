@@ -245,9 +245,12 @@
                             for work</span></div>
                 </div>
                 <div class="about-text">
-                    <button id="btn-view-cv" class="btn btn-secondary magnetic" style="margin-top: 1rem;" data-i18n="btnViewCv">Interactive Resume</button>
                     <p data-i18n="aboutP1"></p>
                     <p data-i18n="aboutP2"></p>
+                    <div class="about-actions">
+                        <button id="btn-view-cv" class="btn btn-primary magnetic" data-i18n="btnViewCv">Interactive Resume</button>
+                        <a href="CV_Nathan.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-secondary magnetic" data-i18n="downloadCvPdf">Download CV (PDF)</a>
+                    </div>
                     <div class="bento-grid"
                         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
                         <!-- Right Now Widget -->
@@ -268,7 +271,7 @@
                         <div class="social-widget inner-widget"
                             style="padding: 1.5rem; border-radius: 16px; display: flex; align-items: center; justify-content: space-evenly; gap: 0.5rem; flex-wrap: wrap;">
                             <a href="https://github.com/thannnajah-ai" target="_blank" rel="noopener noreferrer"
-                                class="social-icon magnetic" aria-label="GitHub">
+                                class="social-icon magnetic" aria-label="GitHub" title="GitHub">
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path
@@ -277,7 +280,7 @@
                                 </svg>
                             </a>
                             <a href="https://www.linkedin.com/in/thannnajah/" target="_blank" rel="noopener noreferrer"
-                                class="social-icon magnetic" aria-label="LinkedIn">
+                                class="social-icon magnetic" aria-label="LinkedIn" title="LinkedIn">
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path
@@ -288,7 +291,7 @@
                                 </svg>
                             </a>
                             <a href="https://x.com/fwnathannnnnn" target="_blank" rel="noopener noreferrer"
-                                class="social-icon magnetic" aria-label="X / Twitter">
+                                class="social-icon magnetic" aria-label="X / Twitter" title="X (Twitter)">
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M4 4l11.733 16h4.267l-11.733-16z"></path>
@@ -296,7 +299,7 @@
                                 </svg>
                             </a>
                             <a href="https://www.instagram.com/fw.nathannnnnn/" target="_blank"
-                                rel="noopener noreferrer" class="social-icon magnetic" aria-label="Instagram">
+                                rel="noopener noreferrer" class="social-icon magnetic" aria-label="Instagram" title="Instagram">
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -305,7 +308,7 @@
                                 </svg>
                             </a>
                             <a href="https://wa.me/6285725276231" target="_blank" rel="noopener noreferrer"
-                                class="social-icon magnetic" aria-label="WhatsApp">
+                                class="social-icon magnetic" aria-label="WhatsApp" title="WhatsApp">
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9"></path>
@@ -335,6 +338,12 @@
                     </div>
                     <h3 class="skill-title" data-i18n="skill1Title">Core Tech Stack</h3>
                     <p class="skill-desc" data-i18n="skill1Desc">Strong command of modern semantic HTML5, CSS3 architecture, and Vanilla JavaScript without unnecessary framework bloat.</p>
+                    <div class="skill-pills-row">
+                        <span class="skill-pill">HTML5 Semantics</span>
+                        <span class="skill-pill">Modern CSS</span>
+                        <span class="skill-pill">Vanilla JS (ES6+)</span>
+                        <span class="skill-pill">DOM &amp; Web APIs</span>
+                    </div>
                 </div>
 
                 <!-- Skill Card 2 -->
@@ -349,6 +358,12 @@
                     </div>
                     <h3 class="skill-title" data-i18n="skill2Title">Interface Motion</h3>
                     <p class="skill-desc" data-i18n="skill2Desc">Crafting natural transitions with custom easing curves and tactile feedback, ensuring interactions feel purposeful and respect reduced motion preferences.</p>
+                    <div class="skill-pills-row">
+                        <span class="skill-pill">Micro-Interactions</span>
+                        <span class="skill-pill">WCAG Accessibility</span>
+                        <span class="skill-pill">Reduced Motion</span>
+                        <span class="skill-pill">Tactile Feedback</span>
+                    </div>
                 </div>
 
                 <!-- Skill Card 3 -->
@@ -362,14 +377,16 @@
                     </div>
                     <h3 class="skill-title" data-i18n="skill3Title">UI Craft & Hierarchy</h3>
                     <p class="skill-desc" data-i18n="skill3Desc">Designing interfaces with strict typographic hierarchy, intentional spacing systems, and dark/light modes engineered for clarity across all screens.</p>
+                    <div class="skill-pills-row">
+                        <span class="skill-pill">Fluid Typography</span>
+                        <span class="skill-pill">Design Tokens</span>
+                        <span class="skill-pill">Dark/Light Themes</span>
+                        <span class="skill-pill">Mobile-First</span>
+                    </div>
                 </div>
             </div>
-            <!-- Task 10: Interactive Skill Radar Chart -->
-            <div class="radar-container tilt-card"
-                style="margin-top: 2rem; max-width: 400px; margin-left: auto; margin-right: auto; aspect-ratio: 1/1; position: relative; background: var(--card-bg); border-radius: 24px; border: 1px solid rgba(255,255,255,0.05);">
-                <canvas id="skill-radar" width="400" height="400"
-                    style="width: 100%; height: 100%; padding: 1rem;"></canvas>
-            </div>
+            <!-- Canvas kept for compatibility without arbitrary percentage display -->
+            <canvas id="skill-radar" width="400" height="400" style="display: none;" aria-hidden="true"></canvas>
         </section>
 
         <!-- Work Philosophy Section -->
@@ -403,33 +420,35 @@
                         data-i18n="projectsTitle">Featured Projects</span></span></h2>
 
             <div class="project-controls"
-                style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; align-items: center; justify-content: space-between;">
+                style="display: flex; gap: 0.75rem; margin-bottom: 2rem; align-items: center; justify-content: flex-start;">
                 <div class="project-filters" style="margin-bottom: 0;">
                     <button class="filter-btn active" data-filter="all" data-i18n="filterAll">All</button>
                     <button class="filter-btn" data-filter="web" data-i18n="filterWeb">Web Dev</button>
                     <button class="filter-btn" data-filter="research" data-i18n="filterResearch">Research</button>
                 </div>
-                <div class="search-container" style="flex: 1; min-width: 250px; max-width: 400px; position: relative;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round"
-                        style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary);">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input type="text" id="project-search-input" placeholder="Search projects..."
-                        data-i18n-placeholder="searchPlaceholder"
-                        aria-label="Search projects"
-                        data-i18n-aria="searchProjectsAria"
-                        style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.5rem; border-radius: 99px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); outline: none; font-family: inherit; font-size: 0.9rem; transition: border-color 0.3s ease;">
-                </div>
             </div>
             <div class="projects-grid">
                 <!-- Project 1: TembusPTN (Primary Case Study) -->
-                <a href="https://tembusptn.my.id/" target="_blank" rel="noopener noreferrer"
-                    class="project-card tilt-card" data-category="web">
+                <article class="project-card tilt-card" data-category="web">
                     <div class="project-image">
-                        <img src="https://image.thum.io/get/width/1000/crop/800/https://tembusptn.my.id/"
-                            alt="Preview TembusPTN" class="preview-img" loading="lazy">
+                        <div class="project-mockup" aria-label="TembusPTN Interface Preview">
+                            <div class="mockup-header">
+                                <span class="mockup-dot red"></span>
+                                <span class="mockup-dot yellow"></span>
+                                <span class="mockup-dot green"></span>
+                                <span class="mockup-url">tembusptn.my.id</span>
+                            </div>
+                            <div class="mockup-content">
+                                <div class="mockup-badge">UTBK / SNBT Simulation</div>
+                                <div class="mockup-headline">Latihan Soal &amp; Pembahasan Terstruktur</div>
+                                <div class="mockup-sub">Simulasi ujian online adaptif dengan antarmuka minim distraksi</div>
+                                <div class="mockup-ui-row">
+                                    <span class="mockup-chip active">Penalaran Umum</span>
+                                    <span class="mockup-chip">Literasi Bhs Inggris</span>
+                                    <span class="mockup-chip">Penalaran Mat</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="project-info">
                         <div class="project-tag-wrapper" style="margin-bottom: 0.5rem;">
@@ -437,28 +456,47 @@
                         </div>
                         <h3 class="project-title" data-i18n="project1Title">TembusPTN.my.id</h3>
                         <p class="project-desc" data-i18n="project1Desc">Educational web platform designed to help students prepare for UTBK/SNBT exams. Led the frontend interface implementation: clean question navigation, readable typography, and distraction-free responsive practice views.</p>
-                        <div class="project-tech-stack" style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">HTML5</span>
-                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">CSS3</span>
-                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">JavaScript</span>
-                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">Responsive UI</span>
+                        <div class="project-tech-stack">
+                            <span class="tech-pill">HTML5</span>
+                            <span class="tech-pill">CSS3</span>
+                            <span class="tech-pill">JavaScript</span>
+                            <span class="tech-pill">Responsive UI</span>
+                        </div>
+                        <div class="project-actions">
+                            <a href="https://tembusptn.my.id/" target="_blank" rel="noopener noreferrer" class="btn btn-primary project-action-btn" data-i18n="liveDemo">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                    <polyline points="15 3 21 3 21 9"></polyline>
+                                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                                </svg>
+                                <span>Live Demo</span>
+                            </a>
+                            <button type="button" class="btn btn-secondary project-action-btn btn-project-details" data-project="tembusptn" data-i18n="viewDetails">Details</button>
                         </div>
                     </div>
-                </a>
+                </article>
 
                 <!-- Project 2: Scientific Research -->
-                <a href="KTI_Nathan.pdf" target="_blank" rel="noopener noreferrer" class="project-card tilt-card"
-                    data-category="research">
+                <article class="project-card tilt-card" data-category="research">
                     <div class="project-image">
-                        <div class="placeholder-img" style="background: linear-gradient(135deg, #1f2937, #111827);">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#60a5fa"
-                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10 9 9 9 8 9"></polyline>
-                            </svg>
+                        <div class="project-mockup research-mockup" aria-label="Scientific Research Paper Preview">
+                            <div class="mockup-header">
+                                <span class="mockup-tag-badge">PDF • Research Paper</span>
+                                <span class="mockup-url">KTI_Nathan.pdf</span>
+                            </div>
+                            <div class="mockup-content">
+                                <div class="mockup-paper-icon">
+                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                                        <polyline points="10 9 9 9 8 9"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="mockup-headline">Karya Tulis Ilmiah: Kadar Glukosa Nasi Putih</div>
+                                <div class="mockup-sub">Experimental Research • Analytical Documentation</div>
+                            </div>
                         </div>
                     </div>
                     <div class="project-info">
@@ -467,13 +505,26 @@
                         </div>
                         <h3 class="project-title" data-i18n="project2Title">Scientific Research: Rice Glycemic Response</h3>
                         <p class="project-desc" data-i18n="project2Desc">Scientific paper exploring the impact of consumption methods on white rice glycemic response. Highlights analytical discipline, structured documentation, and research rigor applied alongside engineering.</p>
-                        <div class="project-tech-stack" style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">Academic Research</span>
-                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">Data Analysis</span>
-                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">Scientific Writing</span>
+                        <div class="project-tech-stack">
+                            <span class="tech-pill">Academic Research</span>
+                            <span class="tech-pill">Data Analysis</span>
+                            <span class="tech-pill">Scientific Writing</span>
+                        </div>
+                        <div class="project-actions">
+                            <a href="KTI_Nathan.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary project-action-btn" data-i18n="readPaper">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                                <span>Read Paper (PDF)</span>
+                            </a>
+                            <button type="button" class="btn btn-secondary project-action-btn btn-project-details" data-project="kti" data-i18n="viewDetails">Details</button>
                         </div>
                     </div>
-                </a>
+                </article>
             </div>
         </section>
 
@@ -538,6 +589,21 @@
         <section id="contact" class="fade-in-section" style="margin-bottom: 4rem;">
             <h2 class="section-title"><span class="stagger-mask"><span class="stagger-text" data-i18n="contactTitle">Get
                         In Touch</span></span></h2>
+
+            <div class="direct-contact-bar">
+                <span class="direct-contact-label" data-i18n="directContactTitle">Prefer direct email?</span>
+                <div class="direct-contact-links">
+                    <a href="mailto:thannnajah@gmail.com" class="direct-email-link" aria-label="Send email to thannnajah@gmail.com">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <span>thannnajah@gmail.com</span>
+                    </a>
+                    <button id="btn-copy-email" class="btn-copy-email" type="button" aria-label="Copy email address" data-i18n="copyEmail">Copy Email</button>
+                </div>
+            </div>
+
             <div class="contact-container tilt-card"
                 style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 2rem; border-radius: 24px; border: 1px solid var(--border-color); text-align: center;">
 
