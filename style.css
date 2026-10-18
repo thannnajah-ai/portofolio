@@ -1255,7 +1255,7 @@ body.loaded #preloader {
     background: rgba(0, 0, 0, 0.2);
 }
 
-/* Spline Background */
+/* Spline Background & Hero 3D / Fallback */
 .spline-bg {
     position: absolute;
     top: 50%;
@@ -1263,9 +1263,147 @@ body.loaded #preloader {
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
+    max-width: 100%;
     z-index: -1;
     pointer-events: none;
-    opacity: 0.5;
+    overflow: hidden;
+}
+
+spline-viewer {
+    width: 100%;
+    height: 100%;
+    display: block;
+    opacity: 0.7;
+    transition: opacity 0.5s ease;
+}
+
+.spline-bg.spline-loaded spline-viewer {
+    opacity: 0.85;
+}
+
+.spline-fallback {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.spline-bg.spline-loaded .spline-fallback {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Ambient Radial Mesh */
+.fallback-mesh {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 65% 45%, rgba(120, 119, 198, 0.12) 0%, rgba(0, 0, 0, 0) 55%),
+                radial-gradient(circle at 35% 55%, rgba(56, 189, 248, 0.08) 0%, rgba(0, 0, 0, 0) 50%);
+    filter: blur(40px);
+}
+
+.light-theme .fallback-mesh {
+    background: radial-gradient(circle at 65% 45%, rgba(99, 102, 241, 0.08) 0%, rgba(255, 255, 255, 0) 55%),
+                radial-gradient(circle at 35% 55%, rgba(14, 165, 233, 0.06) 0%, rgba(255, 255, 255, 0) 50%);
+}
+
+/* Floating Aesthetic Orbs */
+.fallback-glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+.fallback-glow-orb.orb-1 {
+    width: min(420px, 60vw);
+    height: min(420px, 60vw);
+    right: 5%;
+    top: 15%;
+    background: radial-gradient(circle, rgba(147, 51, 234, 0.18) 0%, rgba(79, 70, 229, 0.05) 70%, transparent 100%);
+    animation: orb-float-1 12s ease-in-out infinite alternate;
+}
+
+.fallback-glow-orb.orb-2 {
+    width: min(340px, 50vw);
+    height: min(340px, 50vw);
+    right: 25%;
+    bottom: 10%;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.14) 0%, rgba(14, 165, 233, 0.03) 70%, transparent 100%);
+    animation: orb-float-2 15s ease-in-out infinite alternate;
+}
+
+.fallback-glow-orb.orb-3 {
+    width: min(280px, 40vw);
+    height: min(280px, 40vw);
+    right: 15%;
+    top: 45%;
+    background: radial-gradient(circle, rgba(217, 119, 6, 0.1) 0%, rgba(245, 158, 11, 0.02) 70%, transparent 100%);
+    animation: orb-float-3 10s ease-in-out infinite alternate;
+}
+
+.light-theme .fallback-glow-orb.orb-1 {
+    background: radial-gradient(circle, rgba(147, 51, 234, 0.1) 0%, rgba(79, 70, 229, 0.03) 70%, transparent 100%);
+}
+
+.light-theme .fallback-glow-orb.orb-2 {
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.09) 0%, rgba(14, 165, 233, 0.02) 70%, transparent 100%);
+}
+
+.light-theme .fallback-glow-orb.orb-3 {
+    background: radial-gradient(circle, rgba(217, 119, 6, 0.07) 0%, rgba(245, 158, 11, 0.01) 70%, transparent 100%);
+}
+
+/* Subtle Perspective Grid Lines */
+.fallback-grid-lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at 70% 50%, black 15%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at 70% 50%, black 15%, transparent 70%);
+    opacity: 0.7;
+}
+
+.light-theme .fallback-grid-lines {
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+}
+
+@keyframes orb-float-1 {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-30px, 25px) scale(1.08); }
+    100% { transform: translate(20px, -20px) scale(0.95); }
+}
+
+@keyframes orb-float-2 {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(25px, -30px) scale(1.05); }
+    100% { transform: translate(-20px, 20px) scale(0.92); }
+}
+
+@keyframes orb-float-3 {
+    0% { transform: translate(0, 0) scale(0.95); }
+    50% { transform: translate(-15px, -20px) scale(1.1); }
+    100% { transform: translate(15px, 25px) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fallback-glow-orb {
+        animation: none !important;
+    }
 }
 
 /* Blog Grid */
@@ -3821,4 +3959,49 @@ body.light-theme .social-icon:hover {
         width: 100%;
         flex: none;
     }
+}
+
+.guestbook-status {
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+    min-height: 1.2rem;
+    transition: opacity 0.3s ease;
+}
+
+.guestbook-status.error {
+    color: #ef4444;
+}
+
+.guestbook-status.success {
+    color: #10b981;
+}
+
+.guestbook-status.info {
+    color: var(--text-secondary);
+}
+
+.guestbook-retry-btn {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.guestbook-retry-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--text-secondary);
+}
+
+.light-theme .guestbook-retry-btn {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.light-theme .guestbook-retry-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
 }

@@ -1003,14 +1003,128 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- Spline Hero Manager & Fallback Controller ---
+    const initSplineHero = async () => {
+        const container = document.querySelector('.spline-bg');
+        if (!container) return;
 
-    // Premium Scroll-Driven Parallax for Spline Background
+        const viewer = container.querySelector('spline-viewer');
+        const fallback = container.querySelector('.spline-fallback');
+
+        // Normalize attribute to data-url so viewer doesn't fetch prematurely
+        if (viewer && viewer.hasAttribute('url') && !viewer.hasAttribute('data-url')) {
+            viewer.setAttribute('data-url', viewer.getAttribute('url'));
+            viewer.removeAttribute('url');
+        }
+
+        const targetUrl = viewer ? (viewer.getAttribute('data-url') || viewer.getAttribute('url')) : null;
+
+        let isResolved = false;
+        let loadWatchdog = null;
+
+        const activateFallback = (reason) => {
+            if (isResolved) return;
+            isResolved = true;
+            if (loadWatchdog) clearTimeout(loadWatchdog);
+            console.warn(`[Spline Hero] 3D scene failed to load (${reason}). Activating aesthetic fallback.`);
+            container.classList.add('has-fallback');
+            container.classList.remove('spline-loaded');
+            if (viewer) {
+                viewer.style.display = 'none';
+                viewer.removeAttribute('url');
+            }
+            if (fallback) {
+                fallback.classList.add('is-active');
+            }
+        };
+
+        const activateSpline = () => {
+            if (isResolved) return;
+            isResolved = true;
+            if (loadWatchdog) clearTimeout(loadWatchdog);
+            console.info('[Spline Hero] 3D scene loaded successfully.');
+            container.classList.add('spline-loaded');
+            container.classList.remove('has-fallback');
+            if (viewer) {
+                viewer.style.display = 'block';
+            }
+            if (fallback) {
+                fallback.classList.remove('is-active');
+            }
+        };
+
+        window.__splineHero = {
+            activateSpline: () => { isResolved = false; activateSpline(); },
+            activateFallback: (reason) => { isResolved = false; activateFallback(reason); },
+            isLoaded: () => container.classList.contains('spline-loaded'),
+            hasFallback: () => container.classList.contains('has-fallback')
+        };
+
+        if (!viewer || !targetUrl) {
+            activateFallback('No Spline scene viewer or URL configured');
+            return;
+        }
+
+        // Attach event listeners to viewer for completion and WebGL failure
+        viewer.addEventListener('load-complete', activateSpline, { once: true });
+        viewer.addEventListener('context-loss', () => activateFallback('WebGL context lost'));
+
+        // Preflight asset with timeout to prevent unhandled 403 / msgpack parser crashes
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+            controller.abort();
+            activateFallback('Asset request timed out (3500ms)');
+        }, 3500);
+
+        try {
+            let response;
+            try {
+                response = await fetch(targetUrl, { method: 'HEAD', signal: controller.signal });
+            } catch (headErr) {
+                if (controller.signal.aborted) throw headErr;
+                response = await fetch(targetUrl, {
+                    method: 'GET',
+                    signal: controller.signal
+                });
+            }
+
+            clearTimeout(timeoutId);
+
+            if (!response.ok) {
+                activateFallback(`HTTP ${response.status} (${response.statusText || 'Forbidden / Access Denied'})`);
+                return;
+            }
+
+            // Asset is valid and accessible: assign url and arm watchdog timer
+            loadWatchdog = setTimeout(() => {
+                if (!isResolved) {
+                    activateFallback('3D viewer scene initialization timed out (8000ms)');
+                }
+            }, 8000);
+
+            if (viewer.getAttribute('url') !== targetUrl) {
+                viewer.setAttribute('url', targetUrl);
+            }
+        } catch (fetchErr) {
+            clearTimeout(timeoutId);
+            if (fetchErr.name === 'AbortError') {
+                activateFallback('Asset request timed out');
+            } else {
+                activateFallback(`Network request failed: ${fetchErr.message}`);
+            }
+        }
+    };
+
+    initSplineHero();
+
+    // Premium Scroll-Driven Parallax for Spline Background (Preserves CSS center anchor and respects reduced motion)
     const splineBg = document.querySelector('.spline-bg');
     if (splineBg) {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         window.addEventListener('scroll', () => {
+            if (prefersReducedMotion.matches) return;
             const scrollY = window.scrollY;
-            // Move the background slower than the scroll speed
-            splineBg.style.transform = `translateY(${scrollY * 0.35}px)`;
+            splineBg.style.transform = `translate(-50%, calc(-50% + ${scrollY * 0.35}px))`;
         }, { passive: true });
     }
 
@@ -1384,23 +1498,65 @@ document.addEventListener('DOMContentLoaded', () => {
     const guestNameInput = document.getElementById('guest-name');
     const guestMsgInput = document.getElementById('guest-message');
     const guestbookEntries = document.getElementById('guestbook-entries');
-    
+    const guestbookStatus = document.getElementById('guestbook-status');
+
+    // Helper: Escape HTML to prevent XSS
+    const escapeHtml = (str) => {
+        if (typeof str !== 'string') return '';
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    };
+
+    // Helper: Network timeout wrapper (prevents prolonged UI hang on DNS/network failure)
+    const withTimeout = (promise, ms = 4000) => {
+        let timer;
+        const timeoutPromise = new Promise((_, reject) => {
+            timer = setTimeout(() => reject(new Error('Koneksi timeout / Layanan tidak merespons')), ms);
+        });
+        return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timer));
+    };
+
+    const setStatus = (msg, type = 'info') => {
+        if (!guestbookStatus) return;
+        guestbookStatus.className = `guestbook-status ${type}`;
+        guestbookStatus.textContent = msg;
+        if (type === 'success' || type === 'error') {
+            setTimeout(() => {
+                if (guestbookStatus.textContent === msg) {
+                    guestbookStatus.textContent = '';
+                    guestbookStatus.className = 'guestbook-status';
+                }
+            }, 6000);
+        }
+    };
+
     if (btnSignGuestbook && guestbookEntries && supabaseClient) {
+        let isLoading = false;
+        let isSubmitting = false;
+
         const loadGuestbook = async () => {
+            if (isLoading) return;
+            isLoading = true;
             try {
-                guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Loading messages...</div>';
+                guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Memuat pesan...</div>';
                 
-                const { data: entries, error } = await supabaseClient
+                const queryPromise = supabaseClient
                     .from('guestbook')
                     .select('*')
                     .order('created_at', { ascending: false });
+
+                const { data: entries, error } = await withTimeout(queryPromise, 4500);
                 
                 if (error) throw error;
 
                 guestbookEntries.innerHTML = '';
                 
                 if (!entries || entries.length === 0) {
-                    guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">No entries yet. Be the first!</div>';
+                    guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Belum ada pesan. Jadilah yang pertama mengisi guestbook!</div>';
                     return;
                 }
 
@@ -1409,49 +1565,85 @@ document.addEventListener('DOMContentLoaded', () => {
                     div.style.padding = '1rem';
                     div.style.background = 'rgba(255,255,255,0.05)';
                     div.style.borderRadius = '8px';
-                    const dateStr = new Date(entry.created_at).toLocaleDateString();
+                    const dateStr = entry.created_at ? new Date(entry.created_at).toLocaleDateString() : '';
                     
-                    // Escape HTML to prevent XSS
-                    const safeName = entry.name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                    const safeMsg = entry.message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                    const safeName = escapeHtml(entry.name || 'Anonymous');
+                    const safeMsg = escapeHtml(entry.message || '');
                     
                     div.innerHTML = `<strong style="color: var(--text-primary);">${safeName}</strong> <span style="font-size: 0.8rem; color: var(--text-secondary);">${dateStr}</span><p style="margin-top: 4px; font-size: 0.9rem; word-break: break-word;">${safeMsg}</p>`;
                     guestbookEntries.appendChild(div);
                 });
             } catch (err) {
-                console.error("Error loading guestbook:", err);
-                guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Failed to load messages.</div>';
+                console.warn("[Guestbook] Gagal memuat pesan dari Supabase:", err.message || err);
+                guestbookEntries.innerHTML = `
+                    <div style="color: var(--text-secondary); padding: 1.25rem; text-align: center; background: rgba(255,255,255,0.03); border: 1px dashed var(--border-color); border-radius: 8px;">
+                        <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Layanan guestbook sedang offline atau tidak dapat dijangkau.</p>
+                        <button type="button" id="btn-retry-guestbook" class="guestbook-retry-btn">Coba Lagi</button>
+                    </div>
+                `;
+                const btnRetry = document.getElementById('btn-retry-guestbook');
+                if (btnRetry) {
+                    btnRetry.addEventListener('click', () => loadGuestbook());
+                }
+            } finally {
+                isLoading = false;
             }
         };
+
         loadGuestbook();
         
         btnSignGuestbook.addEventListener('click', async () => {
-            const name = guestNameInput.value.trim();
-            const msg = guestMsgInput.value.trim();
-            if (name && msg) {
-                btnSignGuestbook.disabled = true;
-                btnSignGuestbook.textContent = '...';
-                
-                try {
-                    const { error } = await supabaseClient
-                        .from('guestbook')
-                        .insert([{ name: name, message: msg }]);
-                        
-                    if (error) throw error;
-                    
-                    guestNameInput.value = '';
-                    guestMsgInput.value = '';
-                    loadGuestbook();
-                    if (typeof showDynamicIsland === 'function') showDynamicIsland('Pesan Tersimpan');
-                } catch (err) {
-                    console.error("Error saving guestbook:", err);
-                    if (typeof showDynamicIsland === 'function') showDynamicIsland('Gagal mengirim pesan');
-                } finally {
-                    btnSignGuestbook.disabled = false;
-                    btnSignGuestbook.textContent = 'Sign';
-                }
+            if (isSubmitting) return;
+
+            const name = guestNameInput ? guestNameInput.value.trim() : '';
+            const msg = guestMsgInput ? guestMsgInput.value.trim() : '';
+
+            if (!name || !msg) {
+                setStatus('Harap isi nama dan pesan Anda sebelum mengirim.', 'error');
+                if (!name && guestNameInput) guestNameInput.focus();
+                else if (guestMsgInput) guestMsgInput.focus();
+                return;
+            }
+
+            isSubmitting = true;
+            btnSignGuestbook.disabled = true;
+            btnSignGuestbook.textContent = 'Signing...';
+            setStatus('Mengirim pesan...', 'info');
+
+            try {
+                const insertPromise = supabaseClient
+                    .from('guestbook')
+                    .insert([{ name: name, message: msg }]);
+
+                const { error } = await withTimeout(insertPromise, 4500);
+
+                if (error) throw error;
+
+                if (guestNameInput) guestNameInput.value = '';
+                if (guestMsgInput) guestMsgInput.value = '';
+                setStatus('Pesan berhasil terkirim!', 'success');
+                if (typeof showDynamicIsland === 'function') showDynamicIsland('Pesan Tersimpan');
+                loadGuestbook();
+            } catch (err) {
+                console.warn("[Guestbook] Gagal mengirim pesan ke Supabase:", err.message || err);
+                // Keep inputs intact so user does not lose typed content
+                setStatus('Gagal mengirim: Layanan guestbook tidak dapat dijangkau saat ini.', 'error');
+                if (typeof showDynamicIsland === 'function') showDynamicIsland('Gagal mengirim pesan');
+            } finally {
+                isSubmitting = false;
+                btnSignGuestbook.disabled = false;
+                btnSignGuestbook.textContent = 'Sign';
             }
         });
+
+        window.__guestbook = {
+            loadGuestbook,
+            getStatus: () => guestbookStatus ? guestbookStatus.textContent : '',
+            isSubmitting: () => isSubmitting,
+            isLoading: () => isLoading,
+            getClient: () => supabaseClient,
+            setClient: (mockClient) => { supabaseClient = mockClient; }
+        };
     } else if (btnSignGuestbook && guestbookEntries) {
         guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Guestbook offline (Supabase not loaded)</div>';
     }
