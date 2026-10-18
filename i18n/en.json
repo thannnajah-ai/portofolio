@@ -113,5 +113,12 @@
     "downloadCV": "Interactive Resume",
     "checkingUpdates": "Checking latest updates...",
     "footerTagline": "Designed & Engineered with Vanilla HTML, CSS & JavaScript",
-    "marqueeContent": "<span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span>"
+    "marqueeContent": "<span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span>",
+    "searchProjectsAria": "Search projects",
+    "guestNameAria": "Your Name",
+    "guestMsgAria": "Your Message",
+    "contactNameAria": "Your Name",
+    "contactMsgAria": "Your Message",
+    "cmdInputAria": "Search or enter a command",
+    "guestCooldown": "Please wait {seconds}s before submitting again."
 }

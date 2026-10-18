@@ -19,14 +19,15 @@
     <meta property="og:description"
         content="Frontend Developer crafting intuitive digital experiences. Focused on clean semantic HTML, modern CSS, and performant JavaScript.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://nathanferdwiansyah.com">
-    <meta property="og:image" content="https://nathanferdwiansyah.com/og-image.jpg">
+    <meta property="og:url" content="https://thannnajah-ai.github.io/portofolio/">
+    <meta property="og:image" content="https://thannnajah-ai.github.io/portofolio/photo.jpg">
     <!-- Twitter SEO -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Nathan Ferdwiansyah W. | Frontend Developer">
     <meta name="twitter:description"
         content="Frontend Developer crafting intuitive digital experiences. Focused on clean semantic HTML, modern CSS, and performant JavaScript.">
-    <meta name="twitter:image" content="https://nathanferdwiansyah.com/og-image.jpg">
+    <meta name="twitter:image" content="https://thannnajah-ai.github.io/portofolio/photo.jpg">
+    <link rel="canonical" href="https://thannnajah-ai.github.io/portofolio/">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
@@ -411,6 +412,8 @@
                     </svg>
                     <input type="text" id="project-search-input" placeholder="Search projects..."
                         data-i18n-placeholder="searchPlaceholder"
+                        aria-label="Search projects"
+                        data-i18n-aria="searchProjectsAria"
                         style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.5rem; border-radius: 99px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); outline: none; font-family: inherit; font-size: 0.9rem; transition: border-color 0.3s ease;">
                 </div>
             </div>
@@ -478,8 +481,9 @@
             <div class="guestbook-section" style="margin-top: 3rem;">
                 <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-primary);" data-i18n="guestbookTitle">Guestbook</h3>
                 <div class="guestbook-form">
-                    <input type="text" id="guest-name" placeholder="Name" maxlength="50" autocomplete="name" data-i18n-placeholder="guestNamePlaceholder">
-                    <input type="text" id="guest-message" placeholder="Leave a message..." maxlength="280" data-i18n-placeholder="guestMsgPlaceholder">
+                    <input type="text" name="b_website" id="guest-website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;">
+                    <input type="text" id="guest-name" placeholder="Name" maxlength="50" autocomplete="name" aria-label="Your Name" data-i18n-placeholder="guestNamePlaceholder" data-i18n-aria="guestNameAria">
+                    <input type="text" id="guest-message" placeholder="Leave a message..." maxlength="280" aria-label="Your Message" data-i18n-placeholder="guestMsgPlaceholder" data-i18n-aria="guestMsgAria">
                     <button id="btn-sign-guestbook" class="btn btn-primary magnetic" data-i18n="guestSignBtn">Sign</button>
                 </div>
                 <div id="guestbook-status" class="guestbook-status" aria-live="polite"></div>
@@ -517,7 +521,7 @@
                     <h2 id="project-modal-title" class="project-modal-title"></h2>
                     <p id="project-modal-desc" class="project-modal-desc"></p>
                     <div style="margin-top: 1.5rem;">
-                        <a id="project-modal-link" href="#" target="_blank" class="btn btn-primary"
+                        <a id="project-modal-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary"
                             style="display:inline-block; padding: 0.8rem 1.5rem; text-decoration: none;" data-i18n="modalViewProject">View Live / Download</a>
                     </div>
                 </div>
@@ -534,7 +538,7 @@
                 <div id="contact-step-1" class="contact-step active">
                     <h3 style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);" data-i18n="contactStep1Title">What's your name?</h3>
                     <input type="text" id="contact-name" class="contact-input" placeholder="Your name"
-                        autocomplete="name" data-i18n-placeholder="contactNamePlaceholder">
+                        autocomplete="name" aria-label="Your Name" data-i18n-placeholder="contactNamePlaceholder" data-i18n-aria="contactNameAria">
                     <button class="btn btn-primary contact-next-btn" data-next="2"
                         style="margin-top: 1rem;" data-i18n="contactNextBtn">Next</button>
                 </div>
@@ -542,7 +546,7 @@
                 <div id="contact-step-2" class="contact-step" style="display: none;">
                     <h3 style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);" data-i18n="contactStep2Title">What would you like to discuss?</h3>
                     <textarea id="contact-message" class="contact-input" rows="3" placeholder="Tell me about your project, idea, or inquiry..."
-                        style="resize: none;" data-i18n-placeholder="contactMsgPlaceholder"></textarea>
+                        style="resize: none;" aria-label="Your Message" data-i18n-placeholder="contactMsgPlaceholder" data-i18n-aria="contactMsgAria"></textarea>
                     <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
                         <button class="btn btn-secondary contact-prev-btn" data-prev="1" data-i18n="contactBackBtn">Back</button>
                         <button class="btn btn-primary contact-submit-btn" id="contact-submit" data-i18n="contactSubmitBtn">Send Message</button>
@@ -617,7 +621,8 @@
         style="padding: 0; background: transparent; border: none; max-width: 600px; width: 90%;">
         <div
             style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
-            <input type="text" id="cmd-input" placeholder="Type a command or search..." data-i18n-placeholder="cmdPlaceholder"
+            <input type="text" id="cmd-input" placeholder="Type a command or search..."
+                data-i18n-placeholder="cmdPlaceholder" aria-label="Search or enter a command" data-i18n-aria="cmdInputAria"
                 style="padding: 1.5rem; font-size: 1.2rem; background: transparent; border: none; border-bottom: 1px solid var(--border-color); color: var(--text-primary); outline: none; width: 100%; box-sizing: border-box;">
             <div id="cmd-list" style="max-height: 300px; overflow-y: auto; padding: 0.5rem 0; width: 100%;">
                 <div class="cmd-item" data-action="toggle-theme" data-i18n="cmdTheme"
@@ -659,7 +664,6 @@
     </dialog>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
 

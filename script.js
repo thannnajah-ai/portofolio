@@ -253,6 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.matchMedia('(pointer: fine)').matches) {
         tiltCards.forEach(card => {
             card.addEventListener('mousemove', (e) => {
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
@@ -430,7 +431,14 @@ document.addEventListener("DOMContentLoaded", () => {
             "downloadCV": "Interactive Resume",
             "checkingUpdates": "Checking latest updates...",
             "footerTagline": "Designed & Engineered with Vanilla HTML, CSS & JavaScript",
-            "marqueeContent": "<span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span>"
+            "marqueeContent": "<span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span>",
+            "searchProjectsAria": "Search projects",
+            "guestNameAria": "Your Name",
+            "guestMsgAria": "Your Message",
+            "contactNameAria": "Your Name",
+            "contactMsgAria": "Your Message",
+            "cmdInputAria": "Search or enter a command",
+            "guestCooldown": "Please wait {seconds}s before submitting again."
         },
         id: {
             "metaTitle": "Nathan Ferdwiansyah W. | Frontend Developer",
@@ -547,7 +555,14 @@ document.addEventListener("DOMContentLoaded", () => {
             "downloadCV": "Resume Interaktif",
             "checkingUpdates": "Memeriksa pembaruan...",
             "footerTagline": "Dirancang & Dibangun dengan Vanilla HTML, CSS & JavaScript",
-            "marqueeContent": "<span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span>"
+            "marqueeContent": "<span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span>",
+            "searchProjectsAria": "Cari proyek",
+            "guestNameAria": "Nama Anda",
+            "guestMsgAria": "Pesan Anda",
+            "contactNameAria": "Nama Anda",
+            "contactMsgAria": "Pesan Anda",
+            "cmdInputAria": "Cari atau ketik perintah",
+            "guestCooldown": "Harap tunggu {seconds} detik sebelum mengirim pesan lagi."
         }
     };
 
@@ -695,12 +710,6 @@ document.addEventListener("DOMContentLoaded", () => {
         themeToggleBtn.click(); // Trigger native click
     });
 
-    document.getElementById('menu-terminal')?.addEventListener('click', () => {
-        contextMenu.classList.add('hidden');
-        document.getElementById('terminal-dialog').showModal();
-        document.getElementById('terminal-input').focus();
-    });
-
     // Converts raw commit messages into conversational language
     function humanizeCommit(msg) {
         // Only use the first line (ignore multiline commit bodies)
@@ -752,7 +761,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     const div = document.createElement('div');
                     div.className = 'log-item';
-                    div.innerHTML = `<div class="log-date">${dateStr}</div><div class="log-msg"><a href="${commitObj.html_url}" target="_blank" class="log-hash" style="text-decoration:none">${hash}</a> ${msg}</div>`;
+                    div.innerHTML = `<div class="log-date">${dateStr}</div><div class="log-msg"><a href="${commitObj.html_url}" target="_blank" rel="noopener noreferrer" class="log-hash" style="text-decoration:none">${hash}</a> ${msg}</div>`;
                     logsTimeline.appendChild(div);
                 });
             })
@@ -1720,6 +1729,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const msg = guestMsgInput ? guestMsgInput.value.trim() : '';
             const t = getDict();
 
+            // 1. Honeypot check (hidden input that bots fill)
+            const honeypot = document.getElementById('guest-website');
+            if (honeypot && honeypot.value.trim().length > 0) {
+                console.warn('[Guestbook] Submission rejected by honeypot.');
+                if (guestNameInput) guestNameInput.value = '';
+                if (guestMsgInput) guestMsgInput.value = '';
+                setStatus(t.guestSuccess || 'Message sent successfully!', 'success');
+                return;
+            }
+
+            // 2. Cooldown check (30 seconds client-side throttle)
+            const COOLDOWN_MS = 30000;
+            const lastSubmit = parseInt(localStorage.getItem('guestbook_last_submit') || '0', 10);
+            const now = Date.now();
+            if (now - lastSubmit < COOLDOWN_MS) {
+                const remainingSec = Math.ceil((COOLDOWN_MS - (now - lastSubmit)) / 1000);
+                const cooldownTpl = t.guestCooldown || 'Please wait {seconds}s before submitting again.';
+                setStatus(cooldownTpl.replace('{seconds}', remainingSec), 'error');
+                return;
+            }
+
             if (!name || !msg) {
                 setStatus(t.guestValidation || 'Please fill in your name and message before submitting.', 'error');
                 if (!name && guestNameInput) guestNameInput.focus();
@@ -1740,6 +1770,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const { error } = await withTimeout(insertPromise, 4500);
 
                 if (error) throw error;
+
+                // Save submission timestamp on success
+                localStorage.setItem('guestbook_last_submit', String(Date.now()));
 
                 if (guestNameInput) guestNameInput.value = '';
                 if (guestMsgInput) guestMsgInput.value = '';
