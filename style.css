@@ -262,7 +262,7 @@ section {
 .hero-title {
     font-size: clamp(2.5rem, 6vw, 4rem);
     margin-bottom: var(--space-md);
-    line-height: 1.1;
+    line-height: 1.15;
 }
 
 .text-gradient {
@@ -1709,17 +1709,17 @@ spline-viewer {
    ========================================= */
 
 /* 1. Staggered Text Reveal (Plays after preloader) */
-.hero-title span {
+.hero-title > span {
     display: inline-block;
     opacity: 0;
 }
 
-body.loaded .hero-title span:nth-child(1) {
+body.loaded .hero-title > span:nth-of-type(1) {
     animation: revealUp 0.8s var(--ease-out-expo) forwards;
     animation-delay: 0.2s;
 }
 
-body.loaded .hero-title span:nth-child(3) {
+body.loaded .hero-title > span:nth-of-type(2) {
     animation: revealUp 0.8s var(--ease-out-expo) forwards;
     animation-delay: 0.4s;
 }
@@ -3116,7 +3116,7 @@ body::after {
     /* prevent clipping descending letters */
 }
 
-.hero-title span {
+.hero-title > span {
     transform: translateY(120%);
 }
 

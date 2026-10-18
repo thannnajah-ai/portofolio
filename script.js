@@ -600,41 +600,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         }
 
-        // 5. Update hero animated words
-        const heroSpans = document.querySelectorAll('.hero-title span[data-i18n]');
-        heroSpans.forEach((span, spanIdx) => {
-            const key = span.getAttribute('data-i18n');
-            const text = (dict[key] || span.textContent || '').trim();
-            if (!text) return;
-            span.innerHTML = '';
-
-            const words = text.split(' ');
-            words.forEach((word, index) => {
-                const mask = document.createElement('span');
-                mask.className = 'stagger-mask visible';
-                mask.style.display = 'inline-block';
-                mask.style.overflow = 'hidden';
-                mask.style.verticalAlign = 'top';
-
-                const inner = document.createElement('span');
-                inner.className = 'stagger-text';
-                inner.style.display = 'inline-block';
-                inner.style.animationDelay = `${0.2 + (spanIdx * 0.2) + (index * 0.1)}s`;
-                inner.style.animation = 'revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-                inner.style.opacity = '0';
-                inner.style.transform = 'translateY(120%)';
-
-                inner.textContent = word;
-                mask.appendChild(inner);
-                span.appendChild(mask);
-
-                if (index < words.length - 1) {
-                    span.appendChild(document.createTextNode(' '));
-                }
-            });
-        });
-
-        // 6. Update meta title & description
+        // 5. Update meta title & description
         if (dict['metaTitle']) document.title = dict['metaTitle'];
         const metaDesc = document.querySelector('meta[name="description"]');
         if (metaDesc && dict['metaDesc']) metaDesc.setAttribute('content', dict['metaDesc']);
@@ -688,7 +654,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
 
     // 1. Magnetic Text Wrapper
-    document.querySelectorAll('.hero-title span').forEach(el => {
+    document.querySelectorAll('.hero-title > span').forEach(el => {
         el.classList.add('magnetic-text');
     });
 
