@@ -7,11 +7,19 @@ window.addEventListener('error', (event) => {
     event.preventDefault(); // Graceful degradation
 });
 window.addEventListener('unhandledrejection', (event) => {
+    if (event.reason && (event.reason.name === 'AbortError' || String(event.reason).includes('Transition was skipped'))) {
+        event.preventDefault();
+        return;
+    }
     console.warn("[AGY Boundary] Caught unhandled promise rejection:", event.reason);
     let logs = JSON.parse(localStorage.getItem('agy_analytics') || '{"errors":[]}');
     logs.errors.push({msg: String(event.reason), time: Date.now()});
     localStorage.setItem('agy_analytics', JSON.stringify(logs));
 });
+
+// Centralized Bilingual Language State
+let currentLang = (typeof localStorage !== 'undefined' && localStorage.getItem('lang')) || 'en';
+let i18nData = null;
 
 // Intersection Observer for natural scroll animations
 // Following Emil Kowalski's philosophy: avoiding clunky entrances.
@@ -305,129 +313,301 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Language Toggle Logic
     const langToggleBtn = document.getElementById('lang-toggle');
-    let currentLang = localStorage.getItem('lang') || 'en';
 
-    const i18nData = {
+    i18nData = {
         en: {
+            "metaTitle": "Nathan Ferdwiansyah W. | Frontend Developer",
+            "metaDesc": "Frontend Developer crafting intuitive digital experiences. Focused on clean semantic HTML, modern CSS, and performant JavaScript.",
             "available": "Available for work",
-            "heroTitle": "Frontend & Mobile Developer",
-            "heroSubtitle": "Building Interfaces That Feel Right",
-            "heroDesc": "I use AI to write code faster, but the design decisions stay with me.",
+            "navHome": "Home",
+            "navAbout": "About",
+            "navSkills": "Skills",
+            "navProjects": "Projects",
+            "navThoughts": "Thoughts",
+            "heroTitle": "Frontend Developer",
+            "heroSubtitle": "Crafting intuitive digital experiences.",
+            "heroDesc": "Specializing in clean HTML, modern CSS, and performant JavaScript to turn interface designs into accessible, responsive web experiences.",
             "viewProjects": "View Projects",
             "aboutMe": "About Me",
-            "aboutP1": "Still a student at <strong>MA Mu'allimin Muhammadiyah Yogyakarta</strong> — science track. Born February 23, 2009. I got into coding because I kept noticing why some interfaces feel alive and others don't, and couldn't stop pulling at that thread.",
-            "aboutP2": "I work with Claude Code CLI and Antigravity daily for speed. But I make the design calls myself. I hold to <em>Design Engineering</em> principles — what ships has to have <em>good taste</em>, not just work.",
-            "skillsTitle": "Capabilities & Taste",
-            "skill1Desc": "HTML5, CSS3, Vanilla JS — no bloated framework in the middle. Flutter for cross-platform mobile.",
-            "skill2Desc": "Physics-based animations, custom easing, tactile feedback. Interactions feel precise, not generic.",
-            "skill3Desc": "Typography that fits, spacing that breathes, design with character. I avoid templates.",
+            "aboutTitle": "Behind the Code",
+            "btnViewCv": "Interactive Resume",
+            "aboutP1": "Student at <strong>MA Mu'allimin Muhammadiyah Yogyakarta</strong> (Science stream, born Feb 23, 2009) with a deep passion for frontend web development. I focus on creating interfaces where layout structure, interaction fidelity, and speed work together naturally.",
+            "aboutP2": "My core foundation is built on semantic HTML5, modern modular CSS, and Vanilla JavaScript. I leverage AI tools for development acceleration, while keeping architecture, accessibility, and visual craft strictly under personal engineering control.",
+            "nowTitle": "RIGHT NOW IN YOGYAKARTA",
+            "nowWeather": "Fetching weather...",
+            "publicRepos": "Public Repos",
+            "followers": "Followers",
+            "resumeTitle": "Interactive Resume",
+            "resumeCloseAria": "Close Resume",
+            "resume1Title": "Frontend Developer",
+            "resume1Period": "2024 — Present",
+            "resume1Desc": "Building responsive, accessible web interfaces and component systems using semantic HTML, CSS, and Vanilla JavaScript.",
+            "resume2Title": "UI/UX & Web Foundations",
+            "resume2Period": "2023 — 2024",
+            "resume2Desc": "Studying layout design principles, visual hierarchy, responsive grids, and DOM manipulation.",
+            "resume3Title": "Programming Foundations",
+            "resume3Period": "2021 — 2023",
+            "resume3Desc": "Learned algorithms, data structures, and the core fundamentals of web development.",
+            "skillsTitle": "Capabilities & Focus",
+            "skill1Title": "Core Tech Stack",
+            "skill1Desc": "Strong command of modern semantic HTML5, CSS3 architecture, and Vanilla JavaScript without unnecessary framework bloat.",
+            "skill2Title": "Interface Motion",
+            "skill2Desc": "Crafting natural transitions with custom easing curves and tactile feedback, ensuring interactions feel purposeful and respect reduced motion preferences.",
+            "skill3Title": "UI Craft & Hierarchy",
+            "skill3Desc": "Designing interfaces with strict typographic hierarchy, intentional spacing systems, and dark/light modes engineered for clarity across all screens.",
+            "philosophyTitle": "Work Philosophy",
+            "phil1Title": "Visual Precision",
+            "phil1Desc": "Interfaces should feel deliberate. Every spacing token, border, and typography choice serves visual clarity and ease of use.",
+            "phil2Title": "Performance First",
+            "phil2Desc": "Fluidity is meaningless if the page stutters. Lightweight assets and efficient DOM operations keep experiences fast on any device.",
+            "phil3Title": "User-Centric & Accessible",
+            "phil3Desc": "Code should serve people. Clean keyboard navigation, screen-reader friendly labels, and high readability come first.",
             "projectsTitle": "Featured Projects",
+            "filterAll": "All",
+            "filterWeb": "Web Dev",
+            "filterResearch": "Research",
+            "searchPlaceholder": "Search projects...",
+            "project1Tag": "Case Study • Web App",
             "project1Title": "TembusPTN.my.id",
-            "project1Desc": "Free UTBK/SNBT study platform. I designed the interface so people can focus on studying, not on navigating.",
-            "project2Title": "Scientific Research",
-            "project2Desc": "Research on how consumption method affects glucose levels in white rice. A different side of me outside coding.",
-            "project3Title": "Next Project",
-            "project3Desc": "Still in the works. Stay tuned.",
-            "wipBadge": "In Progress",
-            "wipLabel": "Something's cooking...",
+            "project1Desc": "Educational web platform designed to help students prepare for UTBK/SNBT exams. Led the frontend interface implementation: clean question navigation, readable typography, and distraction-free responsive practice views.",
+            "project2Tag": "Research Paper",
+            "project2Title": "Scientific Research: Rice Glycemic Response",
+            "project2Desc": "Scientific paper exploring the impact of consumption methods on white rice glycemic response. Highlights analytical discipline, structured documentation, and research rigor applied alongside engineering.",
+            "modalCloseAria": "Close Project",
+            "modalViewProject": "Visit Project / View Document",
             "thoughtsTitle": "Thoughts & Logs",
-            "contactTitle": "Get In Touch",
-            "sendBtn": "Send Message",
+            "blogCloseAria": "Close Article",
             "blog1Title": "Why UI Animation Matters",
             "blog1Date": "May 20, 2026",
-            "blog1Content": "<p>A lot of people treat UI animations as decoration. Animation built with <em>good taste</em> does something concrete: it provides <strong>visual and spatial feedback</strong>.</p><p>When you press a button and it responds with a smooth ripple or spring, you feel a physical connection to the screen. That's what makes an app feel good to use, not just functional.</p><p>That micro-interaction detail is what I chase in every project.</p>",
-            "blog2Title": "Why I Left React and Went Back to Vanilla JS",
+            "blog1Content": "<p>UI animation is often treated as simple decoration, but well-designed motion serves a functional purpose: <strong>clear spatial feedback and state communication</strong>.</p><p>When an interactive element responds with subtle spring physics or smooth transitions, the user instantly understands that the system registered their intent. It transforms a static layout into a responsive tool.</p><p>Crafting intentional micro-interactions without sacrificing frame rates is a core standard I apply to every frontend project.</p>",
+            "blog2Title": "Why I Value Vanilla JavaScript for Core Interfaces",
             "blog2Date": "April 15, 2026",
-            "blog2Content": "<p>The JavaScript ecosystem says you have to use React, Next.js, or Vue. But for a static site like a portfolio, that framework overhead adds weight without a real payoff.</p><p>This portfolio is 100% Vanilla JS and pure CSS. No slow hydration, no massive bundle files, 60fps performance even on budget phones.</p><p>Sometimes the simpler choice is the right one.</p>",
-            "blog3Title": "What It's Actually Like to Code with AI Every Day",
+            "blog2Content": "<p>Modern web development often defaults to heavy framework stacks for every project. While frameworks have their place in large complex systems, applying them to focused web interfaces often introduces unnecessary hydration delays and large bundle sizes.</p><p>Building directly with Vanilla JavaScript and modern CSS provides immediate benefits: zero compile-step overhead, sub-millisecond execution, and complete control over the DOM. It forces a deeper understanding of browser standards and performance.</p><p>Choosing the simplest tool that fully solves the problem is genuine engineering maturity.</p>",
+            "blog3Title": "Practical AI Workflows for Frontend Engineering",
             "blog3Date": "Sep 10, 2026",
-            "blog3Content": "<p>I use Claude Code CLI and Antigravity almost every day. It's not magic — AI gets things wrong, writes code that doesn't fit, or adds complexity you didn't ask for.</p><p>What determines the output is how you use it. If you paste AI output raw, it shows — generic and hard to maintain. My approach: AI for speed, design decisions are mine.</p><p>Taste, judgment, sense of quality — those don't delegate well.</p>",
-            "blog4Title": "Why I Chose Flutter for Mobile",
+            "blog3Content": "<p>Using AI in day-to-day development is a powerful force multiplier when guided with intention. It excels at boilerplate generation, exploring algorithmic variations, and catching edge cases.</p><p>However, AI cannot replace taste, architecture decisions, or user empathy. Generating code without validating semantic structure, accessibility attributes, and UX nuances produces bloated, generic interfaces.</p><p>My approach is clear: leverage AI for development speed, but take full responsibility for design decisions, code quality, and the final user experience.</p>",
+            "blog4Title": "Bridging Design Principles and Frontend Implementation",
             "blog4Date": "Aug 1, 2026",
-            "blog4Content": "<p>What got me interested in Flutter wasn't the feature list. It was the philosophy. One codebase, runs anywhere, and the UI is fully controlled pixel by pixel.</p><p>React Native still depends on native components, so there are visual limits you can't push past. Flutter has its own canvas — everything on screen, Flutter drew it. If you understand design, you can build exactly what you picture.</p><p>For someone obsessed with UI detail, that difference matters.</p>",
-            "philosophyTitle": "Work Philosophy",
-            "phil1Title": "Pixel Perfect",
-            "phil1Desc": "Design is not just what it looks like. It's about how every element has its exact proportion and function.",
-            "phil2Title": "Performance First",
-            "phil2Desc": "Cool animations mean nothing if they make the web slow. Performance and fluidity are key.",
-            "phil3Title": "User Centric",
-            "phil3Desc": "The code I write always prioritizes empathy for the end-user. Accessibility and comfort are number one.",
-            "downloadCV": "Download CV",
-            "menuCV": "Download CV"
+            "blog4Content": "<p>Great digital products happen at the intersection of visual design and technical execution. An interface can look stunning in a design mock, but fall apart if responsive breakpoints, touch targets, and contrast ratios are neglected in code.</p><p>A frontend developer must understand visual hierarchy, typography scales, and negative space just as well as CSS specificity, event loops, and DOM performance.</p><p>Treating code as a design medium ensures that what gets deployed feels as polished and intentional as what was envisioned.</p>",
+            "guestbookTitle": "Guestbook",
+            "guestNamePlaceholder": "Your name",
+            "guestMsgPlaceholder": "Leave a friendly note...",
+            "guestSignBtn": "Sign",
+            "guestLoading": "Loading messages...",
+            "guestEmpty": "No entries yet. Be the first to leave a message!",
+            "guestOffline": "Guestbook service is currently offline or unreachable.",
+            "guestRetry": "Try Again",
+            "guestValidation": "Please fill in your name and message before submitting.",
+            "guestSubmitting": "Signing...",
+            "guestSending": "Sending message...",
+            "guestSuccess": "Message sent successfully!",
+            "guestFailed": "Failed to send: Guestbook service is currently unreachable.",
+            "contactTitle": "Get In Touch",
+            "contactStep1Title": "What's your name?",
+            "contactNamePlaceholder": "Your name",
+            "contactNextBtn": "Next",
+            "contactStep2Title": "What would you like to discuss?",
+            "contactMsgPlaceholder": "Tell me about your project, idea, or inquiry...",
+            "contactBackBtn": "Back",
+            "contactSubmitBtn": "Send Message",
+            "contactSendingBtn": "Sending...",
+            "contactSuccessTitle": "Message Sent!",
+            "contactSuccessDesc": "Thank you for reaching out. I'll get back to you as soon as possible.",
+            "contactErrorTitle": "Oops!",
+            "contactErrorDesc": "Something went wrong while sending your message. Please try again later.",
+            "contactResetBtn": "Send Another Message",
+            "cmdPlaceholder": "Type a command or search...",
+            "cmdTheme": "Toggle Dark/Light Mode",
+            "cmdCV": "Download CV",
+            "cmdProjects": "Go to Projects",
+            "cmdEmail": "Copy Email to Clipboard",
+            "error404Title": "Not Found",
+            "error404Desc": "The section you're looking for doesn't exist or has been moved.",
+            "error404Btn": "Take Me Home",
+            "copyText": "Copy",
+            "menuTheme": "Toggle Theme",
+            "menuCV": "Download CV",
+            "downloadCV": "Interactive Resume",
+            "checkingUpdates": "Checking latest updates...",
+            "footerTagline": "Designed & Engineered with Vanilla HTML, CSS & JavaScript",
+            "marqueeContent": "<span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; ACCESSIBLE & RESPONSIVE &nbsp;•&nbsp;</span>"
         },
         id: {
-            "available": "Tersedia untuk kerja",
-            "heroTitle": "Frontend & Mobile Developer",
-            "heroSubtitle": "Bikin Antarmuka yang Berasa",
-            "heroDesc": "Saya pakai AI buat nulis kode lebih cepat, tapi yang pegang kendali desainnya tetap saya.",
+            "metaTitle": "Nathan Ferdwiansyah W. | Frontend Developer",
+            "metaDesc": "Frontend Developer yang membangun pengalaman digital intuitif. Fokus pada HTML semantik, CSS modern, dan JavaScript performan.",
+            "available": "Tersedia untuk proyek",
+            "navHome": "Beranda",
+            "navAbout": "Tentang",
+            "navSkills": "Keahlian",
+            "navProjects": "Proyek",
+            "navThoughts": "Catatan",
+            "heroTitle": "Frontend Developer",
+            "heroSubtitle": "Membangun pengalaman digital intuitif.",
+            "heroDesc": "Fokus pada struktur HTML bersih, CSS modern, dan JavaScript performan untuk mewujudkan antarmuka web yang responsif, rapi, dan nyaman digunakan.",
             "viewProjects": "Lihat Proyek",
             "aboutMe": "Tentang Saya",
-            "aboutP1": "Masih pelajar di <strong>MA Mu'allimin Muhammadiyah Yogyakarta</strong>, jurusan IPA. Lahir 23 Februari 2009, Sleman. Mulai tertarik coding karena penasaran kenapa ada antarmuka yang kerasa hidup dan ada yang kerasa datar — terus nggak bisa berhenti.",
-            "aboutP2": "Sehari-hari saya pakai Claude Code CLI sama Antigravity buat akselerasi. Tapi keputusan desainnya tetap saya yang ambil. Saya pegang prinsip <em>Design Engineering</em> — produk yang keluar harus punya <em>good taste</em>, bukan cuma jalan.",
-            "skillsTitle": "Kemampuan & Selera",
-            "skill1Desc": "HTML5, CSS3, Vanilla JS — tanpa framework yang nambah beban. Flutter buat mobile cross-platform.",
-            "skill2Desc": "Animasi berbasis physics, custom easing, tactile feedback. Interaksinya kerasa presisi, bukan asal gerak.",
-            "skill3Desc": "Tipografi yang pas, spacing yang proporsional, desain yang punya karakter. Saya benci tampilan template.",
+            "aboutTitle": "Di Balik Kode",
+            "btnViewCv": "Resume Interaktif",
+            "aboutP1": "Pelajar di <strong>MA Mu'allimin Muhammadiyah Yogyakarta</strong> (jurusan IPA, lahir 23 Februari 2009) yang mendalami pengembangan frontend web. Saya berfokus membangun antarmuka web yang rapi, interaktif, dan ringan diakses di berbagai perangkat.",
+            "aboutP2": "Fondasi kerja saya berakar pada HTML5 semantik, CSS modular modern, dan Vanilla JavaScript. Saya memanfaatkan AI tools untuk akselerasi alur kerja teknis, sementara rancangan tata letak, detail aksesibilitas, dan kualitas interaksi tetap saya kendalikan secara penuh.",
+            "nowTitle": "SAAT INI DI YOGYAKARTA",
+            "nowWeather": "Memuat cuaca...",
+            "publicRepos": "Repositori Publik",
+            "followers": "Pengikut",
+            "resumeTitle": "Resume Interaktif",
+            "resumeCloseAria": "Tutup Resume",
+            "resume1Title": "Frontend Developer",
+            "resume1Period": "2024 — Sekarang",
+            "resume1Desc": "Membangun antarmuka web yang responsif, aksesibel, dan terstruktur menggunakan HTML semantik, CSS, dan Vanilla JavaScript.",
+            "resume2Title": "Eksplorasi UI/UX & Web",
+            "resume2Period": "2023 — 2024",
+            "resume2Desc": "Mempelajari prinsip tata letak antarmuka, hierarki visual, grid responsif, dan manipulasi DOM.",
+            "resume3Title": "Dasar Pemrograman",
+            "resume3Period": "2021 — 2023",
+            "resume3Desc": "Mempelajari algoritma dasar, struktur data, dan fondasi pengembangan web.",
+            "skillsTitle": "Kemampuan & Fokus",
+            "skill1Title": "Fondasi Teknologi Web",
+            "skill1Desc": "Penguasaan fondasi web modern: HTML5 semantik, arsitektur CSS3 (variabel, Flexbox, Grid), dan Vanilla JavaScript tanpa beban dependensi berlebih.",
+            "skill2Title": "Interaksi & Animasi UI",
+            "skill2Desc": "Penerapan animasi transisi CSS dan JavaScript dengan kurva easing yang halus dan tactile feedback, memastikan interaksi terasa hidup dan tetap menghargai reduced motion.",
+            "skill3Title": "Desain UI & Hirarki",
+            "skill3Desc": "Perancangan antarmuka dengan hierarki tipografi yang jelas, sistem spacing yang proporsional, serta mode gelap/terang yang dirancang untuk kenyamanan membaca di berbagai ukuran layar.",
+            "philosophyTitle": "Prinsip Kerja",
+            "phil1Title": "Presisi Visual",
+            "phil1Desc": "Antarmuka harus terencana. Setiap proporsi spacing, border, dan tipografi berfungsi memperjelas konten dan mempermudah pengguna.",
+            "phil2Title": "Utamakan Performa",
+            "phil2Desc": "Fluiditas visual tidak berguna jika halaman berat. Aset ringan dan manipulasi DOM yang efisien menjaga website tetap cepat di perangkat apa pun.",
+            "phil3Title": "Berpusat pada Pengguna & Aksesibel",
+            "phil3Desc": "Kode harus melayani pengguna nyata. Navigasi keyboard yang jelas, label aksesibel, dan keterbacaan tinggi selalu menjadi prioritas.",
             "projectsTitle": "Proyek Pilihan",
+            "filterAll": "Semua",
+            "filterWeb": "Web Dev",
+            "filterResearch": "Riset",
+            "searchPlaceholder": "Cari proyek...",
+            "project1Tag": "Studi Kasus • Web App",
             "project1Title": "TembusPTN.my.id",
-            "project1Desc": "Platform belajar UTBK/SNBT gratis. Antarmukanya saya rancang supaya orang bisa fokus belajar, bukan fokus navigasi.",
-            "project2Title": "Karya Tulis Ilmiah",
-            "project2Desc": "Penelitian tentang pengaruh cara konsumsi terhadap kadar glukosa nasi putih. Sisi saya yang lain di luar coding.",
-            "project3Title": "Proyek Berikutnya",
-            "project3Desc": "Masih digarap. Nantikan.",
-            "wipBadge": "Dalam Pengerjaan",
-            "wipLabel": "Sedang Memasak...",
-            "thoughtsTitle": "Catatan & Pikiran",
-            "contactTitle": "Hubungi Saya",
-            "sendBtn": "Kirim Pesan",
-            "blog1Title": "Kenapa Animasi UI Itu Penting",
+            "project1Desc": "Platform belajar persiapan ujian UTBK/SNBT gratis. Berfokus pada implementasi antarmuka frontend: navigasi soal yang mudah dipahami, tipografi yang nyaman dibaca, serta tata letak responsif bebas distraksi.",
+            "project2Tag": "Karya Tulis Ilmiah",
+            "project2Title": "Karya Tulis Ilmiah: Kadar Glukosa Nasi Putih",
+            "project2Desc": "Penelitian ilmiah mengenai pengaruh cara konsumsi terhadap kadar glukosa pada nasi putih. Menunjukkan ketelitian analisis data, metode eksperimen, dan disiplin dokumentasi di samping pengembangan web.",
+            "modalCloseAria": "Tutup Proyek",
+            "modalViewProject": "Kunjungi Proyek / Buka Dokumen",
+            "thoughtsTitle": "Catatan & Jurnal",
+            "blogCloseAria": "Tutup Artikel",
+            "blog1Title": "Pentingnya Animasi dalam Antarmuka Web",
             "blog1Date": "20 Mei 2026",
-            "blog1Content": "<p>Banyak yang mikir animasi itu cuma hiasan. Padahal animasi yang dirancang dengan <em>good taste</em> punya fungsi konkret: <strong>feedback visual dan spasial</strong>.</p><p>Waktu kamu tekan tombol dan tombolnya merespons dengan ripple atau spring yang mulus, otak kamu merasa terhubung secara fisik sama layar. Itu yang bikin aplikasi terasa enak dipakai, bukan sekadar fungsional.</p><p>Detail mikro interaksi kayak gini yang saya kejar di setiap project.</p>",
-            "blog2Title": "Kenapa Saya Tinggalkan React dan Balik ke Vanilla JS",
+            "blog1Content": "<p>Animasi antarmuka sering kali hanya dianggap sebagai pemanis tampilan. Padahal, motion yang dirancang dengan terencana memiliki fungsi esensial: <strong>feedback spasial yang jelas dan komunikasi status sistem</strong>.</p><p>Ketika elemen interaktif merespons dengan transisi yang proporsional, pengguna langsung memahami bahwa sistem menerima aksi mereka. Hal ini mengubah halaman statis menjadi alat kerja yang responsif dan nyaman.</p><p>Membangun mikro-interaksi yang bermakna tanpa mengorbankan performa adalah standar utama yang saya pegang dalam setiap proyek frontend.</p>",
+            "blog2Title": "Alasan Memilih Vanilla JavaScript untuk Antarmuka Inti",
             "blog2Date": "15 April 2026",
-            "blog2Content": "<p>Ekosistem JavaScript sekarang kayaknya wajib pakai React, Next.js, atau Vue. Tapi untuk website statis kayak portofolio, semua framework itu cuma nambah beban tanpa manfaat yang sebanding.</p><p>Portofolio ini 100% Vanilla JS dan CSS murni. Hasilnya: nggak ada hydration yang lambat, nggak ada bundle file gila-gilaan, dan 60fps stabil bahkan di HP kelas bawah.</p><p>Kadang pilihan paling sederhana itu yang paling tepat.</p>",
-            "blog3Title": "Gimana Rasanya Coding Pakai AI Setiap Hari",
+            "blog2Content": "<p>Pengembangan web modern sering kali langsung mengandalkan framework besar untuk setiap kebutuhan. Meskipun framework memiliki tempatnya pada sistem berskala masif, menerapkannya pada antarmuka web mandiri sering kali menambah beban hidrasi dan ukuran berkas yang tidak perlu.</p><p>Membangun langsung dengan Vanilla JavaScript dan CSS modern memberikan kendali penuh atas DOM, waktu muat instan, dan performa tinggi tanpa dependensi berlebih. Pendekatan ini melatih pemahaman mendalam terhadap standar browser native.</p><p>Memilih solusi paling sederhana yang menyelesaikan masalah secara tepat adalah bentuk kedewasaan teknis.</p>",
+            "blog3Title": "Pemanfaatan AI yang Efektif dalam Rekayasa Frontend",
             "blog3Date": "10 Sep 2026",
-            "blog3Content": "<p>Saya pakai Claude Code CLI dan Antigravity hampir setiap hari. Dan ini bukan magic — AI bisa salah, nulis kode yang nggak nyambung, atau malah nambah kompleksitas yang nggak perlu.</p><p>Yang menentukan hasilnya adalah cara pakainya. Kalau kamu cuma <em>paste output AI mentah-mentah</em>, hasilnya kelihatan — generik dan susah di-maintain. Cara saya: AI buat akselerasi, keputusan desain tetap di tangan saya.</p><p>Taste, judgment, sense of quality — itu yang nggak bisa didelegasikan ke AI.</p>",
-            "blog4Title": "Kenapa Saya Pilih Flutter buat Mobile",
+            "blog3Content": "<p>Pemanfaatan alat bantu AI dalam pengembangan harian dapat mengakselerasi produktivitas secara signifikan jika diarahkan dengan tujuan yang jelas. AI sangat berguna untuk menyusun struktur awal, eksplorasi variasi algoritma, dan mengidentifikasi edge case.</p><p>Kendati demikian, AI tidak dapat menggantikan pertimbangan desain, arsitektur kode, maupun empati terhadap pengguna. Menelan keluaran AI secara mentah sering kali menghasilkan kode yang rentan dan antarmuka yang generik.</p><p>Pendekatan saya lugas: jadikan AI sebagai akselerator teknis, namun tanggung jawab terhadap estetika, aksesibilitas, dan kualitas produk akhir tetap berada di tangan developer.</p>",
+            "blog4Title": "Menghubungkan Prinsip Desain dengan Implementasi Frontend",
             "blog4Date": "1 Agt 2026",
-            "blog4Content": "<p>Yang pertama bikin saya tertarik sama Flutter bukan fitur-fiturnya, tapi filosofinya. Satu codebase, jalan di mana aja, dan UI-nya dikontrol penuh pixel by pixel.</p><p>React Native masih ngandalin native components, jadi ada batasan visual yang nggak bisa kamu tembus. Flutter punya canvas-nya sendiri — semua yang keliatan di layar itu Flutter yang gambar. Kalau kamu ngerti desain, kamu bisa bikin apapun yang kamu mau.</p><p>Buat saya yang obsesi sama UI detail, ini bedanya besar.</p>",
-            "philosophyTitle": "Filosofi Kerja",
-            "phil1Title": "Pixel Perfect",
-            "phil1Desc": "Desain bukan cuma soal tampilan, tapi tentang bagaimana setiap elemen memiliki proporsi dan fungsi yang tepat.",
-            "phil2Title": "Performance First",
-            "phil2Desc": "Animasi sekeren apa pun nggak ada artinya kalau bikin web lambat. Performa dan fluiditas adalah kunci.",
-            "phil3Title": "User Centric",
-            "phil3Desc": "Kode yang saya tulis selalu memprioritaskan empati terhadap end-user. Aksesibilitas dan kenyamanan nomor satu.",
-            "downloadCV": "Unduh CV",
-            "menuCV": "Unduh CV"
+            "blog4Content": "<p>Produk digital yang berkualitas lahir dari pertemuan antara perancangan visual dan eksekusi teknis yang presisi. Sebuah antarmuka bisa terlihat menarik pada rancangan grafis, namun kehilangan kualitas jika breakpoint responsif, area sentuh, dan kontras warna diabaikan saat pengkodean.</p><p>Pengembang frontend perlu memahami hierarki visual, skala tipografi, dan ruang negatif sebaik pemahamannya terhadap spesifisitas CSS, event loop, dan performa DOM.</p><p>Memperlakukan kode sebagai media desain memastikan hasil yang tampil di layar pengguna tetap presisi dan nyaman digunakan.</p>",
+            "guestbookTitle": "Buku Tamu",
+            "guestNamePlaceholder": "Nama Anda",
+            "guestMsgPlaceholder": "Tulis pesan singkat...",
+            "guestSignBtn": "Kirim",
+            "guestLoading": "Memuat pesan...",
+            "guestEmpty": "Belum ada pesan. Jadilah yang pertama mengisi!",
+            "guestOffline": "Layanan guestbook sedang offline atau tidak dapat dijangkau.",
+            "guestRetry": "Coba Lagi",
+            "guestValidation": "Harap isi nama dan pesan Anda sebelum mengirim.",
+            "guestSubmitting": "Mengirim...",
+            "guestSending": "Mengirim pesan...",
+            "guestSuccess": "Pesan berhasil terkirim!",
+            "guestFailed": "Gagal mengirim: Layanan guestbook tidak dapat dijangkau saat ini.",
+            "contactTitle": "Hubungi Saya",
+            "contactStep1Title": "Siapa nama Anda?",
+            "contactNamePlaceholder": "Nama Anda",
+            "contactNextBtn": "Lanjut",
+            "contactStep2Title": "Apa yang ingin Anda bicarakan?",
+            "contactMsgPlaceholder": "Ceritakan proyek, ide, atau pertanyaan Anda...",
+            "contactBackBtn": "Kembali",
+            "contactSubmitBtn": "Kirim Pesan",
+            "contactSendingBtn": "Mengirim...",
+            "contactSuccessTitle": "Pesan Terkirim!",
+            "contactSuccessDesc": "Terima kasih telah menghubungi. Saya akan membalas pesan Anda secepatnya.",
+            "contactErrorTitle": "Terjadi Kesalahan",
+            "contactErrorDesc": "Terjadi kesalahan saat mengirim pesan. Silakan coba beberapa saat lagi.",
+            "contactResetBtn": "Kirim Pesan Lain",
+            "cmdPlaceholder": "Ketik perintah atau cari...",
+            "cmdTheme": "Ganti Mode Gelap/Terang",
+            "cmdCV": "Unduh CV",
+            "cmdProjects": "Menuju ke Proyek",
+            "cmdEmail": "Salin Email ke Clipboard",
+            "error404Title": "Tidak Ditemukan",
+            "error404Desc": "Bagian yang Anda cari tidak ditemukan atau telah dipindahkan.",
+            "error404Btn": "Kembali ke Beranda",
+            "copyText": "Salin",
+            "menuTheme": "Ganti Tema",
+            "menuCV": "Unduh CV",
+            "downloadCV": "Resume Interaktif",
+            "checkingUpdates": "Memeriksa pembaruan...",
+            "footerTagline": "Dirancang & Dibangun dengan Vanilla HTML, CSS & JavaScript",
+            "marqueeContent": "<span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span>"
         }
     };
 
-    function setLanguage(lang) {
-        if (typeof showDynamicIsland === 'function') {
+    // Expose dictionary globally for component access & testing
+    window.__i18n = i18nData;
+
+    function setLanguage(lang, showToast = false) {
+        currentLang = lang;
+        document.documentElement.lang = lang;
+        localStorage.setItem('lang', lang);
+
+        if (showToast && typeof showDynamicIsland === 'function') {
             showDynamicIsland(lang === 'id' ? 'Bahasa Indonesia Aktif' : 'English Activated');
         }
-        
-        let dict = i18nData[lang];
+
+        const dict = i18nData[lang];
         if (!dict) return;
 
-        const elementsToTranslate = document.querySelectorAll('[data-i18n]');
-
-        elementsToTranslate.forEach(el => {
+        // 1. Text elements
+        document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (dict[key]) {
+            if (dict[key] !== undefined) {
                 el.innerHTML = dict[key];
             }
         });
 
-        // Auto-stagger for hero title to give word-by-word reveal animation
+        // 2. Placeholder attributes
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (dict[key] !== undefined) {
+                el.placeholder = dict[key];
+            }
+        });
+
+        // 3. Aria-label attributes
+        document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+            const key = el.getAttribute('data-i18n-aria');
+            if (dict[key] !== undefined) {
+                el.setAttribute('aria-label', dict[key]);
+            }
+        });
+
+        // 4. Update language toggle button label and accessible description
+        const langToggleBtn = document.getElementById('lang-toggle');
+        if (langToggleBtn) {
+            langToggleBtn.textContent = lang === 'en' ? 'ID' : 'EN';
+            langToggleBtn.setAttribute(
+                'aria-label',
+                lang === 'en' ? 'Switch language to Indonesian' : 'Ganti bahasa ke Bahasa Inggris'
+            );
+        }
+
+        // 5. Update hero animated words
         const heroSpans = document.querySelectorAll('.hero-title span[data-i18n]');
         heroSpans.forEach((span, spanIdx) => {
-            const text = span.innerText.trim();
-            span.innerHTML = ''; // clear raw text
+            const key = span.getAttribute('data-i18n');
+            const text = (dict[key] || span.textContent || '').trim();
+            if (!text) return;
+            span.innerHTML = '';
 
-            // Rebuild with stagger masks
             const words = text.split(' ');
             words.forEach((word, index) => {
                 const mask = document.createElement('span');
@@ -439,7 +619,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const inner = document.createElement('span');
                 inner.className = 'stagger-text';
                 inner.style.display = 'inline-block';
-                // Adjust delay based on span index and word index
                 inner.style.animationDelay = `${0.2 + (spanIdx * 0.2) + (index * 0.1)}s`;
                 inner.style.animation = 'revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards';
                 inner.style.opacity = '0';
@@ -449,18 +628,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 mask.appendChild(inner);
                 span.appendChild(mask);
 
-                // Add space after word
                 if (index < words.length - 1) {
                     span.appendChild(document.createTextNode(' '));
                 }
             });
         });
 
-        const langToggleBtn = document.getElementById('lang-toggle');
-        if (langToggleBtn) {
-            langToggleBtn.innerText = lang.toUpperCase();
+        // 6. Update meta title & description
+        if (dict['metaTitle']) document.title = dict['metaTitle'];
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc && dict['metaDesc']) metaDesc.setAttribute('content', dict['metaDesc']);
+
+        // 7. Redraw radar chart if active
+        if (typeof window.__drawSkillRadar === 'function') {
+            window.__drawSkillRadar();
         }
+
+        // 8. Dispatch language change event for other components
+        window.dispatchEvent(new CustomEvent('languagechange', { detail: { lang, dict } }));
     }
+
+    window.__setLanguage = setLanguage;
 
     // 3. Dynamic Island Logic (Moved up)
     let islandTimeout;
@@ -478,20 +666,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3000);
     }
 
-    // Initialize Language (we default to EN in the HTML structure)
-    setLanguage('en');
+    // Initialize Language from localStorage or default to EN
+    setLanguage(currentLang, false);
 
-    langToggleBtn.addEventListener('click', () => {
-        // Card flip animation
-        langToggleBtn.classList.remove('flip-anim');
-        void langToggleBtn.offsetWidth; // reflow to restart
-        langToggleBtn.classList.add('flip-anim');
-        setTimeout(() => langToggleBtn.classList.remove('flip-anim'), 420);
+    if (langToggleBtn) {
+        langToggleBtn.addEventListener('click', () => {
+            langToggleBtn.classList.remove('flip-anim');
+            void langToggleBtn.offsetWidth;
+            langToggleBtn.classList.add('flip-anim');
+            setTimeout(() => langToggleBtn.classList.remove('flip-anim'), 420);
 
-        currentLang = currentLang === 'en' ? 'id' : 'en';
-        localStorage.setItem('lang', currentLang);
-        setLanguage(currentLang);
-    });
+            const newLang = currentLang === 'en' ? 'id' : 'en';
+            setLanguage(newLang, true);
+        });
+    }
 
 
 
@@ -579,7 +767,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // 5. GitHub Logs Injector (Live)
     const logsTimeline = document.getElementById('logs-timeline');
     if (logsTimeline) {
-        logsTimeline.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem;">Fetching live commits from GitHub...</div>';
+        const lang = currentLang || localStorage.getItem('lang') || 'en';
+        logsTimeline.innerHTML = `<div style="color: var(--text-muted); font-size: 0.9rem;">${lang === 'id' ? 'Memuat commit terbaru dari GitHub...' : 'Fetching live commits from GitHub...'}</div>`;
 
         fetch('https://api.github.com/repos/thannnajah-ai/portofolio/commits')
             .then(response => response.json())
@@ -588,10 +777,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Get latest 4 commits
                 const commits = data.slice(0, 4);
+                const curLang = currentLang || localStorage.getItem('lang') || 'en';
                 commits.forEach(commitObj => {
                     const hash = commitObj.sha.substring(0, 7);
                     const dateObj = new Date(commitObj.commit.author.date);
-                    const dateStr = dateObj.toLocaleDateString('id-ID', { month: 'short', day: 'numeric', year: 'numeric' });
+                    const dateStr = dateObj.toLocaleDateString(curLang === 'id' ? 'id-ID' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                     const msg = humanizeCommit(commitObj.commit.message);
 
                     const div = document.createElement('div');
@@ -601,7 +791,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             })
             .catch(err => {
-                logsTimeline.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem;">Failed to load live commits.</div>';
+                const curLang = currentLang || localStorage.getItem('lang') || 'en';
+                logsTimeline.innerHTML = `<div style="color: var(--text-muted); font-size: 0.9rem;">${curLang === 'id' ? 'Gagal memuat commit GitHub.' : 'Failed to load live commits.'}</div>`;
                 console.error('Error fetching commits:', err);
             });
     }
@@ -618,7 +809,9 @@ document.addEventListener("DOMContentLoaded", () => {
             document.title = "Come back! 🥺";
         } else {
             favicon.href = originalFavicon;
-            document.title = "Portofolio Nathan";
+            const curLang = currentLang || localStorage.getItem('lang') || 'en';
+            const metaTitle = (i18nData[curLang] && i18nData[curLang].metaTitle) || "Nathan Ferdwiansyah W. | Frontend Developer";
+            document.title = metaTitle;
         }
     });
 
@@ -728,10 +921,12 @@ document.addEventListener("DOMContentLoaded", () => {
             card.addEventListener('click', (e) => {
                 e.preventDefault();
                 // Populate dialog content based on current lang
-                const lang = localStorage.getItem('lang') || 'en';
-                blogDialogTitle.innerHTML = i18n[lang][blog.titleKey];
-                blogDialogDate.innerHTML = i18n[lang][blog.dateKey];
-                blogDialogContent.innerHTML = i18n[lang][blog.contentKey];
+                const lang = currentLang || localStorage.getItem('lang') || 'en';
+                if (i18nData[lang]) {
+                    blogDialogTitle.innerHTML = i18nData[lang][blog.titleKey] || '';
+                    blogDialogDate.innerHTML = i18nData[lang][blog.dateKey] || '';
+                    blogDialogContent.innerHTML = i18nData[lang][blog.contentKey] || '';
+                }
 
                 // Show dialog
                 blogDialog.showModal();
@@ -784,12 +979,15 @@ projectCardsDOM.forEach(card => {
         const titleEl = card.querySelector('.project-title');
         const descEl = card.querySelector('.project-desc');
         const imgEl = card.querySelector('.project-image img');
+        const svgEl = card.querySelector('.project-image .placeholder-img');
 
         if (titleEl) projectModalTitle.innerHTML = titleEl.innerHTML;
         if (descEl) projectModalDesc.innerHTML = descEl.innerHTML;
 
         if (imgEl) {
             projectModalImgContainer.innerHTML = `<img src="${imgEl.src}" alt="${titleEl ? titleEl.textContent : 'Project'}">`;
+        } else if (svgEl) {
+            projectModalImgContainer.innerHTML = `<div class="placeholder-img" style="background: linear-gradient(135deg, #1f2937, #111827); height: 180px; display: flex; align-items: center; justify-content: center;">${svgEl.innerHTML}</div>`;
         } else {
             projectModalImgContainer.innerHTML = '';
         }
@@ -798,25 +996,51 @@ projectCardsDOM.forEach(card => {
         if (href && href !== '#') {
             projectModalLink.href = href;
             projectModalLink.style.display = 'inline-block';
+            const isId = document.documentElement.lang === 'id';
+            projectModalLink.textContent = isId ? 'Kunjungi Proyek / Buka Dokumen' : 'Visit Project / View Document';
         } else {
             projectModalLink.style.display = 'none';
         }
 
-        if (projectModal) {
+        const safeViewTransition = (callback) => {
             if (document.startViewTransition) {
-                document.startViewTransition(() => projectModal.showModal());
+                try {
+                    const vt = document.startViewTransition(callback);
+                    if (vt && vt.finished) vt.finished.catch(() => {});
+                    return vt;
+                } catch (e) {
+                    callback();
+                }
             } else {
-                projectModal.showModal();
+                callback();
             }
+        };
+
+        if (projectModal) {
+            safeViewTransition(() => projectModal.showModal());
             if (window.lenis) window.lenis.stop();
         }
     });
 });
 
 if (projectModalClose && projectModal) {
+    const safeViewTransition = (callback) => {
+        if (document.startViewTransition) {
+            try {
+                const vt = document.startViewTransition(callback);
+                if (vt && vt.finished) vt.finished.catch(() => {});
+                return vt;
+            } catch (e) {
+                callback();
+            }
+        } else {
+            callback();
+        }
+    };
+
     projectModalClose.addEventListener('click', () => {
         if (document.startViewTransition) {
-            document.startViewTransition(() => {
+            safeViewTransition(() => {
                 projectModal.close();
                 if (window.lenis) window.lenis.start();
             });
@@ -840,7 +1064,7 @@ if (projectModalClose && projectModal) {
             e.clientY > rect.bottom
         ) {
             if (document.startViewTransition) {
-                document.startViewTransition(() => {
+                safeViewTransition(() => {
                     projectModal.close();
                     if (window.lenis) window.lenis.start();
                 });
@@ -1221,85 +1445,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => console.error('GitHub API failed:', err));
     }
 
-    // --- Fully Functional Language Switcher (i18n) ---
-    const i18nDict = {
-        'en': {
-            'available': 'Available for work',
-            'heroTitle': 'Software Developer, Mobile Developer, and Front-end Developer',
-            'heroSubtitle': 'Crafting Interfaces with Taste',
-            'heroDesc': 'Combining AI, CLI Agent, and My Knowledge about AI with strong Design Engineering principles to create highly aesthetic and fluid digital experiences.',
-            'viewProjects': 'View Projects',
-            'aboutMe': 'About Me',
-            'aboutTitle': 'Behind the Code',
-            'aboutP1': 'I am Nathan Ferdwiansyah Wicaksono, a software developer, web developer, etc.',
-            'filterAll': 'All',
-            'filterWeb': 'Web Dev',
-            'filterResearch': 'Research',
-            'filterConcept': 'Concept',
-            'projectsTitle': 'Featured Projects',
-            'contactTitle': 'Get In Touch',
-            'contactName': 'Your Name',
-            'contactEmail': 'Your Email',
-            'contactMessage': 'Your Message',
-            'contactSubmit': 'Send Message'
-        },
-        'id': {
-            'available': 'Tersedia untuk projek',
-            'heroTitle': 'Pengembang Perangkat Lunak, Mobile, dan Front-end',
-            'heroSubtitle': 'Merancang Interface dengan Selera',
-            'heroDesc': 'Menggabungkan AI, CLI Agent, dan Kemmampuan Pemahaman saya dengan prinsip Rekayasa Desain yang kuat untuk menciptakan pengalaman digital yang sangat estetis dan mulus.',
-            'viewProjects': 'Lihat Projek',
-            'aboutMe': 'Tentang Saya',
-            'aboutTitle': 'Di Balik Kode',
-            'aboutP1': 'Saya Nathan Ferdwiansyah Wicaksono, seorang pengembang perangkat lunak, web developer, dan sebagainya',
-            'filterAll': 'Semua',
-            'filterWeb': 'Web Dev',
-            'filterResearch': 'Riset',
-            'filterConcept': 'Konsep',
-            'projectsTitle': 'Proyek Unggulan',
-            'contactTitle': 'Hubungi Saya',
-            'contactName': 'Nama Anda',
-            'contactEmail': 'Email Anda',
-            'contactMessage': 'Pesan Anda',
-            'contactSubmit': 'Kirim Pesan'
-        }
-    };
-
-    let currentLang = localStorage.getItem('lang') || 'en';
-    const updateLanguage = (lang) => {
-        document.documentElement.lang = lang;
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (i18nDict[lang] && i18nDict[lang][key]) {
-                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    // If we used placeholder we would update it here, but we use floating labels
-                } else {
-                    el.textContent = i18nDict[lang][key];
-                }
-            }
-        });
-
-
-    };
-
-    // Hook into existing #lang-toggle button
-    const existingLangToggle = document.getElementById('lang-toggle');
-    if (existingLangToggle) {
-        // Set initial text: If we are in English, the button should offer to switch to ID, and vice versa.
-        existingLangToggle.textContent = currentLang === 'en' ? 'ID' : 'EN';
-
-        existingLangToggle.addEventListener('click', () => {
-            const newLang = currentLang === 'en' ? 'id' : 'en';
-            localStorage.setItem('lang', newLang);
-            currentLang = newLang;
-            updateLanguage(newLang);
-            existingLangToggle.textContent = newLang === 'en' ? 'ID' : 'EN';
-        });
-    }
-
-    // Initial language load
-    updateLanguage(currentLang);
-
     // 1. Local Time & Status Indicator (Unified Yogyakarta Time Updater)
     const timeText = document.getElementById('time-text');
     const localTimeEl = document.getElementById('local-time');
@@ -1382,12 +1527,14 @@ document.addEventListener('DOMContentLoaded', () => {
             btnCopyText.addEventListener('click', () => {
                 const text = window.getSelection().toString();
                 navigator.clipboard.writeText(text).then(() => {
-                    btnCopyText.textContent = 'Copied!';
+                    const lang = currentLang || localStorage.getItem('lang') || 'en';
+                    btnCopyText.textContent = lang === 'id' ? 'Disalin!' : 'Copied!';
                     if (typeof showDynamicIsland === 'function') {
-                        showDynamicIsland('Teks Disalin');
+                        showDynamicIsland(lang === 'id' ? 'Teks Disalin' : 'Text Copied');
                     }
                     setTimeout(() => {
-                        btnCopyText.textContent = 'Copy';
+                        const cur = currentLang || localStorage.getItem('lang') || 'en';
+                        btnCopyText.textContent = (i18nData[cur] && i18nData[cur].copyText) || 'Copy';
                         window.getSelection().removeAllRanges();
                     }, 1500);
                 });
@@ -1475,7 +1622,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.querySelector('.spy-link[data-target="projects"]')?.click();
                 } else if (action === 'copy-email') {
                     navigator.clipboard.writeText('thannnajah@gmail.com');
-                    if (typeof showDynamicIsland === 'function') showDynamicIsland('Email Copied!');
+                    const curLang = currentLang || localStorage.getItem('lang') || 'en';
+                    if (typeof showDynamicIsland === 'function') {
+                        showDynamicIsland(curLang === 'id' ? 'Email Disalin ke Clipboard!' : 'Email Copied to Clipboard!');
+                    }
                 }
                 cmdPalette.close();
                 if (window.lenis) window.lenis.start();
@@ -1538,11 +1688,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let isLoading = false;
         let isSubmitting = false;
 
+        const getDict = () => (i18nData && i18nData[currentLang]) ? i18nData[currentLang] : (i18nData ? i18nData.en : {});
+
         const loadGuestbook = async () => {
             if (isLoading) return;
             isLoading = true;
+            const t = getDict();
             try {
-                guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Memuat pesan...</div>';
+                guestbookEntries.innerHTML = `<div style="color: var(--text-secondary); padding: 1rem;">${t.guestLoading || 'Loading messages...'}</div>`;
                 
                 const queryPromise = supabaseClient
                     .from('guestbook')
@@ -1556,7 +1709,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 guestbookEntries.innerHTML = '';
                 
                 if (!entries || entries.length === 0) {
-                    guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Belum ada pesan. Jadilah yang pertama mengisi guestbook!</div>';
+                    guestbookEntries.innerHTML = `<div style="color: var(--text-secondary); padding: 1rem;">${t.guestEmpty || 'No entries yet. Be the first to leave a message!'}</div>`;
                     return;
                 }
 
@@ -1565,7 +1718,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     div.style.padding = '1rem';
                     div.style.background = 'rgba(255,255,255,0.05)';
                     div.style.borderRadius = '8px';
-                    const dateStr = entry.created_at ? new Date(entry.created_at).toLocaleDateString() : '';
+                    const curLang = currentLang || localStorage.getItem('lang') || 'en';
+                    const dateStr = entry.created_at ? new Date(entry.created_at).toLocaleDateString(curLang === 'id' ? 'id-ID' : 'en-US') : '';
                     
                     const safeName = escapeHtml(entry.name || 'Anonymous');
                     const safeMsg = escapeHtml(entry.message || '');
@@ -1575,10 +1729,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             } catch (err) {
                 console.warn("[Guestbook] Gagal memuat pesan dari Supabase:", err.message || err);
+                const curT = getDict();
                 guestbookEntries.innerHTML = `
                     <div style="color: var(--text-secondary); padding: 1.25rem; text-align: center; background: rgba(255,255,255,0.03); border: 1px dashed var(--border-color); border-radius: 8px;">
-                        <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Layanan guestbook sedang offline atau tidak dapat dijangkau.</p>
-                        <button type="button" id="btn-retry-guestbook" class="guestbook-retry-btn">Coba Lagi</button>
+                        <p style="margin-bottom: 0.5rem; font-size: 0.9rem;" data-i18n="guestOffline">${curT.guestOffline || 'Guestbook service is currently offline or unreachable.'}</p>
+                        <button type="button" id="btn-retry-guestbook" class="guestbook-retry-btn" data-i18n="guestRetry">${curT.guestRetry || 'Try Again'}</button>
                     </div>
                 `;
                 const btnRetry = document.getElementById('btn-retry-guestbook');
@@ -1597,9 +1752,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const name = guestNameInput ? guestNameInput.value.trim() : '';
             const msg = guestMsgInput ? guestMsgInput.value.trim() : '';
+            const t = getDict();
 
             if (!name || !msg) {
-                setStatus('Harap isi nama dan pesan Anda sebelum mengirim.', 'error');
+                setStatus(t.guestValidation || 'Please fill in your name and message before submitting.', 'error');
                 if (!name && guestNameInput) guestNameInput.focus();
                 else if (guestMsgInput) guestMsgInput.focus();
                 return;
@@ -1607,8 +1763,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             isSubmitting = true;
             btnSignGuestbook.disabled = true;
-            btnSignGuestbook.textContent = 'Signing...';
-            setStatus('Mengirim pesan...', 'info');
+            btnSignGuestbook.textContent = t.guestSubmitting || 'Signing...';
+            setStatus(t.guestSending || 'Sending message...', 'info');
 
             try {
                 const insertPromise = supabaseClient
@@ -1621,18 +1777,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (guestNameInput) guestNameInput.value = '';
                 if (guestMsgInput) guestMsgInput.value = '';
-                setStatus('Pesan berhasil terkirim!', 'success');
-                if (typeof showDynamicIsland === 'function') showDynamicIsland('Pesan Tersimpan');
+                setStatus(t.guestSuccess || 'Message sent successfully!', 'success');
+                if (typeof showDynamicIsland === 'function') {
+                    showDynamicIsland(currentLang === 'id' ? 'Pesan Tersimpan' : 'Message Saved');
+                }
                 loadGuestbook();
             } catch (err) {
                 console.warn("[Guestbook] Gagal mengirim pesan ke Supabase:", err.message || err);
                 // Keep inputs intact so user does not lose typed content
-                setStatus('Gagal mengirim: Layanan guestbook tidak dapat dijangkau saat ini.', 'error');
-                if (typeof showDynamicIsland === 'function') showDynamicIsland('Gagal mengirim pesan');
+                setStatus(t.guestFailed || 'Failed to send: Guestbook service is currently unreachable.', 'error');
+                if (typeof showDynamicIsland === 'function') {
+                    showDynamicIsland(currentLang === 'id' ? 'Gagal mengirim pesan' : 'Failed to send message');
+                }
             } finally {
                 isSubmitting = false;
                 btnSignGuestbook.disabled = false;
-                btnSignGuestbook.textContent = 'Sign';
+                const finalT = getDict();
+                btnSignGuestbook.textContent = finalT.guestSignBtn || 'Sign';
+            }
+        });
+
+        window.addEventListener('languagechange', (e) => {
+            const dict = e.detail && e.detail.dict;
+            if (!dict) return;
+            const retryBtn = document.getElementById('btn-retry-guestbook');
+            if (retryBtn && dict.guestRetry) {
+                retryBtn.textContent = dict.guestRetry;
+            }
+            if (!isSubmitting && dict.guestSignBtn) {
+                btnSignGuestbook.textContent = dict.guestSignBtn;
             }
         });
 
@@ -1668,8 +1841,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('skill-radar');
     if (canvas) {
         const ctx = canvas.getContext('2d');
-        const labels = ['Frontend', 'UI/UX', 'Mobile', 'Backend', 'Tools'];
-        const values = [0.9, 0.85, 0.8, 0.6, 0.75]; // percentages
+        const labelsEn = ['HTML/CSS', 'UI Design', 'JavaScript', 'Accessibility', 'Interaction'];
+        const labelsId = ['HTML/CSS', 'Desain UI', 'JavaScript', 'Aksesibilitas', 'Interaksi'];
+        const values = [0.92, 0.88, 0.85, 0.80, 0.86]; // percentages
         
         const drawRadar = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1682,6 +1856,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const strokeColor = isLight ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)';
             const axisColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
             const textColor = isLight ? '#555' : '#aaa';
+            const curLang = currentLang || localStorage.getItem('lang') || 'en';
+            const labels = curLang === 'id' ? labelsId : labelsEn;
             
             // Draw Web
             ctx.strokeStyle = axisColor;
@@ -1702,7 +1878,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Draw Axis & Labels
             ctx.fillStyle = textColor;
-            ctx.font = '14px Inter, sans-serif';
+            ctx.font = '13px Inter, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             
@@ -1749,13 +1925,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.fill();
             }
         };
-        
+
         drawRadar();
-        
+        window.__drawSkillRadar = drawRadar;
+
+        window.addEventListener('languagechange', () => drawRadar());
+
         const themeToggle = document.getElementById('theme-toggle');
         if (themeToggle) {
             themeToggle.addEventListener('click', () => {
-                setTimeout(drawRadar, 100); 
+                setTimeout(drawRadar, 100);
             });
         }
     }
@@ -1951,8 +2130,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const message = msgInput.value.trim();
             
             // Show loading state
+            const curLang = currentLang || localStorage.getItem('lang') || 'en';
+            const t = (i18nData && i18nData[curLang]) ? i18nData[curLang] : (i18nData ? i18nData.en : {});
             const originalText = contactSubmitBtn.textContent;
-            contactSubmitBtn.textContent = 'Sending...';
+            contactSubmitBtn.textContent = t.contactSendingBtn || 'Sending...';
             contactSubmitBtn.style.opacity = '0.7';
             contactSubmitBtn.style.pointerEvents = 'none';
 
@@ -1966,16 +2147,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    document.getElementById('contact-success-title').textContent = 'Message Sent!';
-                    document.getElementById('contact-success-desc').textContent = 'Thank you for reaching out. I\'ll get back to you as soon as possible.';
+                    document.getElementById('contact-success-title').textContent = t.contactSuccessTitle || 'Message Sent!';
+                    document.getElementById('contact-success-desc').textContent = t.contactSuccessDesc || "Thank you for reaching out. I'll get back to you as soon as possible.";
                     document.getElementById('contact-success-icon').innerHTML = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>';
                     document.getElementById('contact-success-icon').setAttribute('stroke', 'var(--primary-color)');
                 } else {
                     throw new Error('Formspree returned an error');
                 }
             } catch (error) {
-                document.getElementById('contact-success-title').textContent = 'Oops!';
-                document.getElementById('contact-success-desc').textContent = 'Something went wrong while sending your message. Please try again later.';
+                document.getElementById('contact-success-title').textContent = t.contactErrorTitle || 'Oops!';
+                document.getElementById('contact-success-desc').textContent = t.contactErrorDesc || 'Something went wrong while sending your message. Please try again later.';
                 document.getElementById('contact-success-icon').innerHTML = '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>';
                 document.getElementById('contact-success-icon').setAttribute('stroke', '#ff4757');
             }

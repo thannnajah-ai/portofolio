@@ -9,23 +9,23 @@
     <meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Nathan Ferdwiansyah W. | Frontend & Mobile Developer</title>
+    <title>Nathan Ferdwiansyah W. | Frontend Developer</title>
     <link id="favicon" rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23fafafa'/%3E%3C/svg%3E">
     <meta name="description"
-        content="Portfolio of Nathan Ferdwiansyah W., a Frontend & Mobile Developer focusing on Design Engineering, fluid interfaces, and AI-assisted tools.">
+        content="Frontend Developer crafting intuitive digital experiences. Focused on clean semantic HTML, modern CSS, and performant JavaScript.">
     <!-- Open Graph SEO -->
-    <meta property="og:title" content="Nathan Ferdwiansyah W. | Frontend & Mobile Developer">
+    <meta property="og:title" content="Nathan Ferdwiansyah W. | Frontend Developer">
     <meta property="og:description"
-        content="Combining AI-assisted coding tools with strong Design Engineering principles to create highly aesthetic digital experiences.">
+        content="Frontend Developer crafting intuitive digital experiences. Focused on clean semantic HTML, modern CSS, and performant JavaScript.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://nathanferdwiansyah.com">
     <meta property="og:image" content="https://nathanferdwiansyah.com/og-image.jpg">
     <!-- Twitter SEO -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Nathan Ferdwiansyah W. | Frontend & Mobile Developer">
+    <meta name="twitter:title" content="Nathan Ferdwiansyah W. | Frontend Developer">
     <meta name="twitter:description"
-        content="Combining AI-assisted coding tools with strong Design Engineering principles to create highly aesthetic digital experiences.">
+        content="Frontend Developer crafting intuitive digital experiences. Focused on clean semantic HTML, modern CSS, and performant JavaScript.">
     <meta name="twitter:image" content="https://nathanferdwiansyah.com/og-image.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,12 +45,13 @@
 <body>
 
     <!-- Scroll-Spy Nav -->
-    <nav class="scroll-spy-nav">
+    <nav class="scroll-spy-nav" aria-label="Section Navigation">
         <ul>
-            <li><a href="#hero" class="spy-link active" data-target="hero"></a></li>
-            <li><a href="#about" class="spy-link" data-target="about"></a></li>
-            <li><a href="#projects" class="spy-link" data-target="projects"></a></li>
-            <li><a href="#contact" class="spy-link" data-target="contact"></a></li>
+            <li><a href="#hero" class="spy-link active" data-target="hero" aria-label="Go to Hero section"></a></li>
+            <li><a href="#about" class="spy-link" data-target="about" aria-label="Go to About section"></a></li>
+            <li><a href="#skills" class="spy-link" data-target="skills" aria-label="Go to Skills section"></a></li>
+            <li><a href="#projects" class="spy-link" data-target="projects" aria-label="Go to Projects section"></a></li>
+            <li><a href="#contact" class="spy-link" data-target="contact" aria-label="Go to Contact section"></a></li>
         </ul>
     </nav>
 
@@ -63,34 +64,33 @@
     <dialog id="resume-dialog" class="resume-dialog">
         <div class="resume-window">
             <div class="resume-header">
-                <h2>Interactive Resume</h2>
-                <button class="resume-close-btn" id="resume-close" aria-label="Close Resume">&times;</button>
+                <h2 data-i18n="resumeTitle">Interactive Resume</h2>
+                <button class="resume-close-btn" id="resume-close" aria-label="Close Resume" data-i18n-aria="resumeCloseAria">&times;</button>
             </div>
             <div class="resume-body">
                 <div class="timeline">
                     <div class="timeline-item">
                         <div class="timeline-dot"></div>
                         <div class="timeline-content">
-                            <h3>Frontend Developer</h3>
-                            <span>2024 - Present</span>
-                            <p>Building high-performance, aesthetically pleasing web applications using modern stacks.
-                            </p>
+                            <h3 data-i18n="resume1Title">Frontend Developer</h3>
+                            <span data-i18n="resume1Period">2024 — Present</span>
+                            <p data-i18n="resume1Desc">Building responsive, accessible web interfaces and component systems using semantic HTML, CSS, and Vanilla JavaScript.</p>
                         </div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-dot"></div>
                         <div class="timeline-content">
-                            <h3>UI/UX Enthusiast</h3>
-                            <span>2023 - 2024</span>
-                            <p>Studying human-computer interaction, wireframing, and creating design systems.</p>
+                            <h3 data-i18n="resume2Title">UI/UX & Web Foundations</h3>
+                            <span data-i18n="resume2Period">2023 — 2024</span>
+                            <p data-i18n="resume2Desc">Studying layout design principles, visual hierarchy, responsive grids, and DOM manipulation.</p>
                         </div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-dot"></div>
                         <div class="timeline-content">
-                            <h3>Self-Taught Programmer</h3>
-                            <span>2021 - 2023</span>
-                            <p>Learned algorithms, data structures, and the fundamentals of software engineering.</p>
+                            <h3 data-i18n="resume3Title">Programming Foundations</h3>
+                            <span data-i18n="resume3Period">2021 — 2023</span>
+                            <p data-i18n="resume3Desc">Learned algorithms, data structures, and the core fundamentals of web development.</p>
                         </div>
                     </div>
                 </div>
@@ -151,15 +151,15 @@
             <span class="hamburger-line"></span>
         </button>
         <div class="nav-links">
-            <a href="#hero" class="nav-link">Home</a>
-            <a href="#about" class="nav-link">About</a>
-            <a href="#skills" class="nav-link">Skills</a>
-            <a href="#projects" class="nav-link">Projects</a>
-            <a href="#thoughts" class="nav-link" data-i18n="thoughtsTitle">Thoughts</a>
+            <a href="#hero" class="nav-link" data-i18n="navHome">Home</a>
+            <a href="#about" class="nav-link" data-i18n="navAbout">About</a>
+            <a href="#skills" class="nav-link" data-i18n="navSkills">Skills</a>
+            <a href="#projects" class="nav-link" data-i18n="navProjects">Projects</a>
+            <a href="#thoughts" class="nav-link" data-i18n="navThoughts">Thoughts</a>
         </div>
         <div class="local-time-widget" id="local-time-widget"><span id="time-text">--:--</span><span
                 class="status-dot-time" id="time-status-dot"></span></div>
-        <button id="lang-toggle" class="lang-toggle" aria-label="Toggle Language">ID</button>
+        <button id="lang-toggle" class="lang-toggle" aria-label="Switch language to Indonesian">ID</button>
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
             <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -194,10 +194,9 @@
                     <div class="status-badge"><span class="status-dot"></span><span data-i18n="available">Available for
                             work</span></div>
                 </div>
-                <h1 class="hero-title"><span data-i18n="heroTitle">Frontend & Mobile Developer</span> <br><span
-                        class="text-gradient" data-i18n="heroSubtitle">Crafting Interfaces with Taste</span></h1>
-                <p class="hero-subtitle" data-i18n="heroDesc">Combining AI-assisted coding tools with strong Design
-                    Engineering principles to create highly aesthetic and fluid digital experiences.</p>
+                <h1 class="hero-title"><span data-i18n="heroTitle">Frontend Developer</span> <br><span
+                        class="text-gradient" data-i18n="heroSubtitle">Crafting intuitive digital experiences.</span></h1>
+                <p class="hero-subtitle" data-i18n="heroDesc">Specializing in clean HTML, modern CSS, and performant JavaScript to turn interface designs into accessible, responsive web experiences.</p>
                 <div class="hero-actions">
                     <a href="#projects" class="btn btn-primary magnetic" data-i18n="viewProjects">View Projects</a>
                     <a href="#about" class="btn btn-secondary magnetic" data-i18n="aboutMe">About Me</a>
@@ -215,15 +214,11 @@
 
         <!-- Marquee Banner -->
         <div class="marquee-container fade-in-section">
-            <div class="marquee-content">
-                <span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI/UX ENTHUSIAST &nbsp;•&nbsp; SOFTWARE ENGINEER
-                    &nbsp;•&nbsp;</span>
-                <span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI/UX ENTHUSIAST &nbsp;•&nbsp; SOFTWARE ENGINEER
-                    &nbsp;•&nbsp;</span>
-                <span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI/UX ENTHUSIAST &nbsp;•&nbsp; SOFTWARE ENGINEER
-                    &nbsp;•&nbsp;</span>
-                <span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI/UX ENTHUSIAST &nbsp;•&nbsp; SOFTWARE ENGINEER
-                    &nbsp;•&nbsp;</span>
+            <div class="marquee-content" data-i18n="marqueeContent">
+                <span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI/UX CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; RESPONSIVE DESIGN &nbsp;•&nbsp;</span>
+                <span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI/UX CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; RESPONSIVE DESIGN &nbsp;•&nbsp;</span>
+                <span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI/UX CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; RESPONSIVE DESIGN &nbsp;•&nbsp;</span>
+                <span>FRONTEND DEVELOPER &nbsp;•&nbsp; UI/UX CRAFTSMAN &nbsp;•&nbsp; WEB INTERFACES &nbsp;•&nbsp; RESPONSIVE DESIGN &nbsp;•&nbsp;</span>
             </div>
         </div>
 
@@ -243,8 +238,7 @@
                             for work</span></div>
                 </div>
                 <div class="about-text">
-                    <button id="btn-view-cv" class="btn btn-secondary magnetic" style="margin-top: 1rem;">View
-                        Interactive CV</button>
+                    <button id="btn-view-cv" class="btn btn-secondary magnetic" style="margin-top: 1rem;" data-i18n="btnViewCv">Interactive Resume</button>
                     <p data-i18n="aboutP1"></p>
                     <p data-i18n="aboutP2"></p>
                     <div class="bento-grid"
@@ -254,10 +248,10 @@
                             style="padding: 1.25rem; border-radius: 16px; display: flex; align-items: center; gap: 0.75rem;">
                             <div class="now-icon" style="font-size: 1.75rem; flex-shrink: 0;">🌍</div>
                             <div class="now-info">
-                                <div
+                                <div data-i18n="nowTitle"
                                     style="font-size: 0.6rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; white-space: nowrap;">
                                     RIGHT NOW IN YOGYAKARTA</div>
-                                <div id="now-weather"
+                                <div id="now-weather" data-i18n="nowWeather"
                                     style="font-weight: 600; font-size: 0.9rem; margin-top: 4px; color: var(--text-primary); white-space: nowrap;">
                                     Fetching weather...</div>
                             </div>
@@ -322,7 +316,7 @@
         <!-- Skills Section -->
         <section id="skills" class="fade-in-section">
             <h2 class="section-title"><span class="stagger-mask"><span class="stagger-text"
-                        data-i18n="skillsTitle">Capabilities & Taste</span></span></h2>
+                        data-i18n="skillsTitle">Capabilities & Focus</span></span></h2>
             <div class="skills-grid">
                 <!-- Skill Card 1 -->
                 <div class="skill-card tilt-card">
@@ -332,10 +326,8 @@
                             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                         </svg>
                     </div>
-                    <h3 class="skill-title">Core Tech Stack</h3>
-                    <p class="skill-desc" data-i18n="skill1Desc">Keahlian solid dalam fondasi web modern menggunakan
-                        HTML5, CSS3, dan Vanilla JS, serta pengembangan aplikasi mobile cross-platform dengan Flutter.
-                    </p>
+                    <h3 class="skill-title" data-i18n="skill1Title">Core Tech Stack</h3>
+                    <p class="skill-desc" data-i18n="skill1Desc">Strong command of modern semantic HTML5, CSS3 architecture, and Vanilla JavaScript without unnecessary framework bloat.</p>
                 </div>
 
                 <!-- Skill Card 2 -->
@@ -348,10 +340,8 @@
                             <path d="M12 8h.01" />
                         </svg>
                     </div>
-                    <h3 class="skill-title">Emil-skills (Motion)</h3>
-                    <p class="skill-desc" data-i18n="skill2Desc">Menerapkan animasi natural berbasis physics, custom
-                        easing curves, dan tactile feedback. Interaksi terasa presisi, menghindari animasi generik
-                        linear.</p>
+                    <h3 class="skill-title" data-i18n="skill2Title">Interface Motion</h3>
+                    <p class="skill-desc" data-i18n="skill2Desc">Crafting natural transitions with custom easing curves and tactile feedback, ensuring interactions feel purposeful and respect reduced motion preferences.</p>
                 </div>
 
                 <!-- Skill Card 3 -->
@@ -363,10 +353,8 @@
                             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                         </svg>
                     </div>
-                    <h3 class="skill-title">Taste-skills (Design)</h3>
-                    <p class="skill-desc" data-i18n="skill3Desc">Fokus pada <em>good taste</em> UI/UX: tipografi
-                        presisi, proporsi spacing sempurna, dan desain asimetris. Menghindari tampilan "boilerplate"
-                        khas template.</p>
+                    <h3 class="skill-title" data-i18n="skill3Title">UI Craft & Hierarchy</h3>
+                    <p class="skill-desc" data-i18n="skill3Desc">Designing interfaces with strict typographic hierarchy, intentional spacing systems, and dark/light modes engineered for clarity across all screens.</p>
                 </div>
             </div>
             <!-- Task 10: Interactive Skill Radar Chart -->
@@ -377,7 +365,7 @@
             </div>
         </section>
 
-        <!-- Work Philosophy Section (Pengganti Testimonial) -->
+        <!-- Work Philosophy Section -->
         <section id="philosophy" class="fade-in-section" style="margin-bottom: 8rem;">
             <h2 class="section-title"><span class="stagger-mask"><span class="stagger-text"
                         data-i18n="philosophyTitle">Work Philosophy</span></span></h2>
@@ -385,21 +373,18 @@
                 <div class="philosophy-track">
                     <div class="philosophy-card tilt-card">
                         <div class="philosophy-icon">🎯</div>
-                        <h3 data-i18n="phil1Title">Pixel Perfect</h3>
-                        <p data-i18n="phil1Desc">Desain bukan cuma soal tampilan, tapi tentang bagaimana setiap elemen
-                            memiliki proporsi dan fungsi yang tepat.</p>
+                        <h3 data-i18n="phil1Title">Visual Precision</h3>
+                        <p data-i18n="phil1Desc">Interfaces should feel deliberate. Every spacing token, border, and typography choice serves visual clarity and ease of use.</p>
                     </div>
                     <div class="philosophy-card tilt-card">
                         <div class="philosophy-icon">⚡</div>
                         <h3 data-i18n="phil2Title">Performance First</h3>
-                        <p data-i18n="phil2Desc">Animasi sekeren apa pun nggak ada artinya kalau bikin web lambat.
-                            Performa dan fluiditas adalah kunci.</p>
+                        <p data-i18n="phil2Desc">Fluidity is meaningless if the page stutters. Lightweight assets and efficient DOM operations keep experiences fast on any device.</p>
                     </div>
                     <div class="philosophy-card tilt-card">
                         <div class="philosophy-icon">💡</div>
-                        <h3 data-i18n="phil3Title">User Centric</h3>
-                        <p data-i18n="phil3Desc">Kode yang saya tulis selalu memprioritaskan empati terhadap end-user.
-                            Aksesibilitas dan kenyamanan nomor satu.</p>
+                        <h3 data-i18n="phil3Title">User-Centric & Accessible</h3>
+                        <p data-i18n="phil3Desc">Code should serve people. Clean keyboard navigation, screen-reader friendly labels, and high readability come first.</p>
                     </div>
                 </div>
             </div>
@@ -416,7 +401,6 @@
                     <button class="filter-btn active" data-filter="all" data-i18n="filterAll">All</button>
                     <button class="filter-btn" data-filter="web" data-i18n="filterWeb">Web Dev</button>
                     <button class="filter-btn" data-filter="research" data-i18n="filterResearch">Research</button>
-                    <button class="filter-btn" data-filter="concept" data-i18n="filterConcept">Concept</button>
                 </div>
                 <div class="search-container" style="flex: 1; min-width: 250px; max-width: 400px; position: relative;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -426,26 +410,34 @@
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                     <input type="text" id="project-search-input" placeholder="Search projects..."
-                        data-i18n="searchPlaceholder"
+                        data-i18n-placeholder="searchPlaceholder"
                         style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.5rem; border-radius: 99px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); outline: none; font-family: inherit; font-size: 0.9rem; transition: border-color 0.3s ease;">
                 </div>
             </div>
             <div class="projects-grid">
-                <!-- Project 1 -->
+                <!-- Project 1: TembusPTN (Primary Case Study) -->
                 <a href="https://tembusptn.my.id/" target="_blank" rel="noopener noreferrer"
-                    class="project-card tilt-card" data-category="research" data-category="web">
+                    class="project-card tilt-card" data-category="web">
                     <div class="project-image">
                         <img src="https://image.thum.io/get/width/1000/crop/800/https://tembusptn.my.id/"
                             alt="Preview TembusPTN" class="preview-img" loading="lazy">
                     </div>
                     <div class="project-info">
+                        <div class="project-tag-wrapper" style="margin-bottom: 0.5rem;">
+                            <span class="project-tag" data-i18n="project1Tag" style="display: inline-block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: rgba(59, 130, 246, 0.15); color: #60a5fa;">Case Study • Web App</span>
+                        </div>
                         <h3 class="project-title" data-i18n="project1Title">TembusPTN.my.id</h3>
-                        <p class="project-desc" data-i18n="project1Desc">Free UTBK/SNBT learning platform. I designed
-                            the interface so people can focus on learning, not navigating.</p>
+                        <p class="project-desc" data-i18n="project1Desc">Educational web platform designed to help students prepare for UTBK/SNBT exams. Led the frontend interface implementation: clean question navigation, readable typography, and distraction-free responsive practice views.</p>
+                        <div class="project-tech-stack" style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">HTML5</span>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">CSS3</span>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">JavaScript</span>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">Responsive UI</span>
+                        </div>
                     </div>
                 </a>
 
-                <!-- Project 2 -->
+                <!-- Project 2: Scientific Research -->
                 <a href="KTI_Nathan.pdf" target="_blank" rel="noopener noreferrer" class="project-card tilt-card"
                     data-category="research">
                     <div class="project-image">
@@ -461,32 +453,18 @@
                         </div>
                     </div>
                     <div class="project-info">
-                        <h3 class="project-title" data-i18n="project2Title">Scientific Research</h3>
-                        <p class="project-desc" data-i18n="project2Desc">Research on the effect of consumption methods
-                            on white rice glucose levels. My other side outside of coding.</p>
-                    </div>
-                </a>
-
-                <!-- Project 3: WIP -->
-                <div class="project-card tilt-card project-wip" data-category="concept">
-                    <div class="project-image">
-                        <div class="placeholder-img wip-placeholder">
-                            <div class="wip-inner">
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#a78bfa"
-                                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 20h9" />
-                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                                </svg>
-                                <span class="wip-label" data-i18n="wipLabel">Something's cooking...</span>
-                            </div>
+                        <div class="project-tag-wrapper" style="margin-bottom: 0.5rem;">
+                            <span class="project-tag" data-i18n="project2Tag" style="display: inline-block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: rgba(16, 185, 129, 0.15); color: #34d399;">Research Paper</span>
+                        </div>
+                        <h3 class="project-title" data-i18n="project2Title">Scientific Research: Rice Glycemic Response</h3>
+                        <p class="project-desc" data-i18n="project2Desc">Scientific paper exploring the impact of consumption methods on white rice glycemic response. Highlights analytical discipline, structured documentation, and research rigor applied alongside engineering.</p>
+                        <div class="project-tech-stack" style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">Academic Research</span>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">Data Analysis</span>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;">Scientific Writing</span>
                         </div>
                     </div>
-                    <div class="project-info">
-                        <div class="wip-badge" data-i18n="wipBadge">In Progress</div>
-                        <h3 class="project-title" data-i18n="project3Title">Next Project</h3>
-                        <p class="project-desc" data-i18n="project3Desc">Still in the oven. Stay tuned.</p>
-                    </div>
-                </div>
+                </a>
             </div>
         </section>
 
@@ -496,13 +474,13 @@
                         data-i18n="thoughtsTitle">Thoughts & Logs</span></span></h2>
             <!-- Task 2: Live GitHub Stats API moved to About Section -->
 
-            <!-- Task 7: Guestbook (Local) -->
+            <!-- Task 7: Guestbook -->
             <div class="guestbook-section" style="margin-top: 3rem;">
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-primary);">Guestbook</h3>
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-primary);" data-i18n="guestbookTitle">Guestbook</h3>
                 <div class="guestbook-form">
-                    <input type="text" id="guest-name" placeholder="Name" maxlength="50" autocomplete="name">
-                    <input type="text" id="guest-message" placeholder="Leave a message..." maxlength="280">
-                    <button id="btn-sign-guestbook" class="btn btn-primary magnetic">Sign</button>
+                    <input type="text" id="guest-name" placeholder="Name" maxlength="50" autocomplete="name" data-i18n-placeholder="guestNamePlaceholder">
+                    <input type="text" id="guest-message" placeholder="Leave a message..." maxlength="280" data-i18n-placeholder="guestMsgPlaceholder">
+                    <button id="btn-sign-guestbook" class="btn btn-primary magnetic" data-i18n="guestSignBtn">Sign</button>
                 </div>
                 <div id="guestbook-status" class="guestbook-status" aria-live="polite"></div>
                 <div id="guestbook-entries" class="guestbook-entries"
@@ -522,14 +500,10 @@
             </div>
         </section>
 
-
-
-
-
         <!-- Project Detail Dialog -->
         <dialog id="project-modal" class="project-modal">
             <div class="project-modal-content">
-                <button class="project-close-btn" id="project-close" aria-label="Close Project">
+                <button class="project-close-btn" id="project-close" aria-label="Close Project" data-i18n-aria="modalCloseAria">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -544,8 +518,7 @@
                     <p id="project-modal-desc" class="project-modal-desc"></p>
                     <div style="margin-top: 1.5rem;">
                         <a id="project-modal-link" href="#" target="_blank" class="btn btn-primary"
-                            style="display:inline-block; padding: 0.8rem 1.5rem; text-decoration: none;">View Live /
-                            Download</a>
+                            style="display:inline-block; padding: 0.8rem 1.5rem; text-decoration: none;" data-i18n="modalViewProject">View Live / Download</a>
                     </div>
                 </div>
             </div>
@@ -559,22 +532,20 @@
                 style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 2rem; border-radius: 24px; border: 1px solid var(--border-color); text-align: center;">
 
                 <div id="contact-step-1" class="contact-step active">
-                    <h3 style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);">What's your name?
-                    </h3>
-                    <input type="text" id="contact-name" class="contact-input" placeholder="John Doe"
-                        autocomplete="off">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);" data-i18n="contactStep1Title">What's your name?</h3>
+                    <input type="text" id="contact-name" class="contact-input" placeholder="Your name"
+                        autocomplete="name" data-i18n-placeholder="contactNamePlaceholder">
                     <button class="btn btn-primary contact-next-btn" data-next="2"
-                        style="margin-top: 1rem;">Next</button>
+                        style="margin-top: 1rem;" data-i18n="contactNextBtn">Next</button>
                 </div>
 
                 <div id="contact-step-2" class="contact-step" style="display: none;">
-                    <h3 style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);">What do you want to
-                        talk about?</h3>
-                    <textarea id="contact-message" class="contact-input" rows="3" placeholder="I have a project idea..."
-                        style="resize: none;"></textarea>
+                    <h3 style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);" data-i18n="contactStep2Title">What would you like to discuss?</h3>
+                    <textarea id="contact-message" class="contact-input" rows="3" placeholder="Tell me about your project, idea, or inquiry..."
+                        style="resize: none;" data-i18n-placeholder="contactMsgPlaceholder"></textarea>
                     <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
-                        <button class="btn btn-secondary contact-prev-btn" data-prev="1">Back</button>
-                        <button class="btn btn-primary contact-submit-btn" id="contact-submit">Draft Email</button>
+                        <button class="btn btn-secondary contact-prev-btn" data-prev="1" data-i18n="contactBackBtn">Back</button>
+                        <button class="btn btn-primary contact-submit-btn" id="contact-submit" data-i18n="contactSubmitBtn">Send Message</button>
                     </div>
                 </div>
 
@@ -586,11 +557,11 @@
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
                     <h3 id="contact-success-title"
-                        style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);">Message Sent!</h3>
-                    <p id="contact-success-desc" style="color: var(--text-secondary); margin-bottom: 1.5rem;">Thank you
+                        style="margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-primary);" data-i18n="contactSuccessTitle">Message Sent!</h3>
+                    <p id="contact-success-desc" style="color: var(--text-secondary); margin-bottom: 1.5rem;" data-i18n="contactSuccessDesc">Thank you
                         for reaching out. I'll get back to you as soon as possible.</p>
                     <button class="btn btn-secondary" id="contact-reset"
-                        style="margin-top: 1rem; display: block; margin-left: auto; margin-right: auto; background: transparent; border: none; color: var(--text-secondary);">Send
+                        style="margin-top: 1rem; display: block; margin-left: auto; margin-right: auto; background: transparent; border: none; color: var(--text-secondary);" data-i18n="contactResetBtn">Send
                         Another Message</button>
                 </div>
             </div>
@@ -606,10 +577,10 @@
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            <span id="last-updated-text">Checking latest updates...</span>
+            <span id="last-updated-text" data-i18n="checkingUpdates">Checking latest updates...</span>
         </div>
-        <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.7;">
-            Designed & Engineered with ❤️ and Vanilla JS
+        <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.7;" data-i18n="footerTagline">
+            Designed & Engineered with Vanilla HTML, CSS & JavaScript
         </div>
     </footer>
 
@@ -621,10 +592,10 @@
             <div
                 style="font-size: 4rem; font-weight: 800; color: var(--primary-color); line-height: 1; margin-bottom: 1rem;">
                 404</div>
-            <h3 style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 0.5rem;">Not Found</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 2rem;">The section you're looking for doesn't exist
+            <h3 style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 0.5rem;" data-i18n="error404Title">Not Found</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;" data-i18n="error404Desc">The section you're looking for doesn't exist
                 or has been moved.</p>
-            <button class="btn btn-primary" id="error-404-home" style="width: 100%;">Take Me Home</button>
+            <button class="btn btn-primary" id="error-404-home" style="width: 100%;" data-i18n="error404Btn">Take Me Home</button>
         </div>
     </dialog>
 
@@ -641,49 +612,24 @@
         </button>
     </menu>
 
-    <!-- Project Detail Dialog -->
-    <dialog id="project-modal" class="project-modal">
-        <div class="project-modal-content">
-            <button class="project-close-btn" id="project-close" aria-label="Close Project">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            <div class="project-modal-image" id="project-modal-img-container">
-                <!-- Image or SVG injected here -->
-            </div>
-            <div class="project-modal-body">
-                <h2 id="project-modal-title" class="project-modal-title"></h2>
-                <p id="project-modal-desc" class="project-modal-desc"></p>
-                <div style="margin-top: 1.5rem;">
-                    <a id="project-modal-link" href="#" target="_blank" class="btn btn-primary"
-                        style="display:inline-block; padding: 0.8rem 1.5rem; text-decoration: none;">View Live /
-                        Download</a>
-                </div>
-            </div>
-        </div>
-    </dialog>
-
     <!-- Task 1: Command Palette Dialog -->
     <dialog id="command-palette-dialog" class="command-palette-dialog"
         style="padding: 0; background: transparent; border: none; max-width: 600px; width: 90%;">
         <div
             style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
-            <input type="text" id="cmd-input" placeholder="Type a command or search..."
+            <input type="text" id="cmd-input" placeholder="Type a command or search..." data-i18n-placeholder="cmdPlaceholder"
                 style="padding: 1.5rem; font-size: 1.2rem; background: transparent; border: none; border-bottom: 1px solid var(--border-color); color: var(--text-primary); outline: none; width: 100%; box-sizing: border-box;">
             <div id="cmd-list" style="max-height: 300px; overflow-y: auto; padding: 0.5rem 0; width: 100%;">
-                <div class="cmd-item" data-action="toggle-theme"
+                <div class="cmd-item" data-action="toggle-theme" data-i18n="cmdTheme"
                     style="padding: 1rem 1.5rem; cursor: pointer; color: var(--text-secondary); transition: background 0.2s;">
                     Toggle Dark/Light Mode</div>
-                <div class="cmd-item" data-action="download-cv"
+                <div class="cmd-item" data-action="download-cv" data-i18n="cmdCV"
                     style="padding: 1rem 1.5rem; cursor: pointer; color: var(--text-secondary); transition: background 0.2s;">
                     Download CV</div>
-                <div class="cmd-item" data-action="goto-projects"
+                <div class="cmd-item" data-action="goto-projects" data-i18n="cmdProjects"
                     style="padding: 1rem 1.5rem; cursor: pointer; color: var(--text-secondary); transition: background 0.2s;">
                     Go to Projects</div>
-                <div class="cmd-item" data-action="copy-email"
+                <div class="cmd-item" data-action="copy-email" data-i18n="cmdEmail"
                     style="padding: 1rem 1.5rem; cursor: pointer; color: var(--text-secondary); transition: background 0.2s;">
                     Copy Email to Clipboard</div>
             </div>
@@ -694,7 +640,7 @@
     <dialog id="blog-dialog" class="blog-reader-dialog">
         <div class="blog-window">
             <div class="blog-header">
-                <button class="blog-close-btn" id="blog-close" aria-label="Close Blog">
+                <button class="blog-close-btn" id="blog-close" aria-label="Close Blog" data-i18n-aria="blogCloseAria">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
