@@ -304,11 +304,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Stop scrolling while curtain is down
-    if (window.lenis) window.lenis.stop();
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Always hide after the greeting sequence (2.8s)
-    setTimeout(hidePreloader, 2800);
+    // Stop scrolling while curtain is down (if motion allowed)
+    if (window.lenis && !prefersReducedMotion) window.lenis.stop();
+
+    // Always hide after the greeting sequence (2.8s, or immediately if reduced motion)
+    setTimeout(hidePreloader, prefersReducedMotion ? 0 : 2800);
 
     // i18n dictionary is now dynamically fetched from /i18n/{lang}.json
 

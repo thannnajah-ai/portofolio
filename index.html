@@ -41,6 +41,13 @@
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.0/build/spline-viewer.js"></script>
     <!-- Lenis Smooth Scroll -->
     <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+    <noscript>
+        <style>
+            #preloader { display: none !important; }
+            .fade-in-section { opacity: 1 !important; visibility: visible !important; transform: none !important; }
+            .hero-title > span { opacity: 1 !important; transform: none !important; }
+        </style>
+    </noscript>
 </head>
 
 <body>
@@ -195,8 +202,8 @@
                     <div class="status-badge"><span class="status-dot"></span><span data-i18n="available">Available for
                             work</span></div>
                 </div>
-                <h1 class="hero-title"><span data-i18n="heroTitle">Frontend Developer</span> <br><span
-                        class="text-gradient" data-i18n="heroSubtitle">Crafting intuitive digital experiences.</span></h1>
+                <h1 class="hero-title"><span class="hero-title-line" data-i18n="heroTitle">Frontend Developer</span><span
+                        class="hero-title-line text-gradient" data-i18n="heroSubtitle">Crafting intuitive digital experiences.</span></h1>
                 <p class="hero-subtitle" data-i18n="heroDesc">Specializing in clean HTML, modern CSS, and performant JavaScript to turn interface designs into accessible, responsive web experiences.</p>
                 <div class="hero-actions">
                     <a href="#projects" class="btn btn-primary magnetic" data-i18n="viewProjects">View Projects</a>
