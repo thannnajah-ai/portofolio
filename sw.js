@@ -89,6 +89,10 @@ self.addEventListener('fetch', (e) => {
                 }
                 return networkResponse;
             });
+        }).catch(() => {
+            return caches.match(e.request).catch(() => null).then((fallback) => {
+                return fallback || new Response(null, { status: 503, statusText: 'Service Unavailable' });
+            });
         })
     );
 });
