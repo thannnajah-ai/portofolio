@@ -38,6 +38,17 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
+    let protocol;
+    try {
+        protocol = new URL(e.request.url).protocol;
+    } catch (_) {
+        return;
+    }
+
+    if (protocol !== 'http:' && protocol !== 'https:') {
+        return;
+    }
+
     const url = e.request.url;
     const isApiRequest = url.includes('api.github.com') || url.includes('api.open-meteo.com');
 
@@ -47,14 +58,16 @@ self.addEventListener('fetch', (e) => {
             caches.open(API_CACHE).then((cache) => {
                 return fetch(e.request).then((response) => {
                     if (response && response.status === 200) {
-                        cache.put(e.request, response.clone());
+                        cache.put(e.request, response.clone()).catch(() => {});
                     }
                     return response;
                 }).catch(() => {
-                    return cache.match(e.request).then((res) => {
+                    return cache.match(e.request).catch(() => null).then((res) => {
                         return res || new Response(null, { status: 503, statusText: 'Service Unavailable' });
                     });
                 });
+            }).catch(() => {
+                return new Response(null, { status: 503, statusText: 'Service Unavailable' });
             })
         );
         return;
@@ -66,11 +79,13 @@ self.addEventListener('fetch', (e) => {
             fetch(e.request).then((networkResponse) => {
                 if (networkResponse && networkResponse.status === 200) {
                     const responseClone = networkResponse.clone();
-                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, responseClone));
+                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, responseClone).catch(() => {})).catch(() => {});
                 }
                 return networkResponse;
             }).catch(() => {
-                return caches.match('./index.html').then((cached) => cached || caches.match(e.request));
+                return caches.match('./index.html').catch(() => null).then((cached) => {
+                    return cached || caches.match(e.request).catch(() => null);
+                });
             })
         );
         return;
@@ -85,7 +100,7 @@ self.addEventListener('fetch', (e) => {
             return fetch(e.request).then((networkResponse) => {
                 if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
                     const responseClone = networkResponse.clone();
-                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, responseClone));
+                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, responseClone).catch(() => {})).catch(() => {});
                 }
                 return networkResponse;
             });
