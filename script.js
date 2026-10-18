@@ -951,9 +951,19 @@ const projectModalTitle = document.getElementById('project-modal-title');
 const projectModalDesc = document.getElementById('project-modal-desc');
 const projectModalImgContainer = document.getElementById('project-modal-img-container');
 const projectModalLink = document.getElementById('project-modal-link');
+let lastActiveProjectTrigger = null;
 
-function openProjectModal(card) {
-    if (!card || card.classList.contains('project-wip') || !projectModal) return;
+function shouldResumeLenis() {
+    if (!window.lenis) return false;
+    const cmdPalette = document.getElementById('cmd-palette');
+    if (cmdPalette && cmdPalette.open) return false;
+    if (!document.body.classList.contains('loaded')) return false;
+    return true;
+}
+
+function openProjectModal(card, triggerEl) {
+    if (!card || card.classList.contains('project-wip') || !projectModal || projectModal.open) return;
+    lastActiveProjectTrigger = triggerEl || card;
 
     // Extract content
     const titleEl = card.querySelector('.project-title');
@@ -1010,13 +1020,14 @@ document.querySelectorAll('.project-card').forEach(card => {
     card.addEventListener('click', (e) => {
         // If clicking a direct link or external action button, allow default behavior
         if (e.target.closest('a')) return;
-        if (e.target.closest('.btn-project-details')) {
+        const detailsBtn = e.target.closest('.btn-project-details');
+        if (detailsBtn) {
             e.preventDefault();
-            openProjectModal(card);
+            openProjectModal(card, detailsBtn);
             return;
         }
         // If clicking anywhere else on card, open modal
-        openProjectModal(card);
+        openProjectModal(card, card);
     });
 });
 
@@ -1035,23 +1046,24 @@ if (projectModalClose && projectModal) {
         }
     };
 
-    projectModalClose.addEventListener('click', () => {
+    const closeProjectModal = () => {
+        if (!projectModal || !projectModal.open) return;
         if (document.startViewTransition) {
             safeViewTransition(() => {
                 projectModal.close();
-                if (window.lenis) window.lenis.start();
             });
         } else {
             projectModal.classList.add('closing');
             setTimeout(() => {
                 projectModal.close();
                 projectModal.classList.remove('closing');
-                if (window.lenis) window.lenis.start();
             }, 300);
         }
-    });
+    };
 
-    // Close when clicking outside
+    projectModalClose.addEventListener('click', closeProjectModal);
+
+    // Close when clicking outside modal box
     projectModal.addEventListener('click', (e) => {
         const rect = projectModal.getBoundingClientRect();
         if (
@@ -1060,19 +1072,22 @@ if (projectModalClose && projectModal) {
             e.clientY < rect.top ||
             e.clientY > rect.bottom
         ) {
-            if (document.startViewTransition) {
-                safeViewTransition(() => {
-                    projectModal.close();
-                    if (window.lenis) window.lenis.start();
-                });
-            } else {
-                projectModal.classList.add('closing');
-                setTimeout(() => {
-                    projectModal.close();
-                    projectModal.classList.remove('closing');
-                    if (window.lenis) window.lenis.start();
-                }, 300);
-            }
+            closeProjectModal();
+        }
+    });
+
+    // Single unified closure handler for scroll recovery and focus restoration
+    projectModal.addEventListener('close', () => {
+        if (shouldResumeLenis()) {
+            window.lenis.start();
+        }
+        const trigger = lastActiveProjectTrigger;
+        if (trigger && trigger.isConnected && typeof trigger.focus === 'function') {
+            setTimeout(() => {
+                if (trigger.isConnected) {
+                    trigger.focus();
+                }
+            }, 50);
         }
     });
 }
@@ -1654,10 +1669,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else if (action === 'goto-projects') {
                     document.querySelector('.spy-link[data-target="projects"]')?.click();
                 } else if (action === 'copy-email') {
-                    navigator.clipboard.writeText('thannnajah@gmail.com');
+                    const email = 'thannnajah@gmail.com';
                     const curLang = currentLang || localStorage.getItem('lang') || 'en';
-                    if (typeof showDynamicIsland === 'function') {
-                        showDynamicIsland(curLang === 'id' ? 'Email Disalin ke Clipboard!' : 'Email Copied to Clipboard!');
+                    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                        navigator.clipboard.writeText(email).then(() => {
+                            if (typeof showDynamicIsland === 'function') {
+                                showDynamicIsland(curLang === 'id' ? 'Email Disalin ke Clipboard!' : 'Email Copied to Clipboard!');
+                            }
+                        }).catch(() => {
+                            window.location.href = `mailto:${email}`;
+                        });
+                    } else {
+                        window.location.href = `mailto:${email}`;
                     }
                 }
                 cmdPalette.close();
@@ -2171,7 +2194,13 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 document.getElementById('contact-step-2').style.display = 'none';
                 document.getElementById('contact-step-1').style.display = 'block';
-                setTimeout(() => document.getElementById('contact-step-1').classList.add('active'), 50);
+                setTimeout(() => {
+                    document.getElementById('contact-step-1').classList.add('active');
+                    const nameInput = document.getElementById('contact-name');
+                    if (nameInput && nameInput.isConnected) {
+                        nameInput.focus();
+                    }
+                }, 50);
             }, 400);
         });
 
@@ -2251,27 +2280,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+
+        // Keyboard navigation: Ctrl+Enter / Cmd+Enter in message textarea triggers submission
+        const contactMsgInput = document.getElementById('contact-message');
+        if (contactMsgInput) {
+            contactMsgInput.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    contactSubmitBtn.click();
+                }
+            });
+        }
     }
 
     // Direct Email Copy Button
     const btnCopyEmail = document.getElementById('btn-copy-email');
     if (btnCopyEmail) {
         btnCopyEmail.addEventListener('click', () => {
-            navigator.clipboard.writeText('thannnajah@gmail.com').then(() => {
-                const curLang = currentLang || localStorage.getItem('lang') || 'en';
+            const email = 'thannnajah@gmail.com';
+            const curLang = currentLang || localStorage.getItem('lang') || 'en';
+            const t = (i18nData && i18nData[curLang]) ? i18nData[curLang] : (i18nData ? i18nData.en : {});
+
+            const handleSuccess = () => {
                 const copiedText = curLang === 'id' ? 'Email Disalin!' : 'Email Copied!';
                 btnCopyEmail.textContent = copiedText;
                 if (typeof showDynamicIsland === 'function') {
                     showDynamicIsland(copiedText);
                 }
                 setTimeout(() => {
-                    const lang = currentLang || localStorage.getItem('lang') || 'en';
-                    const t = (i18nData && i18nData[lang]) ? i18nData[lang] : (i18nData ? i18nData.en : {});
                     btnCopyEmail.textContent = t.copyEmail || 'Copy Email';
                 }, 2000);
-            }).catch(() => {
-                window.location.href = 'mailto:thannnajah@gmail.com';
-            });
+            };
+
+            const handleFallback = () => {
+                window.location.href = `mailto:${email}`;
+            };
+
+            if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                navigator.clipboard.writeText(email)
+                    .then(handleSuccess)
+                    .catch(handleFallback);
+            } else {
+                handleFallback();
+            }
         });
     }
 
