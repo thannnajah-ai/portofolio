@@ -1218,7 +1218,8 @@ document.addEventListener('DOMContentLoaded', () => {
             viewer.removeAttribute('url');
         }
 
-        const targetUrl = viewer ? (viewer.getAttribute('data-url') || viewer.getAttribute('url')) : null;
+        const rawUrl = viewer ? (viewer.getAttribute('data-url') || viewer.getAttribute('url') || '') : '';
+        const targetUrl = rawUrl.trim();
 
         let isResolved = false;
         let loadWatchdog = null;
@@ -1227,7 +1228,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isResolved) return;
             isResolved = true;
             if (loadWatchdog) clearTimeout(loadWatchdog);
-            console.warn(`[Spline Hero] 3D scene failed to load (${reason}). Activating aesthetic fallback.`);
+            if (reason.includes('No Spline scene')) {
+                console.info(`[Spline Hero] ${reason}. Aesthetic fallback active.`);
+            } else {
+                console.warn(`[Spline Hero] 3D scene failed to load (${reason}). Activating aesthetic fallback.`);
+            }
             container.classList.add('has-fallback');
             container.classList.remove('spline-loaded');
             if (viewer) {
@@ -1262,9 +1267,21 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         if (!viewer || !targetUrl) {
-            activateFallback('No Spline scene viewer or URL configured');
+            activateFallback('No Spline scene URL configured');
             return;
         }
+
+        const loadSplineViewerScript = () => {
+            if (customElements.get('spline-viewer')) return Promise.resolve();
+            return new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.type = 'module';
+                s.src = 'https://unpkg.com/@splinetool/viewer@1.9.0/build/spline-viewer.js';
+                s.onload = () => resolve();
+                s.onerror = () => reject(new Error('Failed to load Spline viewer script from CDN'));
+                document.head.appendChild(s);
+            });
+        };
 
         // Attach event listeners to viewer for completion and WebGL failure
         viewer.addEventListener('load-complete', activateSpline, { once: true });
@@ -1296,7 +1313,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Asset is valid and accessible: assign url and arm watchdog timer
+            // Asset is valid: dynamically load spline viewer library and mount
+            try {
+                await loadSplineViewerScript();
+            } catch (scriptErr) {
+                activateFallback(`Library load failed: ${scriptErr.message}`);
+                return;
+            }
+
+            // Arm watchdog timer
             loadWatchdog = setTimeout(() => {
                 if (!isResolved) {
                     activateFallback('3D viewer scene initialization timed out (8000ms)');
@@ -1316,7 +1341,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    initSplineHero();
+    initSplineHero().catch(err => {
+        console.warn('[Spline Hero] Unexpected initialization error:', err);
+    });
 
     // Premium Scroll-Driven Parallax for Spline Background (Preserves CSS center anchor and respects reduced motion)
     const splineBg = document.querySelector('.spline-bg');
