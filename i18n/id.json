@@ -113,5 +113,12 @@
     "downloadCV": "Resume Interaktif",
     "checkingUpdates": "Memeriksa pembaruan...",
     "footerTagline": "Dirancang & Dibangun dengan Vanilla HTML, CSS & JavaScript",
-    "marqueeContent": "<span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span>"
+    "marqueeContent": "<span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span><span>FRONTEND DEVELOPER &nbsp;•&nbsp; DESAIN ANTARMUKA &nbsp;•&nbsp; WEB INTERAKTIF &nbsp;•&nbsp; RESPONSIF & AKSESIBEL &nbsp;•&nbsp;</span>",
+    "searchProjectsAria": "Cari proyek",
+    "guestNameAria": "Nama Anda",
+    "guestMsgAria": "Pesan Anda",
+    "contactNameAria": "Nama Anda",
+    "contactMsgAria": "Pesan Anda",
+    "cmdInputAria": "Cari atau ketik perintah",
+    "guestCooldown": "Harap tunggu {seconds} detik sebelum mengirim pesan lagi."
 }

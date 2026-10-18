@@ -9,7 +9,6 @@ I built this to test how far I could push standard web technologies. Here's what
 - **Math-driven 3D Tilt Cards**: Calculates cursor position and rotates cards in 3D space using raw CSS perspective.
 - **Custom i18n System**: Translates the entire page (ID/EN) instantly without reloading, using a single JSON object.
 - **Procedural SVG Noise**: A film-grain overlay generated with math, skipping the need for heavy PNG textures.
-- **Custom Secret Terminal**: Hit the backtick key ( ` ) to open an interactive command line interface. Try running `whoami` or `projects`.
 - **60FPS Canvas Particles**: A lightweight WebGL-style particle system built purely on the HTML5 Canvas 2D context.
 - **Dynamic Micro-Interactions**: Features a custom cursor, magnetic buttons, UI click sounds, and a dynamic "Miss You" favicon when you switch tabs.
 
