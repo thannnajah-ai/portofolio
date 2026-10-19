@@ -309,8 +309,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Stop scrolling while curtain is down (if motion allowed)
     if (window.lenis && !prefersReducedMotion) window.lenis.stop();
 
-    // Always hide after the greeting sequence (2.8s, or immediately if reduced motion)
-    setTimeout(hidePreloader, prefersReducedMotion ? 0 : 2800);
+    // Always hide after the greeting sequence (0.9s, or immediately if reduced motion)
+    setTimeout(hidePreloader, prefersReducedMotion ? 0 : 900);
 
     // i18n dictionary is now dynamically fetched from /i18n/{lang}.json
 
@@ -607,13 +607,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // 4. Update language toggle button label and accessible description
+        // 4. Update language toggle button label and accessible description (WCAG 2.5.3 label in name)
         const langToggleBtn = document.getElementById('lang-toggle');
         if (langToggleBtn) {
             langToggleBtn.textContent = lang === 'en' ? 'ID' : 'EN';
             langToggleBtn.setAttribute(
                 'aria-label',
-                lang === 'en' ? 'Switch language to Indonesian' : 'Ganti bahasa ke Bahasa Inggris'
+                lang === 'en' ? 'ID - Switch language to Indonesian' : 'EN - Ganti bahasa ke Bahasa Inggris'
             );
         }
 
@@ -894,9 +894,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (blogContainer) {
         blogs.forEach(blog => {
-            const card = document.createElement('a');
+            const card = document.createElement('button');
+            card.type = 'button';
             card.className = 'blog-card magnetic tilt-card';
-            card.href = 'javascript:void(0)';
             card.innerHTML = `
             <div class="blog-date" data-i18n="${blog.dateKey}"></div>
             <h3 class="blog-title" data-i18n="${blog.titleKey}"></h3>
@@ -1691,13 +1691,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // === Supabase Client Initialization ===
+    // === Supabase Client Initialization (On-Demand / Lazy-Loaded) ===
     let supabaseClient = null;
-    if (window.supabase) {
-        const supabaseUrl = 'https://mdjlisdsbamfdftuybky.supabase.co';
-        const supabaseKey = 'sb_publishable_FK9Gdil-FbhiZbvePi0wPA_NYYovLn6';
-        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-    }
 
     // === Task 7: Guestbook (Online with Supabase) ===
     const btnSignGuestbook = document.getElementById('btn-sign-guestbook');
@@ -1740,13 +1735,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    if (btnSignGuestbook && guestbookEntries && supabaseClient) {
+    if (btnSignGuestbook && guestbookEntries) {
         let isLoading = false;
         let isSubmitting = false;
+        let isInitialized = false;
 
         const getDict = () => (i18nData && i18nData[currentLang]) ? i18nData[currentLang] : (i18nData ? i18nData.en : {});
 
         const loadGuestbook = async () => {
+            if (!supabaseClient) {
+                await initSupabaseClient();
+            }
+            if (!supabaseClient) return;
             if (isLoading) return;
             isLoading = true;
             const t = getDict();
@@ -1801,9 +1801,89 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        loadGuestbook();
-        
+        let supabaseInitPromise = null;
+        const initSupabaseClient = () => {
+            if (supabaseClient) return Promise.resolve(supabaseClient);
+            if (supabaseInitPromise) return supabaseInitPromise;
+
+            supabaseInitPromise = new Promise((resolve) => {
+                if (window.supabase) {
+                    const supabaseUrl = 'https://mdjlisdsbamfdftuybky.supabase.co';
+                    const supabaseKey = 'sb_publishable_FK9Gdil-FbhiZbvePi0wPA_NYYovLn6';
+                    supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+                    return resolve(supabaseClient);
+                }
+                const existingScript = document.querySelector('script[src*="supabase-js"]');
+                if (existingScript) {
+                    existingScript.addEventListener('load', () => {
+                        if (window.supabase && !supabaseClient) {
+                            const supabaseUrl = 'https://mdjlisdsbamfdftuybky.supabase.co';
+                            const supabaseKey = 'sb_publishable_FK9Gdil-FbhiZbvePi0wPA_NYYovLn6';
+                            supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+                        }
+                        resolve(supabaseClient);
+                    }, { once: true });
+                    return;
+                }
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+                script.async = true;
+                script.onload = () => {
+                    if (window.supabase && !supabaseClient) {
+                        const supabaseUrl = 'https://mdjlisdsbamfdftuybky.supabase.co';
+                        const supabaseKey = 'sb_publishable_FK9Gdil-FbhiZbvePi0wPA_NYYovLn6';
+                        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+                    }
+                    resolve(supabaseClient);
+                };
+                script.onerror = () => {
+                    console.warn('[Guestbook] Failed to load Supabase script from CDN.');
+                    supabaseInitPromise = null; // allow retry
+                    resolve(null);
+                };
+                document.head.appendChild(script);
+            });
+            return supabaseInitPromise;
+        };
+
+        const triggerGuestbookLoad = async () => {
+            if (isInitialized) return;
+            isInitialized = true;
+            await initSupabaseClient();
+            if (supabaseClient) {
+                loadGuestbook();
+            } else {
+                guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Guestbook offline (Supabase not loaded)</div>';
+            }
+        };
+
+        // Lazy-load via IntersectionObserver when Guestbook approaches viewport
+        const gbSection = document.querySelector('.guestbook-section') || document.getElementById('thoughts');
+        if (gbSection && 'IntersectionObserver' in window) {
+            const gbObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    triggerGuestbookLoad();
+                    gbObserver.disconnect();
+                }
+            }, { rootMargin: '400px' });
+            gbObserver.observe(gbSection);
+        } else {
+            triggerGuestbookLoad();
+        }
+
+        // Trigger on user focus/click if earlier than observer
+        if (guestNameInput) guestNameInput.addEventListener('focus', triggerGuestbookLoad, { once: true });
+        if (guestMsgInput) guestMsgInput.addEventListener('focus', triggerGuestbookLoad, { once: true });
+        btnSignGuestbook.addEventListener('click', triggerGuestbookLoad, { once: true });
+
         btnSignGuestbook.addEventListener('click', async () => {
+            if (!supabaseClient) {
+                await triggerGuestbookLoad();
+                if (!supabaseClient) {
+                    setStatus('Guestbook service is currently unreachable.', 'error');
+                    return;
+                }
+            }
             if (isSubmitting) return;
 
             const name = guestNameInput ? guestNameInput.value.trim() : '';
@@ -1895,10 +1975,11 @@ document.addEventListener('DOMContentLoaded', () => {
             isSubmitting: () => isSubmitting,
             isLoading: () => isLoading,
             getClient: () => supabaseClient,
-            setClient: (mockClient) => { supabaseClient = mockClient; }
+            setClient: (mockClient) => {
+                supabaseClient = mockClient;
+                isInitialized = true;
+            }
         };
-    } else if (btnSignGuestbook && guestbookEntries) {
-        guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Guestbook offline (Supabase not loaded)</div>';
     }
 
     // === Task 8: Dynamic Now Page ===

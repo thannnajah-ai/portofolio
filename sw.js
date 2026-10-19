@@ -1,4 +1,4 @@
-const CACHE_NAME = 'portfolio-v2';
+const CACHE_NAME = 'portfolio-v3';
 const API_CACHE = 'api-cache-v1';
 
 const PRECACHE_ASSETS = [
@@ -7,6 +7,7 @@ const PRECACHE_ASSETS = [
     './style.css',
     './script.js',
     './worker.js',
+    './photo.webp',
     './i18n/en.json',
     './i18n/id.json'
 ];

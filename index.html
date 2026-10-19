@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -39,7 +39,7 @@
     <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
     <!-- Spline 3D Viewer (Loaded on-demand if scene URL is configured) -->
     <!-- Lenis Smooth Scroll -->
-    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+    <script defer src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
     <noscript>
         <style>
             #preloader { display: none !important; }
@@ -166,7 +166,7 @@
         </div>
         <div class="local-time-widget" id="local-time-widget"><span id="time-text">--:--</span><span
                 class="status-dot-time" id="time-status-dot"></span></div>
-        <button id="lang-toggle" class="lang-toggle" aria-label="Switch language to Indonesian">ID</button>
+        <button id="lang-toggle" class="lang-toggle" aria-label="ID - Switch language to Indonesian">ID</button>
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
             <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -237,8 +237,11 @@
                 <div class="about-photo-col">
                     <!-- Ganti src dengan path foto kamu -->
                     <div class="about-avatar-wrap">
-                        <img src="photo.jpg" alt="Nathan Ferdwiansyah W." class="about-photo"
-                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <picture>
+                            <source srcset="photo.webp" type="image/webp">
+                            <img src="photo.jpg" alt="Nathan Ferdwiansyah W." class="about-photo" width="120" height="120" loading="lazy" decoding="async"
+                                onerror="this.style.display='none';this.closest('.about-avatar-wrap').querySelector('.about-avatar-fallback').style.display='flex'">
+                        </picture>
                         <div class="about-avatar-fallback" style="display:none">NF</div>
                     </div>
                     <div class="about-status-pill"><span class="status-dot"></span><span data-i18n="available">Available
@@ -655,7 +658,7 @@
             </svg>
             <span id="last-updated-text" data-i18n="checkingUpdates">Checking latest updates...</span>
         </div>
-        <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.7;" data-i18n="footerTagline">
+        <div class="footer-tagline" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);" data-i18n="footerTagline">
             Designed & Engineered with Vanilla HTML, CSS & JavaScript
         </div>
     </footer>
@@ -736,7 +739,6 @@
     </dialog>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
 
 </body>
