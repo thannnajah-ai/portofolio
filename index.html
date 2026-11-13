@@ -23,12 +23,14 @@
     <meta property="og:image" content="https://thannnajah-ai.github.io/portofolio/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Portfolio of Nathan Ferdwiansyah W., Frontend Developer">
     <!-- Twitter SEO -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Nathan Ferdwiansyah W. | Frontend Developer">
     <meta name="twitter:description"
         content="Frontend Developer crafting intuitive digital experiences. Focused on clean semantic HTML, modern CSS, and performant JavaScript.">
     <meta name="twitter:image" content="https://thannnajah-ai.github.io/portofolio/og-image.png">
+    <meta name="twitter:image:alt" content="Portfolio of Nathan Ferdwiansyah W., Frontend Developer">
     <link rel="canonical" href="https://thannnajah-ai.github.io/portofolio/">
     <script type="application/ld+json">
         {
@@ -53,8 +55,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
-    <!-- Vercel Analytics -->
-    <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
     <!-- Spline 3D Viewer (Loaded on-demand if scene URL is configured) -->
     <!-- Lenis Smooth Scroll -->
     <script defer src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
@@ -68,6 +68,8 @@
 </head>
 
 <body>
+
+    <a class="skip-link" href="#main-content" data-i18n="skipToContent">Skip to content</a>
 
     <!-- Scroll-Spy Nav -->
     <nav class="scroll-spy-nav" aria-label="Section Navigation">
@@ -191,7 +193,7 @@
         </button>
     </nav>
 
-    <main class="container">
+    <main class="container" id="main-content">
         <!-- Hero Section -->
         <section id="hero">
             <div class="spline-bg" id="hero-spline-container">
@@ -527,12 +529,15 @@
             <!-- Guestbook -->
             <div class="guestbook-section">
                 <h3 class="guestbook-title" data-i18n="guestbookTitle">Guestbook</h3>
-                <div class="guestbook-form">
+                <form id="guestbook-form" class="guestbook-form">
                     <input type="text" name="b_website" id="guest-website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;">
                     <input type="text" id="guest-name" placeholder="Name" maxlength="50" autocomplete="name" aria-label="Your Name" data-i18n-placeholder="guestNamePlaceholder" data-i18n-aria="guestNameAria">
-                    <input type="text" id="guest-message" placeholder="Leave a message..." maxlength="280" aria-label="Your Message" data-i18n-placeholder="guestMsgPlaceholder" data-i18n-aria="guestMsgAria">
-                    <button id="btn-sign-guestbook" class="btn btn-primary magnetic" data-i18n="guestSignBtn">Sign</button>
-                </div>
+                    <textarea id="guest-message" rows="3" placeholder="Leave a message..." maxlength="280" aria-label="Your Message" data-i18n-placeholder="guestMsgPlaceholder" data-i18n-aria="guestMsgAria"></textarea>
+                    <div class="guestbook-form-footer">
+                        <span id="guestbook-counter" class="guestbook-counter" aria-hidden="true">0/280</span>
+                        <button type="submit" id="btn-sign-guestbook" class="btn btn-primary magnetic" data-i18n="guestSignBtn">Sign</button>
+                    </div>
+                </form>
                 <div id="guestbook-status" class="guestbook-status" aria-live="polite"></div>
                 <div id="guestbook-entries" class="guestbook-entries"
                     style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; padding-right: 10px;">

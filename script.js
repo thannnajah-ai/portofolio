@@ -347,6 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "metaDesc": "Frontend Developer crafting intuitive digital experiences. Focused on clean semantic HTML, modern CSS, and performant JavaScript.",
             "available": "Available for work",
             "navHome": "Home",
+            "skipToContent": "Skip to content",
             "navAbout": "About",
             "navSkills": "Skills",
             "navProjects": "Projects",
@@ -473,6 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "metaDesc": "Frontend Developer yang membangun pengalaman digital intuitif. Fokus pada HTML semantik, CSS modern, dan JavaScript performan.",
             "available": "Tersedia untuk proyek",
             "navHome": "Beranda",
+            "skipToContent": "Lewati ke konten",
             "navAbout": "Tentang",
             "navSkills": "Keahlian",
             "navProjects": "Proyek",
@@ -1345,39 +1347,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Functional Contact Form (Formspree/EmailJS alternative using native fetch) ---
-    // Note: We use a dummy endpoint for demonstration, but it simulates a real API call
-    const contactForm = document.getElementById('contact-form');
-    const formStatus = document.getElementById('form-status');
-    const submitBtnText = document.querySelector('.btn-text');
-    const btnLoader = document.querySelector('.btn-loader');
-
-    if (contactForm) {
-        contactForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            // UI Loading State
-            submitBtnText.style.display = 'none';
-            btnLoader.style.display = 'inline-block';
-            formStatus.className = 'form-status';
-
-            // Simulate Network Request (Since we don't have user's Formspree key)
-            await new Promise(r => setTimeout(r, 1500));
-
-            // Simulate Success
-            contactForm.reset();
-            submitBtnText.style.display = 'inline-block';
-            btnLoader.style.display = 'none';
-
-            formStatus.textContent = 'Message sent successfully! I will get back to you soon.';
-            formStatus.classList.add('success');
-
-            setTimeout(() => {
-                formStatus.classList.remove('success');
-            }, 5000);
-        });
-    }
-
     // 1. Local Time & Status Indicator (Unified Yogyakarta Time Updater)
     const timeText = document.getElementById('time-text');
     const localTimeEl = document.getElementById('local-time');
@@ -1588,11 +1557,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // === Task 7: Guestbook (Firebase Firestore via REST) ===
     const FIRESTORE_BASE = 'https://firestore.googleapis.com/v1/projects/portofolio-844a6/databases/(default)/documents/guestbook';
     const FIRESTORE_KEY = 'AIzaSyBPji8dwEFhFomq_eEYoWsrTbtQxWJp6Q';
+    const guestbookForm = document.getElementById('guestbook-form');
     const btnSignGuestbook = document.getElementById('btn-sign-guestbook');
     const guestNameInput = document.getElementById('guest-name');
     const guestMsgInput = document.getElementById('guest-message');
     const guestbookEntries = document.getElementById('guestbook-entries');
     const guestbookStatus = document.getElementById('guestbook-status');
+    const guestbookCounter = document.getElementById('guestbook-counter');
 
     // Helper: Escape HTML to prevent XSS
     const escapeHtml = (str) => {
@@ -1632,10 +1603,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    if (btnSignGuestbook && guestbookEntries) {
+    if (guestbookForm && guestbookEntries) {
         let isLoading = false;
         let isSubmitting = false;
         let isInitialized = false;
+
+        const updateGuestCounter = () => {
+            if (guestbookCounter && guestMsgInput) {
+                guestbookCounter.textContent = `${guestMsgInput.value.length}/280`;
+            }
+        };
 
         const getDict = () => (i18nData && i18nData[currentLang]) ? i18nData[currentLang] : (i18nData ? i18nData.en : {});
 
@@ -1715,10 +1692,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (guestNameInput) guestNameInput.addEventListener('focus', triggerGuestbookLoad, { once: true });
-        if (guestMsgInput) guestMsgInput.addEventListener('focus', triggerGuestbookLoad, { once: true });
+        if (guestMsgInput) {
+            guestMsgInput.addEventListener('focus', triggerGuestbookLoad, { once: true });
+            guestMsgInput.addEventListener('input', updateGuestCounter);
+        }
         btnSignGuestbook.addEventListener('click', triggerGuestbookLoad, { once: true });
 
-        btnSignGuestbook.addEventListener('click', async () => {
+        guestbookForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
             if (isSubmitting) return;
 
             const name = guestNameInput ? guestNameInput.value.trim() : '';
@@ -1731,6 +1712,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.warn('[Guestbook] Submission rejected by honeypot.');
                 if (guestNameInput) guestNameInput.value = '';
                 if (guestMsgInput) guestMsgInput.value = '';
+                updateGuestCounter();
                 setStatus(t.guestSuccess || 'Message sent successfully!', 'success');
                 return;
             }
@@ -1774,6 +1756,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('guestbook_last_submit', String(Date.now()));
                 if (guestNameInput) guestNameInput.value = '';
                 if (guestMsgInput) guestMsgInput.value = '';
+                updateGuestCounter();
                 setStatus(t.guestSuccess || 'Message sent successfully!', 'success');
                 if (typeof showDynamicIsland === 'function') {
                     showDynamicIsland(currentLang === 'id' ? 'Pesan Tersimpan' : 'Message Saved');

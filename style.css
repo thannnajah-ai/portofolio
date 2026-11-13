@@ -56,6 +56,26 @@
     transition: box-shadow 0.2s ease;
 }
 
+.skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100000;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transform: translateY(-200%);
+    transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+}
+
 /* Custom Aesthetic Scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
@@ -3377,12 +3397,14 @@ body.light-theme .social-icon:hover {
 /* Guestbook Form Responsive Layout */
 .guestbook-form {
     display: flex;
+    flex-direction: column;
     gap: 10px;
     margin-bottom: 1rem;
     width: 100%;
     max-width: 100%;
 }
-.guestbook-form input {
+.guestbook-form input,
+.guestbook-form textarea {
     padding: 0.8rem;
     border-radius: 8px;
     border: 1px solid var(--border-color);
@@ -3390,23 +3412,21 @@ body.light-theme .social-icon:hover {
     color: var(--text-primary);
     outline: none;
     min-width: 0;
+    font: inherit;
 }
-.guestbook-form input#guest-name {
-    flex: 1;
+.guestbook-form textarea {
+    resize: vertical;
+    min-height: 88px;
 }
-.guestbook-form input#guest-message {
-    flex: 2;
+.guestbook-form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
 }
-@media (max-width: 600px) {
-    .guestbook-form {
-        flex-direction: column;
-    }
-    .guestbook-form input#guest-name,
-    .guestbook-form input#guest-message,
-    .guestbook-form button {
-        width: 100%;
-        flex: none;
-    }
+.guestbook-counter {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
 }
 
 .guestbook-status {

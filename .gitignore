@@ -1,0 +1,9 @@
+node_modules/
+demo-out/
+_*.tmp.*
+.agents/
+.aider-desk/
+.claude/
+skills-lock.json
+.DS_Store
+Thumbs.db
