@@ -460,7 +460,7 @@
                                 </svg>
                                 <span>Live Demo</span>
                             </a>
-                            <button type="button" class="btn btn-secondary project-action-btn btn-project-details" data-project="tembusptn" data-i18n="viewDetails">Details</button>
+                            <a href="projects/tembusptn.html" class="btn btn-secondary project-action-btn" data-i18n="viewDetails">Details</a>
                         </div>
                     </div>
                 </article>
@@ -510,7 +510,6 @@
                                 </svg>
                                 <span>Read Paper (PDF)</span>
                             </a>
-                            <button type="button" class="btn btn-secondary project-action-btn btn-project-details" data-project="kti" data-i18n="viewDetails">Details</button>
                         </div>
                     </div>
                 </article>
@@ -545,30 +544,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- Project Detail Dialog -->
-        <dialog id="project-modal" class="project-modal">
-            <div class="project-modal-content">
-                <button class="project-close-btn" id="project-close" aria-label="Close Project" data-i18n-aria="modalCloseAria">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-                <div class="project-modal-image" id="project-modal-img-container">
-                    <!-- Image or SVG injected here -->
-                </div>
-                <div class="project-modal-body">
-                    <h2 id="project-modal-title" class="project-modal-title"></h2>
-                    <p id="project-modal-desc" class="project-modal-desc"></p>
-                    <div style="margin-top: 1.5rem;">
-                        <a id="project-modal-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary"
-                            style="display:inline-block; padding: 0.8rem 1.5rem; text-decoration: none;" data-i18n="modalViewProject">View Live / Download</a>
-                    </div>
-                </div>
-            </div>
-        </dialog>
 
         <!-- Conversational Contact Section -->
         <section id="contact" class="fade-in-section" style="margin-bottom: 4rem;">

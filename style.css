@@ -2506,112 +2506,6 @@ footer:hover .social-icon:nth-child(4) {
     background: var(--text-secondary);
 }
 
-/* Project Modal Dialog */
-.project-modal {
-    margin: auto;
-    width: 90%;
-    max-width: 800px;
-    background: var(--bg-color);
-    color: var(--text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 0;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow: hidden;
-}
-
-.light-theme .project-modal {
-    border-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-}
-
-.project-modal[open] {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-}
-
-.project-modal.closing {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-}
-
-.project-modal::backdrop {
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.project-modal[open]::backdrop {
-    opacity: 1;
-}
-
-.project-modal.closing::backdrop {
-    opacity: 0;
-}
-
-.project-modal-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-.project-close-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(0, 0, 0, 0.5);
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 50%;
-    transition: background 0.2s, transform 0.2s;
-    z-index: 10;
-}
-
-.project-close-btn:hover {
-    background: rgba(0, 0, 0, 0.8);
-    transform: scale(1.1);
-}
-
-.project-modal-image {
-    width: 100%;
-    height: 300px;
-    background: #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.project-modal-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.project-modal-body {
-    padding: 2rem;
-}
-
-.project-modal-title {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-    font-weight: 700;
-}
-
-.project-modal-desc {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-}
-
-
 /* 9. Staggered Text Reveal */
 .stagger-mask {
     display: inline-block;
@@ -3554,10 +3448,6 @@ body.light-theme .social-icon:hover {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    cursor: pointer;
-}
-
-.btn-project-details {
     cursor: pointer;
 }
 

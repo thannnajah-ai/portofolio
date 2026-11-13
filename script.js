@@ -397,8 +397,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "project2Tag": "Research Paper",
             "project2Title": "Scientific Research: Rice Glycemic Response",
             "project2Desc": "Scientific paper exploring the impact of consumption methods on white rice glycemic response. Highlights analytical discipline, structured documentation, and research rigor applied alongside engineering.",
-            "modalCloseAria": "Close Project",
-            "modalViewProject": "Visit Project / View Document",
             "thoughtsTitle": "Writing",
             "blogCloseAria": "Close Article",
             "blog1Title": "Why UI Animation Matters",
@@ -524,8 +522,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "project2Tag": "Karya Tulis Ilmiah",
             "project2Title": "Karya Tulis Ilmiah: Kadar Glukosa Nasi Putih",
             "project2Desc": "Penelitian ilmiah mengenai pengaruh cara konsumsi terhadap kadar glukosa pada nasi putih. Menunjukkan ketelitian analisis data, metode eksperimen, dan disiplin dokumentasi di samping pengembangan web.",
-            "modalCloseAria": "Tutup Proyek",
-            "modalViewProject": "Kunjungi Proyek / Buka Dokumen",
             "thoughtsTitle": "Tulisan",
             "blogCloseAria": "Tutup Artikel",
             "blog1Title": "Pentingnya Animasi dalam Antarmuka Web",
@@ -896,156 +892,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// 2. Project Modal Logic
-const projectModal = document.getElementById('project-modal');
-const projectModalClose = document.getElementById('project-close');
-const projectCardsDOM = document.querySelectorAll('.project-card');
-const projectModalTitle = document.getElementById('project-modal-title');
-const projectModalDesc = document.getElementById('project-modal-desc');
-const projectModalImgContainer = document.getElementById('project-modal-img-container');
-const projectModalLink = document.getElementById('project-modal-link');
-let lastActiveProjectTrigger = null;
-
-function shouldResumeLenis() {
-    if (!window.lenis) return false;
-    const cmdPalette = document.getElementById('cmd-palette');
-    if (cmdPalette && cmdPalette.open) return false;
-    if (!document.body.classList.contains('loaded')) return false;
-    return true;
-}
-
-function openProjectModal(card, triggerEl) {
-    if (!card || card.classList.contains('project-wip') || !projectModal || projectModal.open) return;
-    lastActiveProjectTrigger = triggerEl || card;
-
-    // Extract content
-    const titleEl = card.querySelector('.project-title');
-    const descEl = card.querySelector('.project-desc');
-    const imgEl = card.querySelector('.project-image img');
-    const svgEl = card.querySelector('.project-image .placeholder-img');
-    const mockupEl = card.querySelector('.project-image .project-mockup');
-
-    if (titleEl) projectModalTitle.innerHTML = titleEl.innerHTML;
-    if (descEl) projectModalDesc.innerHTML = descEl.innerHTML;
-
-    if (mockupEl) {
-        projectModalImgContainer.innerHTML = `<div style="padding: 1rem; background: var(--card-bg); border-radius: 12px; display: flex; justify-content: center;">${mockupEl.outerHTML}</div>`;
-    } else if (imgEl) {
-        projectModalImgContainer.innerHTML = `<img src="${imgEl.src}" alt="${titleEl ? titleEl.textContent : 'Project'}">`;
-    } else if (svgEl) {
-        projectModalImgContainer.innerHTML = `<div class="placeholder-img" style="background: linear-gradient(135deg, #1f2937, #111827); height: 180px; display: flex; align-items: center; justify-content: center;">${svgEl.innerHTML}</div>`;
-    } else {
-        projectModalImgContainer.innerHTML = '';
-    }
-
-    const primaryAction = card.querySelector('.project-actions a');
-    const href = primaryAction ? primaryAction.getAttribute('href') : card.getAttribute('href');
-    if (href && href !== '#') {
-        projectModalLink.href = href;
-        projectModalLink.style.display = 'inline-block';
-        const isId = document.documentElement.lang === 'id';
-        projectModalLink.textContent = isId ? 'Kunjungi Proyek / Buka Dokumen' : 'Visit Project / View Document';
-    } else {
-        projectModalLink.style.display = 'none';
-    }
-
-    const safeViewTransition = (callback) => {
-        if (document.startViewTransition) {
-            try {
-                const vt = document.startViewTransition(callback);
-                if (vt && vt.finished) vt.finished.catch(() => {});
-                return vt;
-            } catch (e) {
-                callback();
-            }
-        } else {
-            callback();
-        }
-    };
-
-    safeViewTransition(() => {
-        projectModal.showModal();
-        if (window.lenis) window.lenis.stop();
-    });
-}
-
-document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('click', (e) => {
-        // If clicking a direct link or external action button, allow default behavior
-        if (e.target.closest('a')) return;
-        const detailsBtn = e.target.closest('.btn-project-details');
-        if (detailsBtn) {
-            e.preventDefault();
-            openProjectModal(card, detailsBtn);
-            return;
-        }
-        // If clicking anywhere else on card, open modal
-        openProjectModal(card, card);
-    });
-});
-
-if (projectModalClose && projectModal) {
-    const safeViewTransition = (callback) => {
-        if (document.startViewTransition) {
-            try {
-                const vt = document.startViewTransition(callback);
-                if (vt && vt.finished) vt.finished.catch(() => {});
-                return vt;
-            } catch (e) {
-                callback();
-            }
-        } else {
-            callback();
-        }
-    };
-
-    const closeProjectModal = () => {
-        if (!projectModal || !projectModal.open) return;
-        if (document.startViewTransition) {
-            safeViewTransition(() => {
-                projectModal.close();
-            });
-        } else {
-            projectModal.classList.add('closing');
-            setTimeout(() => {
-                projectModal.close();
-                projectModal.classList.remove('closing');
-            }, 300);
-        }
-    };
-
-    projectModalClose.addEventListener('click', closeProjectModal);
-
-    // Close when clicking outside modal box
-    projectModal.addEventListener('click', (e) => {
-        const rect = projectModal.getBoundingClientRect();
-        if (
-            e.clientX < rect.left ||
-            e.clientX > rect.right ||
-            e.clientY < rect.top ||
-            e.clientY > rect.bottom
-        ) {
-            closeProjectModal();
-        }
-    });
-
-    // Single unified closure handler for scroll recovery and focus restoration
-    projectModal.addEventListener('close', () => {
-        if (shouldResumeLenis()) {
-            window.lenis.start();
-        }
-        const trigger = lastActiveProjectTrigger;
-        if (trigger && trigger.isConnected && typeof trigger.focus === 'function') {
-            setTimeout(() => {
-                if (trigger.isConnected) {
-                    trigger.focus();
-                }
-            }, 50);
-        }
-    });
-}
-
-// 3. Scroll Reading Progress Bar
+// 2. Scroll Reading Progress Bar
 const scrollProgress = document.getElementById('scroll-progress');
 if (scrollProgress) {
     let isScrolling = false;
@@ -1924,33 +1771,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Task 9: Web Share API Integration
-    const shareBtn = document.getElementById('project-share-btn');
-    if (shareBtn) {
-        shareBtn.addEventListener('click', async () => {
-            const title = document.getElementById('project-modal-title').textContent || "Project";
-            const desc = document.getElementById('project-modal-desc').textContent || "Check this out!";
-            const url = window.location.href; 
-            
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: `Portfolio: ${title}`,
-                        text: desc,
-                        url: url
-                    });
-                } catch (err) {
-                    console.log('Share canceled or failed', err);
-                }
-            } else {
-                navigator.clipboard.writeText(`${title} - ${url}`);
-                const originalText = shareBtn.innerHTML;
-                shareBtn.innerHTML = "Copied!";
-                setTimeout(() => shareBtn.innerHTML = originalText, 2000);
-            }
-        });
-    }
-    
     // Task 1: Advanced Project Search Engine (Fuzzy Search)
     const searchInput = document.getElementById('project-search-input');
     const searchCards = document.querySelectorAll('.project-card');
