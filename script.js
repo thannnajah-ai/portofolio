@@ -48,6 +48,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (marqueeContent) marqueeContent.style.animation = 'none';
         let marqueePos = 0;
         let maxScroll = 0;
+        let marqueeVisible = true;
+
+        if (marqueeContent && 'IntersectionObserver' in window) {
+            const marqueeObserver = new IntersectionObserver((entries) => {
+                marqueeVisible = entries[0].isIntersecting;
+            });
+            marqueeObserver.observe(marqueeContent);
+        }
 
         const updateMarqueeBounds = () => {
             if (marqueeContent) maxScroll = marqueeContent.scrollWidth / 2;
@@ -80,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Only execute visual marquee and parallax once curtain opens and if motion is allowed
             if (document.body.classList.contains('loaded')) {
                 // 1. Velocity Marquee
-                if (marqueeContent && !prefersReducedMotion) {
+                if (marqueeContent && !prefersReducedMotion && marqueeVisible && !document.hidden) {
                     if (maxScroll <= 0) updateMarqueeBounds();
                     const velocity = lenis.velocity || 0;
                     marqueePos -= 0.5 + Math.abs(velocity * 0.05);
@@ -115,11 +123,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                // Add class to trigger CSS transition
+                // Animate once; re-triggering on scroll-up feels like a flicker.
                 entry.target.classList.add('is-visible');
-            } else {
-                // Remove class to reverse animation when scrolled out of view
-                entry.target.classList.remove('is-visible');
+                observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
@@ -245,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         el.addEventListener('mousemove', (e) => {
-            if (!rect) return;
+            if (!rect || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
             const x = e.clientX - rect.left - rect.width / 2;
             const y = e.clientY - rect.top - rect.height / 2;
 
@@ -311,7 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Parallax Glow Background
     const glowBg = document.querySelector('.glow-bg');
-    if (window.matchMedia('(pointer: fine)').matches) {
+    if (window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth - 0.5) * 20; // max 20px translation
             const y = (e.clientY / window.innerHeight - 0.5) * 20;
@@ -333,8 +339,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Stop scrolling while curtain is down (if motion allowed)
     if (window.lenis && !prefersReducedMotion) window.lenis.stop();
 
-    // Always hide after the greeting sequence (0.9s, or immediately if reduced motion)
-    setTimeout(hidePreloader, prefersReducedMotion ? 0 : 900);
+    // Always hide after the greeting sequence (0.3s, or immediately if reduced motion)
+    setTimeout(hidePreloader, prefersReducedMotion ? 0 : 300);
 
     // i18n dictionary is defined inline below; the i18n/*.json files are not fetched.
 
@@ -647,11 +653,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (dict['metaTitle']) document.title = dict['metaTitle'];
         const metaDesc = document.querySelector('meta[name="description"]');
         if (metaDesc && dict['metaDesc']) metaDesc.setAttribute('content', dict['metaDesc']);
-
-        // 7. Redraw radar chart if active
-        if (typeof window.__drawSkillRadar === 'function') {
-            window.__drawSkillRadar();
-        }
 
         // 8. Dispatch language change event for other components
         window.dispatchEvent(new CustomEvent('languagechange', { detail: { lang, dict } }));
@@ -1656,108 +1657,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(() => {
                 nowWeather.textContent = 'Weather API failed';
             });
-    }
-
-    // === Task 10: Interactive Skill Radar Chart ===
-    const canvas = document.getElementById('skill-radar');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        const labelsEn = ['HTML/CSS', 'UI Design', 'JavaScript', 'Accessibility', 'Interaction'];
-        const labelsId = ['HTML/CSS', 'Desain UI', 'JavaScript', 'Aksesibilitas', 'Interaksi'];
-        const values = [0.92, 0.88, 0.85, 0.80, 0.86]; // percentages
-        
-        const drawRadar = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = Math.min(centerX, centerY) - 40;
-            
-            const isLight = document.body.classList.contains('light-theme');
-            const dataColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
-            const strokeColor = isLight ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)';
-            const axisColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
-            const textColor = isLight ? '#555' : '#aaa';
-            const curLang = currentLang || localStorage.getItem('lang') || 'en';
-            const labels = curLang === 'id' ? labelsId : labelsEn;
-            
-            // Draw Web
-            ctx.strokeStyle = axisColor;
-            ctx.lineWidth = 1;
-            for (let j = 1; j <= 4; j++) {
-                ctx.beginPath();
-                for (let i = 0; i < 5; i++) {
-                    const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
-                    const r = (radius / 4) * j;
-                    const x = centerX + Math.cos(angle) * r;
-                    const y = centerY + Math.sin(angle) * r;
-                    if (i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                }
-                ctx.closePath();
-                ctx.stroke();
-            }
-            
-            // Draw Axis & Labels
-            ctx.fillStyle = textColor;
-            ctx.font = '13px Inter, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            
-            for (let i = 0; i < 5; i++) {
-                const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
-                // Axis
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius);
-                ctx.stroke();
-                
-                // Label
-                const labelX = centerX + Math.cos(angle) * (radius + 20);
-                const labelY = centerY + Math.sin(angle) * (radius + 20);
-                ctx.fillText(labels[i], labelX, labelY);
-            }
-            
-            // Draw Data Polygon
-            ctx.beginPath();
-            ctx.fillStyle = dataColor;
-            ctx.strokeStyle = strokeColor;
-            ctx.lineWidth = 2;
-            for (let i = 0; i < 5; i++) {
-                const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
-                const valRadius = radius * values[i];
-                const x = centerX + Math.cos(angle) * valRadius;
-                const y = centerY + Math.sin(angle) * valRadius;
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-            
-            // Draw Data Points
-            ctx.fillStyle = strokeColor;
-            for (let i = 0; i < 5; i++) {
-                const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
-                const valRadius = radius * values[i];
-                const x = centerX + Math.cos(angle) * valRadius;
-                const y = centerY + Math.sin(angle) * valRadius;
-                ctx.beginPath();
-                ctx.arc(x, y, 4, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        };
-
-        drawRadar();
-        window.__drawSkillRadar = drawRadar;
-
-        window.addEventListener('languagechange', () => drawRadar());
-
-        const themeToggle = document.getElementById('theme-toggle');
-        if (themeToggle) {
-            themeToggle.addEventListener('click', () => {
-                setTimeout(drawRadar, 100);
-            });
-        }
     }
 
     // Custom Local Analytics
