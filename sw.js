@@ -1,5 +1,4 @@
-const CACHE_NAME = 'portfolio-v3';
-const API_CACHE = 'api-cache-v1';
+const CACHE_NAME = 'portfolio-v4';
 
 const PRECACHE_ASSETS = [
     './',
@@ -7,29 +6,23 @@ const PRECACHE_ASSETS = [
     './style.css',
     './script.js',
     './worker.js',
-    './photo.webp',
-    './i18n/en.json',
-    './i18n/id.json'
+    './photo.webp'
 ];
 
 self.addEventListener('install', (e) => {
     self.skipWaiting();
     e.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(PRECACHE_ASSETS);
-        })
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_ASSETS))
     );
 });
 
 self.addEventListener('activate', (e) => {
-    const CURRENT_CACHES = [CACHE_NAME, API_CACHE];
     e.waitUntil(
         caches.keys().then((keys) => {
             return Promise.all(
                 keys.map((key) => {
                     const isAppCache = key.startsWith('portfolio-') || key.startsWith('api-cache-');
-                    if (isAppCache && !CURRENT_CACHES.includes(key)) {
-                        console.log('[SW] Deleting old app cache:', key);
+                    if (isAppCache && key !== CACHE_NAME) {
                         return caches.delete(key);
                     }
                 })
@@ -39,76 +32,52 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-    let protocol;
+    if (e.request.method !== 'GET') return;
+
+    let url;
     try {
-        protocol = new URL(e.request.url).protocol;
+        url = new URL(e.request.url);
     } catch (_) {
         return;
     }
 
-    if (protocol !== 'http:' && protocol !== 'https:') {
-        return;
-    }
+    // Third-party requests (Firestore, fonts, analytics) go straight to the network.
+    // Intercepting them here used to fabricate 503s and could serve stale data.
+    if (url.origin !== self.location.origin) return;
 
-    const url = e.request.url;
-    const isApiRequest = url.includes('api.github.com') || url.includes('api.open-meteo.com');
-
-    // 1. API Requests: Network-first dengan fallback ke cache API
-    if (isApiRequest) {
-        e.respondWith(
-            caches.open(API_CACHE).then((cache) => {
-                return fetch(e.request).then((response) => {
-                    if (response && response.status === 200) {
-                        cache.put(e.request, response.clone()).catch(() => {});
-                    }
-                    return response;
-                }).catch(() => {
-                    return cache.match(e.request).catch(() => null).then((res) => {
-                        return res || new Response(null, { status: 503, statusText: 'Service Unavailable' });
-                    });
-                });
-            }).catch(() => {
-                return new Response(null, { status: 503, statusText: 'Service Unavailable' });
-            })
-        );
-        return;
-    }
-
-    // 2. HTML Navigation: Network-first agar halaman HTML selalu mutakhir, dengan offline cache fallback
+    // Navigation: network-first with the cached shell as offline fallback.
     if (e.request.mode === 'navigate') {
         e.respondWith(
             fetch(e.request).then((networkResponse) => {
                 if (networkResponse && networkResponse.status === 200) {
-                    const responseClone = networkResponse.clone();
-                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, responseClone).catch(() => {})).catch(() => {});
+                    const clone = networkResponse.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone)).catch(() => {});
                 }
                 return networkResponse;
             }).catch(() => {
-                return caches.match('./index.html').catch(() => null).then((cached) => {
-                    return cached || caches.match(e.request).catch(() => null);
-                });
+                return caches.match('./index.html').then((cached) => cached || caches.match(e.request));
             })
         );
         return;
     }
 
-    // 3. Static Assets: Cache-first dengan network fallback dan dynamic cache
+    // Static assets: stale-while-revalidate.
     e.respondWith(
-        caches.match(e.request).then((cachedResponse) => {
-            if (cachedResponse) {
-                return cachedResponse;
-            }
-            return fetch(e.request).then((networkResponse) => {
-                if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-                    const responseClone = networkResponse.clone();
-                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, responseClone).catch(() => {})).catch(() => {});
+        caches.match(e.request).then((cached) => {
+            const network = fetch(e.request).then((networkResponse) => {
+                if (networkResponse && networkResponse.status === 200) {
+                    const clone = networkResponse.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone)).catch(() => {});
                 }
                 return networkResponse;
             });
-        }).catch(() => {
-            return caches.match(e.request).catch(() => null).then((fallback) => {
-                return fallback || new Response(null, { status: 503, statusText: 'Service Unavailable' });
-            });
+
+            if (cached) {
+                e.waitUntil(network.catch(() => {}));
+                return cached;
+            }
+
+            return network.catch(() => new Response(null, { status: 503, statusText: 'Service Unavailable' }));
         })
     );
 });

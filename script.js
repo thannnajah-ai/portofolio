@@ -35,43 +35,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 0. Initialize Lenis Smooth Scroll (Design Engineering touch)
     if (typeof Lenis !== 'undefined') {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         const lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
-            smooth: true
+            smooth: !prefersReducedMotion
         });
 
         // Setup for Velocity Marquee and Image Parallax
         const marqueeContent = document.querySelector('.marquee-content');
         if (marqueeContent) marqueeContent.style.animation = 'none';
         let marqueePos = 0;
-        
+        let maxScroll = 0;
+
+        const updateMarqueeBounds = () => {
+            if (marqueeContent) maxScroll = marqueeContent.scrollWidth / 2;
+        };
+        window.addEventListener('resize', updateMarqueeBounds, { passive: true });
+
         const parallaxImages = document.querySelectorAll('.project-image > *');
+        let lastScrollY = -1;
+
+        const updateParallax = (force = false) => {
+            if (prefersReducedMotion || parallaxImages.length === 0) return;
+            const currentScroll = window.scrollY;
+            if (!force && currentScroll === lastScrollY) return;
+            lastScrollY = currentScroll;
+
+            const halfH = window.innerHeight / 2;
+            parallaxImages.forEach(img => {
+                const rect = img.parentElement.getBoundingClientRect();
+                if (rect.bottom >= 0 && rect.top <= window.innerHeight) {
+                    const centerOffset = halfH - (rect.top + rect.height / 2);
+                    const y = centerOffset * -0.15;
+                    img.style.setProperty('--parallax-y', `${y}px`);
+                }
+            });
+        };
 
         function raf(time) {
             lenis.raf(time);
             
-            // 1. Velocity Marquee
-            if (marqueeContent) {
-                const velocity = lenis.velocity || 0;
-                marqueePos -= 0.5 + Math.abs(velocity * 0.05); // Base speed + scroll momentum
-                
-                // Wrap around at 50% for infinite scroll
-                const maxScroll = marqueeContent.scrollWidth / 2;
-                if (Math.abs(marqueePos) >= maxScroll) {
-                    marqueePos = 0;
+            // Only execute visual marquee and parallax once curtain opens and if motion is allowed
+            if (document.body.classList.contains('loaded')) {
+                // 1. Velocity Marquee
+                if (marqueeContent && !prefersReducedMotion) {
+                    if (maxScroll <= 0) updateMarqueeBounds();
+                    const velocity = lenis.velocity || 0;
+                    marqueePos -= 0.5 + Math.abs(velocity * 0.05);
+                    
+                    if (Math.abs(marqueePos) >= maxScroll && maxScroll > 0) {
+                        marqueePos = 0;
+                    }
+                    marqueeContent.style.transform = `translate3d(${marqueePos}px, 0, 0)`;
                 }
-                marqueeContent.style.transform = `translate3d(${marqueePos}px, 0, 0)`;
-            }
 
-            // 2. Image Parallax
-            if (parallaxImages.length > 0) {
-                parallaxImages.forEach(img => {
-                    const rect = img.parentElement.getBoundingClientRect();
-                    const centerOffset = (window.innerHeight / 2) - (rect.top + rect.height / 2);
-                    const y = centerOffset * -0.15; // 15% parallax effect
-                    img.style.setProperty('--parallax-y', `${y}px`);
-                });
+                // 2. Image Parallax (only run when scrolling or for initial paint, avoiding idle forced reflows)
+                const isScrolling = lenis.isScrolling || Math.abs(lenis.velocity || 0) > 0.05;
+                if (isScrolling || lastScrollY === -1) {
+                    updateParallax(lastScrollY === -1);
+                }
             }
 
             requestAnimationFrame(raf);
@@ -312,7 +336,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Always hide after the greeting sequence (0.9s, or immediately if reduced motion)
     setTimeout(hidePreloader, prefersReducedMotion ? 0 : 900);
 
-    // i18n dictionary is now dynamically fetched from /i18n/{lang}.json
+    // i18n dictionary is defined inline below; the i18n/*.json files are not fetched.
 
     // Language Toggle Logic
     const langToggleBtn = document.getElementById('lang-toggle');
@@ -327,9 +351,11 @@ document.addEventListener("DOMContentLoaded", () => {
             "navSkills": "Skills",
             "navProjects": "Projects",
             "navThoughts": "Thoughts",
+            "navContact": "Contact",
             "heroTitle": "Frontend Developer",
             "heroSubtitle": "Crafting intuitive digital experiences.",
             "heroDesc": "Specializing in clean HTML, modern CSS, and performant JavaScript to turn interface designs into accessible, responsive web experiences.",
+            "heroShotCaption": "Live product — tembusptn.my.id",
             "viewProjects": "View Projects",
             "aboutMe": "About Me",
             "aboutTitle": "Behind the Code",
@@ -338,8 +364,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "aboutP2": "My core foundation is built on semantic HTML5, modern modular CSS, and Vanilla JavaScript. I leverage AI tools for development acceleration, while keeping architecture, accessibility, and visual craft strictly under personal engineering control.",
             "nowTitle": "RIGHT NOW IN YOGYAKARTA",
             "nowWeather": "Fetching weather...",
-            "publicRepos": "Public Repos",
-            "followers": "Followers",
             "resumeTitle": "Interactive Resume",
             "resumeCloseAria": "Close Resume",
             "resume1Title": "Frontend Developer",
@@ -358,13 +382,9 @@ document.addEventListener("DOMContentLoaded", () => {
             "skill2Desc": "Crafting natural transitions with custom easing curves and tactile feedback, ensuring interactions feel purposeful and respect reduced motion preferences.",
             "skill3Title": "UI Craft & Hierarchy",
             "skill3Desc": "Designing interfaces with strict typographic hierarchy, intentional spacing systems, and dark/light modes engineered for clarity across all screens.",
-            "philosophyTitle": "Work Philosophy",
             "phil1Title": "Visual Precision",
-            "phil1Desc": "Interfaces should feel deliberate. Every spacing token, border, and typography choice serves visual clarity and ease of use.",
             "phil2Title": "Performance First",
-            "phil2Desc": "Fluidity is meaningless if the page stutters. Lightweight assets and efficient DOM operations keep experiences fast on any device.",
             "phil3Title": "User-Centric & Accessible",
-            "phil3Desc": "Code should serve people. Clean keyboard navigation, screen-reader friendly labels, and high readability come first.",
             "projectsTitle": "Featured Projects",
             "filterAll": "All",
             "filterWeb": "Web Dev",
@@ -378,7 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "project2Desc": "Scientific paper exploring the impact of consumption methods on white rice glycemic response. Highlights analytical discipline, structured documentation, and research rigor applied alongside engineering.",
             "modalCloseAria": "Close Project",
             "modalViewProject": "Visit Project / View Document",
-            "thoughtsTitle": "Thoughts & Logs",
+            "thoughtsTitle": "Writing",
             "blogCloseAria": "Close Article",
             "blog1Title": "Why UI Animation Matters",
             "blog1Date": "May 20, 2026",
@@ -440,6 +460,12 @@ document.addEventListener("DOMContentLoaded", () => {
             "contactNameAria": "Your Name",
             "contactMsgAria": "Your Message",
             "cmdInputAria": "Search or enter a command",
+            "downloadCvPdf": "Download CV (PDF)",
+            "liveDemo": "Live Demo",
+            "viewDetails": "Details",
+            "readPaper": "Read Paper (PDF)",
+            "directContactTitle": "Prefer direct email?",
+            "copyEmail": "Copy Email",
             "guestCooldown": "Please wait {seconds}s before submitting again."
         },
         id: {
@@ -451,9 +477,11 @@ document.addEventListener("DOMContentLoaded", () => {
             "navSkills": "Keahlian",
             "navProjects": "Proyek",
             "navThoughts": "Catatan",
+            "navContact": "Kontak",
             "heroTitle": "Frontend Developer",
             "heroSubtitle": "Membangun pengalaman digital intuitif.",
             "heroDesc": "Fokus pada struktur HTML bersih, CSS modern, dan JavaScript performan untuk mewujudkan antarmuka web yang responsif, rapi, dan nyaman digunakan.",
+            "heroShotCaption": "Produk live — tembusptn.my.id",
             "viewProjects": "Lihat Proyek",
             "aboutMe": "Tentang Saya",
             "aboutTitle": "Di Balik Kode",
@@ -462,8 +490,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "aboutP2": "Fondasi kerja saya berakar pada HTML5 semantik, CSS modular modern, dan Vanilla JavaScript. Saya memanfaatkan AI tools untuk akselerasi alur kerja teknis, sementara rancangan tata letak, detail aksesibilitas, dan kualitas interaksi tetap saya kendalikan secara penuh.",
             "nowTitle": "SAAT INI DI YOGYAKARTA",
             "nowWeather": "Memuat cuaca...",
-            "publicRepos": "Repositori Publik",
-            "followers": "Pengikut",
             "resumeTitle": "Resume Interaktif",
             "resumeCloseAria": "Tutup Resume",
             "resume1Title": "Frontend Developer",
@@ -482,13 +508,9 @@ document.addEventListener("DOMContentLoaded", () => {
             "skill2Desc": "Penerapan animasi transisi CSS dan JavaScript dengan kurva easing yang halus dan tactile feedback, memastikan interaksi terasa hidup dan tetap menghargai reduced motion.",
             "skill3Title": "Desain UI & Hirarki",
             "skill3Desc": "Perancangan antarmuka dengan hierarki tipografi yang jelas, sistem spacing yang proporsional, serta mode gelap/terang yang dirancang untuk kenyamanan membaca di berbagai ukuran layar.",
-            "philosophyTitle": "Prinsip Kerja",
             "phil1Title": "Presisi Visual",
-            "phil1Desc": "Antarmuka harus terencana. Setiap proporsi spacing, border, dan tipografi berfungsi memperjelas konten dan mempermudah pengguna.",
             "phil2Title": "Utamakan Performa",
-            "phil2Desc": "Fluiditas visual tidak berguna jika halaman berat. Aset ringan dan manipulasi DOM yang efisien menjaga website tetap cepat di perangkat apa pun.",
             "phil3Title": "Berpusat pada Pengguna & Aksesibel",
-            "phil3Desc": "Kode harus melayani pengguna nyata. Navigasi keyboard yang jelas, label aksesibel, dan keterbacaan tinggi selalu menjadi prioritas.",
             "projectsTitle": "Proyek Pilihan",
             "filterAll": "Semua",
             "filterWeb": "Web Dev",
@@ -502,7 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "project2Desc": "Penelitian ilmiah mengenai pengaruh cara konsumsi terhadap kadar glukosa pada nasi putih. Menunjukkan ketelitian analisis data, metode eksperimen, dan disiplin dokumentasi di samping pengembangan web.",
             "modalCloseAria": "Tutup Proyek",
             "modalViewProject": "Kunjungi Proyek / Buka Dokumen",
-            "thoughtsTitle": "Catatan & Jurnal",
+            "thoughtsTitle": "Tulisan",
             "blogCloseAria": "Tutup Artikel",
             "blog1Title": "Pentingnya Animasi dalam Antarmuka Web",
             "blog1Date": "20 Mei 2026",
@@ -564,6 +586,12 @@ document.addEventListener("DOMContentLoaded", () => {
             "contactNameAria": "Nama Anda",
             "contactMsgAria": "Pesan Anda",
             "cmdInputAria": "Cari atau ketik perintah",
+            "downloadCvPdf": "Unduh CV (PDF)",
+            "liveDemo": "Demo Langsung",
+            "viewDetails": "Detail",
+            "readPaper": "Baca Karya (PDF)",
+            "directContactTitle": "Lebih suka email langsung?",
+            "copyEmail": "Salin Email",
             "guestCooldown": "Harap tunggu {seconds} detik sebelum mengirim pesan lagi."
         }
     };
@@ -675,13 +703,6 @@ document.addEventListener("DOMContentLoaded", () => {
         el.classList.add('magnetic-text');
     });
 
-    // 2. Scroll Line Indicator
-    const scrollLine = document.getElementById('scroll-line-indicator');
-    window.addEventListener('scroll', () => {
-        const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-        if (scrollLine) scrollLine.style.height = scrolled + '%';
-    });
-
     // 3. Dynamic Island logic has been moved up
 
     // 4. Custom Context Menu
@@ -711,76 +732,6 @@ document.addEventListener("DOMContentLoaded", () => {
         contextMenu.classList.add('hidden');
         themeToggleBtn.click(); // Trigger native click
     });
-
-    // Converts raw commit messages into conversational language
-    function humanizeCommit(msg) {
-        // Only use the first line (ignore multiline commit bodies)
-        const firstLine = msg.split('\n')[0].trim();
-        const match = firstLine.match(/^([^:(]+)[:(]\s*(.+)/);
-        if (!match) return firstLine;
-
-        const type = match[1].toLowerCase().trim();
-        const body = match[2].replace(/[()]/g, '').trim();
-        const cap = body.charAt(0).toUpperCase() + body.slice(1);
-
-        const map = {
-            'feat': `${cap}`,
-            'fitur': `${cap}`,
-            'fix': `${cap}`,
-            'perbaikan': `${cap}`,
-            'config': `${cap}`,
-            'konfigurasi': `${cap}`,
-            'refactor': `${cap}`,
-            'style': `${cap}`,
-            'docs': `${cap}`,
-            'chore': `${cap}`,
-            'perf': `${cap}`,
-            'animasi': `${cap}`
-        };
-
-        return map[type] || cap;
-    }
-
-    // 5. GitHub Logs Injector (Live)
-    const logsTimeline = document.getElementById('logs-timeline');
-    if (logsTimeline) {
-        const lang = currentLang || localStorage.getItem('lang') || 'en';
-        logsTimeline.innerHTML = `<div style="color: var(--text-muted); font-size: 0.9rem;">${lang === 'id' ? 'Memuat commit terbaru dari GitHub...' : 'Fetching live commits from GitHub...'}</div>`;
-
-        fetch('https://api.github.com/repos/thannnajah-ai/portofolio/commits')
-            .then(response => {
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                return response.json();
-            })
-            .then(data => {
-                logsTimeline.innerHTML = ''; // clear loading text
-
-                if (!Array.isArray(data)) {
-                    throw new Error('Unexpected response format');
-                }
-
-                // Get latest 4 commits
-                const commits = data.slice(0, 4);
-                const curLang = currentLang || localStorage.getItem('lang') || 'en';
-                commits.forEach(commitObj => {
-                    const hash = commitObj.sha.substring(0, 7);
-                    const dateObj = new Date(commitObj.commit.author.date);
-                    const dateStr = dateObj.toLocaleDateString(curLang === 'id' ? 'id-ID' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                    const msg = humanizeCommit(commitObj.commit.message);
-
-                    const div = document.createElement('div');
-                    div.className = 'log-item';
-                    div.innerHTML = `<div class="log-date">${dateStr}</div><div class="log-msg"><a href="${commitObj.html_url}" target="_blank" rel="noopener noreferrer" class="log-hash" style="text-decoration:none">${hash}</a> ${msg}</div>`;
-                    logsTimeline.appendChild(div);
-                });
-            })
-            .catch(err => {
-                const curLang = currentLang || localStorage.getItem('lang') || 'en';
-                logsTimeline.innerHTML = `<div style="color: var(--text-muted); font-size: 0.9rem;">${curLang === 'id' ? 'Gagal memuat commit GitHub.' : 'Failed to load live commits.'}</div>`;
-                console.error('Error fetching commits:', err);
-            });
-    }
-
 
     // Dynamic SVG Favicon & Title
     const favicon = document.getElementById('favicon');
@@ -1211,33 +1162,6 @@ const setupDownloadBtn = (btnId) => {
 setupDownloadBtn('download-cv-btn');
 setupDownloadBtn('mobile-cv-btn');
 document.addEventListener('DOMContentLoaded', () => {
-    let staggerDelay = 0;
-    let staggerTimeout;
-
-    // Intersection Observer for Philosophy Cards (Smart Staggered Animation)
-    const cardObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Apply dynamic delay for batched elements (e.g. desktop)
-                entry.target.style.animationDelay = (0.1 + staggerDelay * 0.2) + 's';
-                entry.target.classList.add('in-view');
-                cardObserver.unobserve(entry.target);
-                staggerDelay++;
-            }
-        });
-
-        // Reset stagger counter after the batch is processed
-        clearTimeout(staggerTimeout);
-        staggerTimeout = setTimeout(() => {
-            staggerDelay = 0;
-        }, 100);
-    }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
-
-    const philCards = document.querySelectorAll('.philosophy-card');
-    philCards.forEach(card => cardObserver.observe(card));
-});
-
-document.addEventListener('DOMContentLoaded', () => {
 
     // --- Spline Hero Manager & Fallback Controller ---
     const initSplineHero = async () => {
@@ -1454,36 +1378,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Live GitHub Stats Integration ---
-    // Insert GitHub stats into the About section dynamically
-    const aboutTextContainer = document.querySelector('.about-text');
-    if (aboutTextContainer) {
-        const statsHTML = `
-        <div class="github-stats-container" id="github-stats">
-            <div class="stat-card">
-                <h4 id="repo-count">--</h4>
-                <p>Public Repos</p>
-            </div>
-            <div class="stat-card">
-                <h4 id="follower-count">--</h4>
-                <p>Followers</p>
-            </div>
-        </div>
-    `;
-        aboutTextContainer.insertAdjacentHTML('beforeend', statsHTML);
-
-        // Fetch from GitHub API
-        fetch('https://api.github.com/users/thannnajah-ai')
-            .then(res => res.json())
-            .then(data => {
-                if (data.public_repos !== undefined) {
-                    document.getElementById('repo-count').textContent = data.public_repos;
-                    document.getElementById('follower-count').textContent = data.followers;
-                }
-            })
-            .catch(err => console.error('GitHub API failed:', err));
-    }
-
     // 1. Local Time & Status Indicator (Unified Yogyakarta Time Updater)
     const timeText = document.getElementById('time-text');
     const localTimeEl = document.getElementById('local-time');
@@ -1691,10 +1585,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // === Supabase Client Initialization (On-Demand / Lazy-Loaded) ===
-    let supabaseClient = null;
-
-    // === Task 7: Guestbook (Online with Supabase) ===
+    // === Task 7: Guestbook (Firebase Firestore via REST) ===
+    const FIRESTORE_BASE = 'https://firestore.googleapis.com/v1/projects/portofolio-844a6/databases/(default)/documents/guestbook';
+    const FIRESTORE_KEY = 'AIzaSyBPji8dwEFhFomq_eEYoWsrTbtQxWJp6Q';
     const btnSignGuestbook = document.getElementById('btn-sign-guestbook');
     const guestNameInput = document.getElementById('guest-name');
     const guestMsgInput = document.getElementById('guest-message');
@@ -1712,13 +1605,17 @@ document.addEventListener('DOMContentLoaded', () => {
             .replace(/'/g, "&#039;");
     };
 
-    // Helper: Network timeout wrapper (prevents prolonged UI hang on DNS/network failure)
-    const withTimeout = (promise, ms = 4000) => {
-        let timer;
-        const timeoutPromise = new Promise((_, reject) => {
-            timer = setTimeout(() => reject(new Error('Koneksi timeout / Layanan tidak merespons')), ms);
-        });
-        return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timer));
+    // Abort stalled requests so the UI never hangs on a dead network.
+    const fetchJson = async (url, options = {}, ms = 7000) => {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), ms);
+        try {
+            const response = await fetch(url, { ...options, signal: controller.signal });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return await response.json();
+        } finally {
+            clearTimeout(timer);
+        }
     };
 
     const setStatus = (msg, type = 'info') => {
@@ -1742,123 +1639,69 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const getDict = () => (i18nData && i18nData[currentLang]) ? i18nData[currentLang] : (i18nData ? i18nData.en : {});
 
-        const loadGuestbook = async () => {
-            if (!supabaseClient) {
-                await initSupabaseClient();
+        const entryDate = (fields) => {
+            const raw = fields && fields.createdAt && fields.createdAt.timestampValue;
+            if (!raw) return '';
+            const date = new Date(raw);
+            if (Number.isNaN(date.getTime())) return '';
+            const lang = currentLang || localStorage.getItem('lang') || 'en';
+            return date.toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        };
+
+        const renderEntries = (documents) => {
+            const t = getDict();
+            guestbookEntries.innerHTML = '';
+            if (!documents.length) {
+                guestbookEntries.innerHTML = `<div style="color: var(--text-secondary); padding: 1rem;">${t.guestEmpty || 'No entries yet. Be the first to leave a message!'}</div>`;
+                return;
             }
-            if (!supabaseClient) return;
+            documents.forEach((doc) => {
+                const fields = doc.fields || {};
+                const name = escapeHtml(fields.name && fields.name.stringValue ? fields.name.stringValue : 'Anonymous');
+                const message = escapeHtml(fields.message && fields.message.stringValue ? fields.message.stringValue : '');
+                const date = entryDate(fields);
+                const div = document.createElement('div');
+                div.style.cssText = 'padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;';
+                div.innerHTML = `<strong style="color: var(--text-primary);">${name}</strong>${date ? ` <span style="font-size: 0.8rem; color: var(--text-secondary);">${date}</span>` : ''}<p style="margin-top: 4px; font-size: 0.9rem; word-break: break-word;">${message}</p>`;
+                guestbookEntries.appendChild(div);
+            });
+        };
+
+        const showRetry = () => {
+            const t = getDict();
+            guestbookEntries.innerHTML = `
+                <div style="color: var(--text-secondary); padding: 1.25rem; text-align: center; background: rgba(255,255,255,0.03); border: 1px dashed var(--border-color); border-radius: 8px;">
+                    <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">${t.guestOffline || 'Guestbook service is currently offline or unreachable.'}</p>
+                    <button type="button" id="btn-retry-guestbook" class="guestbook-retry-btn">${t.guestRetry || 'Try Again'}</button>
+                </div>
+            `;
+            document.getElementById('btn-retry-guestbook')?.addEventListener('click', () => loadGuestbook());
+        };
+
+        const loadGuestbook = async () => {
             if (isLoading) return;
             isLoading = true;
             const t = getDict();
             try {
                 guestbookEntries.innerHTML = `<div style="color: var(--text-secondary); padding: 1rem;">${t.guestLoading || 'Loading messages...'}</div>`;
-                
-                const queryPromise = supabaseClient
-                    .from('guestbook')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                const { data: entries, error } = await withTimeout(queryPromise, 4500);
-                
-                if (error) throw error;
-
-                guestbookEntries.innerHTML = '';
-                
-                if (!entries || entries.length === 0) {
-                    guestbookEntries.innerHTML = `<div style="color: var(--text-secondary); padding: 1rem;">${t.guestEmpty || 'No entries yet. Be the first to leave a message!'}</div>`;
-                    return;
-                }
-
-                entries.forEach(entry => {
-                    const div = document.createElement('div');
-                    div.style.padding = '1rem';
-                    div.style.background = 'rgba(255,255,255,0.05)';
-                    div.style.borderRadius = '8px';
-                    const curLang = currentLang || localStorage.getItem('lang') || 'en';
-                    const dateStr = entry.created_at ? new Date(entry.created_at).toLocaleDateString(curLang === 'id' ? 'id-ID' : 'en-US') : '';
-                    
-                    const safeName = escapeHtml(entry.name || 'Anonymous');
-                    const safeMsg = escapeHtml(entry.message || '');
-                    
-                    div.innerHTML = `<strong style="color: var(--text-primary);">${safeName}</strong> <span style="font-size: 0.8rem; color: var(--text-secondary);">${dateStr}</span><p style="margin-top: 4px; font-size: 0.9rem; word-break: break-word;">${safeMsg}</p>`;
-                    guestbookEntries.appendChild(div);
-                });
+                const data = await fetchJson(`${FIRESTORE_BASE}?pageSize=20&orderBy=createdAt%20desc&key=${FIRESTORE_KEY}`);
+                renderEntries(Array.isArray(data.documents) ? data.documents : []);
             } catch (err) {
-                console.warn("[Guestbook] Gagal memuat pesan dari Supabase:", err.message || err);
-                const curT = getDict();
-                guestbookEntries.innerHTML = `
-                    <div style="color: var(--text-secondary); padding: 1.25rem; text-align: center; background: rgba(255,255,255,0.03); border: 1px dashed var(--border-color); border-radius: 8px;">
-                        <p style="margin-bottom: 0.5rem; font-size: 0.9rem;" data-i18n="guestOffline">${curT.guestOffline || 'Guestbook service is currently offline or unreachable.'}</p>
-                        <button type="button" id="btn-retry-guestbook" class="guestbook-retry-btn" data-i18n="guestRetry">${curT.guestRetry || 'Try Again'}</button>
-                    </div>
-                `;
-                const btnRetry = document.getElementById('btn-retry-guestbook');
-                if (btnRetry) {
-                    btnRetry.addEventListener('click', () => loadGuestbook());
-                }
+                console.warn('[Guestbook] Could not load entries:', err.message || err);
+                showRetry();
             } finally {
                 isLoading = false;
             }
         };
 
-        let supabaseInitPromise = null;
-        const initSupabaseClient = () => {
-            if (supabaseClient) return Promise.resolve(supabaseClient);
-            if (supabaseInitPromise) return supabaseInitPromise;
-
-            supabaseInitPromise = new Promise((resolve) => {
-                if (window.supabase) {
-                    const supabaseUrl = 'https://mdjlisdsbamfdftuybky.supabase.co';
-                    const supabaseKey = 'sb_publishable_FK9Gdil-FbhiZbvePi0wPA_NYYovLn6';
-                    supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-                    return resolve(supabaseClient);
-                }
-                const existingScript = document.querySelector('script[src*="supabase-js"]');
-                if (existingScript) {
-                    existingScript.addEventListener('load', () => {
-                        if (window.supabase && !supabaseClient) {
-                            const supabaseUrl = 'https://mdjlisdsbamfdftuybky.supabase.co';
-                            const supabaseKey = 'sb_publishable_FK9Gdil-FbhiZbvePi0wPA_NYYovLn6';
-                            supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-                        }
-                        resolve(supabaseClient);
-                    }, { once: true });
-                    return;
-                }
-                const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-                script.async = true;
-                script.onload = () => {
-                    if (window.supabase && !supabaseClient) {
-                        const supabaseUrl = 'https://mdjlisdsbamfdftuybky.supabase.co';
-                        const supabaseKey = 'sb_publishable_FK9Gdil-FbhiZbvePi0wPA_NYYovLn6';
-                        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-                    }
-                    resolve(supabaseClient);
-                };
-                script.onerror = () => {
-                    console.warn('[Guestbook] Failed to load Supabase script from CDN.');
-                    supabaseInitPromise = null; // allow retry
-                    resolve(null);
-                };
-                document.head.appendChild(script);
-            });
-            return supabaseInitPromise;
-        };
-
-        const triggerGuestbookLoad = async () => {
+        const triggerGuestbookLoad = () => {
             if (isInitialized) return;
             isInitialized = true;
-            await initSupabaseClient();
-            if (supabaseClient) {
-                loadGuestbook();
-            } else {
-                guestbookEntries.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem;">Guestbook offline (Supabase not loaded)</div>';
-            }
+            loadGuestbook();
         };
 
-        // Lazy-load via IntersectionObserver when Guestbook approaches viewport
-        const gbSection = document.querySelector('.guestbook-section') || document.getElementById('thoughts');
+        // Lazy-load when the guestbook approaches the viewport
+        const gbSection = document.querySelector('.guestbook-section');
         if (gbSection && 'IntersectionObserver' in window) {
             const gbObserver = new IntersectionObserver((entries) => {
                 if (entries[0].isIntersecting) {
@@ -1871,19 +1714,11 @@ document.addEventListener('DOMContentLoaded', () => {
             triggerGuestbookLoad();
         }
 
-        // Trigger on user focus/click if earlier than observer
         if (guestNameInput) guestNameInput.addEventListener('focus', triggerGuestbookLoad, { once: true });
         if (guestMsgInput) guestMsgInput.addEventListener('focus', triggerGuestbookLoad, { once: true });
         btnSignGuestbook.addEventListener('click', triggerGuestbookLoad, { once: true });
 
         btnSignGuestbook.addEventListener('click', async () => {
-            if (!supabaseClient) {
-                await triggerGuestbookLoad();
-                if (!supabaseClient) {
-                    setStatus('Guestbook service is currently unreachable.', 'error');
-                    return;
-                }
-            }
             if (isSubmitting) return;
 
             const name = guestNameInput ? guestNameInput.value.trim() : '';
@@ -1924,17 +1759,19 @@ document.addEventListener('DOMContentLoaded', () => {
             setStatus(t.guestSending || 'Sending message...', 'info');
 
             try {
-                const insertPromise = supabaseClient
-                    .from('guestbook')
-                    .insert([{ name: name, message: msg }]);
+                await fetchJson(`${FIRESTORE_BASE}?key=${FIRESTORE_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fields: {
+                            name: { stringValue: name },
+                            message: { stringValue: msg },
+                            createdAt: { timestampValue: new Date().toISOString() }
+                        }
+                    })
+                });
 
-                const { error } = await withTimeout(insertPromise, 4500);
-
-                if (error) throw error;
-
-                // Save submission timestamp on success
                 localStorage.setItem('guestbook_last_submit', String(Date.now()));
-
                 if (guestNameInput) guestNameInput.value = '';
                 if (guestMsgInput) guestMsgInput.value = '';
                 setStatus(t.guestSuccess || 'Message sent successfully!', 'success');
@@ -1943,8 +1780,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 loadGuestbook();
             } catch (err) {
-                console.warn("[Guestbook] Gagal mengirim pesan ke Supabase:", err.message || err);
-                // Keep inputs intact so user does not lose typed content
+                console.warn('[Guestbook] Could not send message:', err.message || err);
+                // Keep inputs intact so the typed message is not lost
                 setStatus(t.guestFailed || 'Failed to send: Guestbook service is currently unreachable.', 'error');
                 if (typeof showDynamicIsland === 'function') {
                     showDynamicIsland(currentLang === 'id' ? 'Gagal mengirim pesan' : 'Failed to send message');
@@ -1961,26 +1798,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const dict = e.detail && e.detail.dict;
             if (!dict) return;
             const retryBtn = document.getElementById('btn-retry-guestbook');
-            if (retryBtn && dict.guestRetry) {
-                retryBtn.textContent = dict.guestRetry;
-            }
-            if (!isSubmitting && dict.guestSignBtn) {
-                btnSignGuestbook.textContent = dict.guestSignBtn;
-            }
+            if (retryBtn && dict.guestRetry) retryBtn.textContent = dict.guestRetry;
+            if (!isSubmitting && dict.guestSignBtn) btnSignGuestbook.textContent = dict.guestSignBtn;
         });
 
         window.__guestbook = {
             loadGuestbook,
             getStatus: () => guestbookStatus ? guestbookStatus.textContent : '',
             isSubmitting: () => isSubmitting,
-            isLoading: () => isLoading,
-            getClient: () => supabaseClient,
-            setClient: (mockClient) => {
-                supabaseClient = mockClient;
-                isInitialized = true;
-            }
+            isLoading: () => isLoading
         };
     }
+
 
     // === Task 8: Dynamic Now Page ===
     const nowWeather = document.getElementById('now-weather');

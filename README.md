@@ -11,11 +11,13 @@ I built this to test how far I could push standard web technologies. Here's what
 - **Procedural SVG Noise**: A film-grain overlay generated with math, skipping the need for heavy PNG textures.
 - **60FPS Canvas Particles**: A lightweight WebGL-style particle system built purely on the HTML5 Canvas 2D context.
 - **Dynamic Micro-Interactions**: Features a custom cursor, magnetic buttons, UI click sounds, and a dynamic "Miss You" favicon when you switch tabs.
+- **Firestore Guestbook**: Public read/write messages through the Firestore REST API — no SDK, no login, no build step.
 
 ## Tech Stack
 - **HTML5**: Semantic and clean structure.
 - **CSS3**: Variables, clamps for fluid typography, custom scrollbars, and keyframe animations.
 - **Vanilla JS**: DOM manipulation, event listeners, and animation loops (`requestAnimationFrame`).
+- **Firebase Firestore**: Guestbook storage via REST, protected by security rules and a client-side honeypot + cooldown.
 
 ## Run it locally
 1. Clone this repo:

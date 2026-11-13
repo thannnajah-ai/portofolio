@@ -20,14 +20,32 @@
         content="Frontend Developer crafting intuitive digital experiences. Focused on clean semantic HTML, modern CSS, and performant JavaScript.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://thannnajah-ai.github.io/portofolio/">
-    <meta property="og:image" content="https://thannnajah-ai.github.io/portofolio/photo.jpg">
+    <meta property="og:image" content="https://thannnajah-ai.github.io/portofolio/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <!-- Twitter SEO -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Nathan Ferdwiansyah W. | Frontend Developer">
     <meta name="twitter:description"
         content="Frontend Developer crafting intuitive digital experiences. Focused on clean semantic HTML, modern CSS, and performant JavaScript.">
-    <meta name="twitter:image" content="https://thannnajah-ai.github.io/portofolio/photo.jpg">
+    <meta name="twitter:image" content="https://thannnajah-ai.github.io/portofolio/og-image.png">
     <link rel="canonical" href="https://thannnajah-ai.github.io/portofolio/">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "Nathan Ferdwiansyah W.",
+            "url": "https://thannnajah-ai.github.io/portofolio/",
+            "image": "https://thannnajah-ai.github.io/portofolio/photo.jpg",
+            "jobTitle": "Frontend Developer",
+            "sameAs": [
+                "https://github.com/thannnajah-ai",
+                "https://www.linkedin.com/in/thannnajah/",
+                "https://x.com/fwnathannnnnn",
+                "https://www.instagram.com/fw.nathannnnnn/"
+            ]
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
@@ -58,6 +76,7 @@
             <li><a href="#about" class="spy-link" data-target="about" aria-label="Go to About section"></a></li>
             <li><a href="#skills" class="spy-link" data-target="skills" aria-label="Go to Skills section"></a></li>
             <li><a href="#projects" class="spy-link" data-target="projects" aria-label="Go to Projects section"></a></li>
+            <li><a href="#thoughts" class="spy-link" data-target="thoughts" aria-label="Go to Writing section"></a></li>
             <li><a href="#contact" class="spy-link" data-target="contact" aria-label="Go to Contact section"></a></li>
         </ul>
     </nav>
@@ -105,11 +124,6 @@
         </div>
     </dialog>
 
-    <!-- Scroll Progress Bar -->
-    <div id="scroll-progress"
-        style="position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: var(--text-primary); z-index: 99999; transition: width 0.1s ease-out; pointer-events: none;">
-    </div>
-
     <!-- SVG Filter for Liquid Distortion -->
     <svg style="display: none;">
         <defs>
@@ -127,11 +141,6 @@
     <aside id="dynamic-island" class="dynamic-island hidden-island">
         <span id="island-text"></span>
     </aside>
-
-    <!-- Scroll Line -->
-    <div class="scroll-line-container">
-        <div class="scroll-line" id="scroll-line-indicator"></div>
-    </div>
 
     <div class="noise-overlay"></div>
     <canvas id="particle-canvas" class="particle-canvas"></canvas>
@@ -163,6 +172,7 @@
             <a href="#skills" class="nav-link" data-i18n="navSkills">Skills</a>
             <a href="#projects" class="nav-link" data-i18n="navProjects">Projects</a>
             <a href="#thoughts" class="nav-link" data-i18n="navThoughts">Thoughts</a>
+            <a href="#contact" class="nav-link" data-i18n="navContact">Contact</a>
         </div>
         <div class="local-time-widget" id="local-time-widget"><span id="time-text">--:--</span><span
                 class="status-dot-time" id="time-status-dot"></span></div>
@@ -183,7 +193,7 @@
 
     <main class="container">
         <!-- Hero Section -->
-        <section id="hero" class="fade-in-section">
+        <section id="hero">
             <div class="spline-bg" id="hero-spline-container">
                 <div class="spline-fallback" id="hero-spline-fallback" aria-hidden="true">
                     <div class="fallback-mesh"></div>
@@ -217,6 +227,15 @@
                     </svg>
                 </a>
             </div>
+
+            <figure class="hero-shot">
+                <a href="https://tembusptn.my.id/" target="_blank" rel="noopener noreferrer"
+                    aria-label="Open TembusPTN live site">
+                    <img src="assets/projects/tembusptn.webp" alt="TembusPTN landing page, a UTBK/SNBT practice platform"
+                        width="1600" height="900" fetchpriority="high" decoding="async">
+                </a>
+                <figcaption><span class="hero-shot-dot"></span><span data-i18n="heroShotCaption">Live product — tembusptn.my.id</span></figcaption>
+            </figure>
         </section>
 
         <!-- Marquee Banner -->
@@ -388,33 +407,13 @@
                     </div>
                 </div>
             </div>
+            <ul class="principles-strip" aria-label="Work principles">
+                <li><span class="principle-num">01</span><span data-i18n="phil1Title">Visual Precision</span></li>
+                <li><span class="principle-num">02</span><span data-i18n="phil2Title">Performance First</span></li>
+                <li><span class="principle-num">03</span><span data-i18n="phil3Title">User-Centric &amp; Accessible</span></li>
+            </ul>
             <!-- Canvas kept for compatibility without arbitrary percentage display -->
             <canvas id="skill-radar" width="400" height="400" style="display: none;" aria-hidden="true"></canvas>
-        </section>
-
-        <!-- Work Philosophy Section -->
-        <section id="philosophy" class="fade-in-section" style="margin-bottom: 8rem;">
-            <h2 class="section-title"><span class="stagger-mask"><span class="stagger-text"
-                        data-i18n="philosophyTitle">Work Philosophy</span></span></h2>
-            <div class="philosophy-slider" id="philosophy-slider">
-                <div class="philosophy-track">
-                    <div class="philosophy-card tilt-card">
-                        <div class="philosophy-icon">🎯</div>
-                        <h3 data-i18n="phil1Title">Visual Precision</h3>
-                        <p data-i18n="phil1Desc">Interfaces should feel deliberate. Every spacing token, border, and typography choice serves visual clarity and ease of use.</p>
-                    </div>
-                    <div class="philosophy-card tilt-card">
-                        <div class="philosophy-icon">⚡</div>
-                        <h3 data-i18n="phil2Title">Performance First</h3>
-                        <p data-i18n="phil2Desc">Fluidity is meaningless if the page stutters. Lightweight assets and efficient DOM operations keep experiences fast on any device.</p>
-                    </div>
-                    <div class="philosophy-card tilt-card">
-                        <div class="philosophy-icon">💡</div>
-                        <h3 data-i18n="phil3Title">User-Centric & Accessible</h3>
-                        <p data-i18n="phil3Desc">Code should serve people. Clean keyboard navigation, screen-reader friendly labels, and high readability come first.</p>
-                    </div>
-                </div>
-            </div>
         </section>
 
         <!-- Projects Section -->
@@ -434,24 +433,9 @@
                 <!-- Project 1: TembusPTN (Primary Case Study) -->
                 <article class="project-card tilt-card" data-category="web">
                     <div class="project-image">
-                        <div class="project-mockup" aria-label="TembusPTN Interface Preview">
-                            <div class="mockup-header">
-                                <span class="mockup-dot red"></span>
-                                <span class="mockup-dot yellow"></span>
-                                <span class="mockup-dot green"></span>
-                                <span class="mockup-url">tembusptn.my.id</span>
-                            </div>
-                            <div class="mockup-content">
-                                <div class="mockup-badge">UTBK / SNBT Simulation</div>
-                                <div class="mockup-headline">Latihan Soal &amp; Pembahasan Terstruktur</div>
-                                <div class="mockup-sub">Simulasi ujian online adaptif dengan antarmuka minim distraksi</div>
-                                <div class="mockup-ui-row">
-                                    <span class="mockup-chip active">Penalaran Umum</span>
-                                    <span class="mockup-chip">Literasi Bhs Inggris</span>
-                                    <span class="mockup-chip">Penalaran Mat</span>
-                                </div>
-                            </div>
-                        </div>
+                        <img class="preview-img" src="assets/projects/tembusptn.webp"
+                            alt="TembusPTN practice interface with exam question navigation" width="1600" height="900"
+                            loading="lazy" decoding="async">
                     </div>
                     <div class="project-info">
                         <div class="project-tag-wrapper" style="margin-bottom: 0.5rem;">
@@ -531,15 +515,18 @@
             </div>
         </section>
 
-        <!-- Thoughts & Logs Section -->
+        <!-- Writing Section -->
         <section id="thoughts" class="fade-in-section">
             <h2 class="section-title"><span class="stagger-mask"><span class="stagger-text"
-                        data-i18n="thoughtsTitle">Thoughts & Logs</span></span></h2>
-            <!-- Task 2: Live GitHub Stats API moved to About Section -->
+                        data-i18n="thoughtsTitle">Writing</span></span></h2>
 
-            <!-- Task 7: Guestbook -->
-            <div class="guestbook-section" style="margin-top: 3rem;">
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-primary);" data-i18n="guestbookTitle">Guestbook</h3>
+            <div id="blog-container" class="blog-grid">
+                <!-- Injected via JS -->
+            </div>
+
+            <!-- Guestbook -->
+            <div class="guestbook-section">
+                <h3 class="guestbook-title" data-i18n="guestbookTitle">Guestbook</h3>
                 <div class="guestbook-form">
                     <input type="text" name="b_website" id="guest-website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;">
                     <input type="text" id="guest-name" placeholder="Name" maxlength="50" autocomplete="name" aria-label="Your Name" data-i18n-placeholder="guestNamePlaceholder" data-i18n-aria="guestNameAria">
@@ -551,16 +538,6 @@
                     style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; padding-right: 10px;">
                     <!-- Injected via JS -->
                 </div>
-            </div>
-
-            <div class="logs-container">
-                <div class="logs-timeline" id="logs-timeline">
-                    <!-- Logs injected via JS -->
-                </div>
-            </div>
-
-            <div id="blog-container" class="blog-grid" style="margin-top: 3rem;">
-                <!-- Injected via JS -->
             </div>
         </section>
 
@@ -660,6 +637,10 @@
         </div>
         <div class="footer-tagline" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);" data-i18n="footerTagline">
             Designed & Engineered with Vanilla HTML, CSS & JavaScript
+        </div>
+        <div class="footer-colophon">
+            Set in Inter · Hosted on GitHub Pages ·
+            <a href="https://github.com/thannnajah-ai/portofolio" target="_blank" rel="noopener noreferrer">Source</a>
         </div>
     </footer>
 

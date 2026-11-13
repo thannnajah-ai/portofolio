@@ -931,7 +931,7 @@ section {
         top: calc(100% + 0.6rem);
         left: 0;
         right: 0;
-        background: rgba(14, 14, 14, 0.96);
+        background: #0e0e0e;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border: 1px solid var(--border-color);
@@ -949,7 +949,7 @@ section {
     }
 
     .light-theme .nav-links {
-        background: rgba(255, 255, 255, 0.96);
+        background: #ffffff;
         box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
     }
 
@@ -1568,26 +1568,6 @@ spline-viewer {
     filter: url(#liquid);
 }
 
-/* 3. Scroll Line */
-.scroll-line-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 3px;
-    height: 100vh;
-    background: transparent;
-    z-index: 1000;
-    pointer-events: none;
-}
-
-.scroll-line {
-    width: 100%;
-    background: var(--accent);
-    box-shadow: 0 0 10px var(--accent);
-    height: 0%;
-    transition: height 0.1s ease-out;
-}
-
 /* 4. Theme Reveal Circle */
 .theme-reveal-circle {
     position: fixed;
@@ -1675,100 +1655,6 @@ spline-viewer {
     top: -20px;
     pointer-events: none;
     color: transparent;
-}
-
-/* 10 & 11. GitHub Graph & Logs */
-.github-stats {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 2rem 1.5rem;
-    margin-bottom: 2rem;
-    overflow: hidden;
-    /* Prevent scrollbar during 3D transform */
-    perspective: 1200px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.gh-chart {
-    filter: invert(1) hue-rotate(180deg) drop-shadow(0 20px 20px rgba(0, 0, 0, 0.4));
-    transition: filter 0.3s;
-    width: 100%;
-    max-width: 800px;
-    transform-style: preserve-3d;
-    animation: ghFloat3d 5s ease-in-out infinite alternate;
-}
-
-@keyframes ghFloat3d {
-    0% {
-        transform: rotateX(40deg) rotateZ(-5deg) rotateY(-15deg) translateY(0px) scale(0.9);
-    }
-
-    100% {
-        transform: rotateX(42deg) rotateZ(-3deg) rotateY(-10deg) translateY(-15px) scale(0.95);
-    }
-}
-
-.light-theme .gh-chart {
-    filter: invert(0) drop-shadow(0 20px 20px rgba(0, 0, 0, 0.1));
-}
-
-.logs-container {
-    margin-top: 2rem;
-}
-
-.logs-timeline {
-    border-left: 2px solid var(--border-color);
-    padding-left: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-bottom: 3rem;
-}
-
-.log-item {
-    position: relative;
-}
-
-.log-item::before {
-    content: '';
-    position: absolute;
-    left: -1.85rem;
-    top: 0.3rem;
-    width: 12px;
-    height: 12px;
-    background: var(--accent);
-    border: 2px solid var(--bg-color);
-    border-radius: 50%;
-    transition: background 0.3s;
-}
-
-.log-item:hover::before {
-    background: var(--text-primary);
-}
-
-.log-date {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-bottom: 0.2rem;
-}
-
-.log-msg {
-    font-size: 0.95rem;
-    color: var(--text-primary);
-    line-height: 1.4;
-}
-
-.log-hash {
-    font-family: monospace;
-    font-size: 0.8rem;
-    color: var(--accent);
-    background: var(--card-hover);
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-right: 8px;
 }
 
 /* =========================================
@@ -2336,44 +2222,6 @@ footer:hover .social-icon:nth-child(4) {
     }
 }
 
-/* 7. Typewriter/Staggered Log Reveal */
-dialog[open] .log-item {
-    opacity: 0;
-    animation: logReveal 0.4s var(--ease-out-expo) forwards;
-}
-
-dialog[open] .log-item:nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-dialog[open] .log-item:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-dialog[open] .log-item:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-dialog[open] .log-item:nth-child(4) {
-    animation-delay: 0.4s;
-}
-
-dialog[open] .log-item:nth-child(5) {
-    animation-delay: 0.5s;
-}
-
-@keyframes logReveal {
-    from {
-        opacity: 0;
-        transform: translateX(-15px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
 /* 8. Glowing Scroll-Progress Head */
 .scroll-progress::after {
     content: '';
@@ -2763,66 +2611,6 @@ dialog[open] .log-item:nth-child(5) {
     transform: translateY(0);
 }
 
-/* 10. Work Philosophy Slider */
-.philosophy-slider {
-    width: 100%;
-    overflow-x: auto;
-    padding: 2rem 0;
-    scroll-behavior: smooth;
-    -ms-overflow-style: none;
-    /* IE and Edge */
-    scrollbar-width: none;
-    /* Firefox */
-}
-
-.philosophy-slider::-webkit-scrollbar {
-    display: none;
-}
-
-.philosophy-track {
-    display: flex;
-    gap: 2rem;
-    padding: 0 1rem;
-    width: max-content;
-}
-
-.philosophy-card {
-    flex: 0 0 320px;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-    transition: transform 0.3s var(--ease-spring), border-color 0.3s;
-    user-select: none;
-    cursor: grab;
-}
-
-.philosophy-card:active {
-    cursor: grabbing;
-}
-
-.philosophy-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-5px);
-}
-
-.philosophy-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.philosophy-card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.75rem;
-    color: var(--text-primary);
-}
-
-.philosophy-card p {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-}
-
 /* 11. Interactive Download Button */
 .btn-download,
 .btn-download-mobile {
@@ -2904,235 +2692,6 @@ dialog[open] .log-item:nth-child(5) {
     display: block !important;
 }
 
-/* Work Philosophy Redesign & Stagger Animation */
-#philosophy .section-title {
-    text-align: left;
-    padding-left: 0.5rem;
-}
-
-.philosophy-slider {
-    width: 100%;
-    padding: 1rem 0 2rem 0;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
-    scroll-snap-type: x mandatory;
-}
-
-/* Custom Transparent Scrollbar */
-.philosophy-slider::-webkit-scrollbar {
-    height: 6px;
-    background: transparent;
-}
-
-.philosophy-slider::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.philosophy-slider::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-}
-
-.philosophy-slider::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.light-theme .philosophy-slider::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.15);
-}
-
-.light-theme .philosophy-slider::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.3);
-}
-
-.light-theme .philosophy-slider {
-    scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
-}
-
-.philosophy-track {
-    display: flex;
-    gap: 1.5rem;
-    padding: 0 1rem;
-    width: max-content;
-}
-
-.philosophy-card {
-    flex: 0 0 auto;
-    width: 85vw;
-    max-width: 380px;
-    scroll-snap-align: center;
-    background: var(--card-bg);
-    border-radius: 24px;
-    padding: 2.5rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all var(--speed-normal) var(--ease-out-expo);
-    text-align: left;
-    position: relative;
-    overflow: hidden;
-    opacity: 0;
-    /* Hidden initially for staggered entrance */
-}
-
-/* Staggered Entrance Animation triggered by .loaded class */
-@keyframes slideUpFade {
-    0% {
-        opacity: 0;
-        transform: translateY(50px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.philosophy-card.in-view {
-    animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-
-
-.light-theme .philosophy-card {
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
-}
-
-.philosophy-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0) 100%);
-    transform: skewX(-20deg);
-    transition: all 0.7s ease;
-    z-index: 1;
-    pointer-events: none;
-}
-
-.light-theme .philosophy-card::before {
-    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
-}
-
-.philosophy-card:hover::before {
-    left: 200%;
-}
-
-.philosophy-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-}
-
-.light-theme .philosophy-card:hover {
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
-}
-
-@keyframes floatIcon {
-    0% {
-        transform: translateY(0px);
-    }
-
-    50% {
-        transform: translateY(-8px);
-    }
-
-    100% {
-        transform: translateY(0px);
-    }
-}
-
-@keyframes pulseGlow {
-    0% {
-        box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.05), 0 0 0 0 rgba(255, 255, 255, 0.1);
-    }
-
-    50% {
-        box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.1), 0 0 20px 5px rgba(255, 255, 255, 0.1);
-    }
-
-    100% {
-        box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.05), 0 0 0 0 rgba(255, 255, 255, 0.0);
-    }
-}
-
-@keyframes pulseGlowLight {
-    0% {
-        box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.8), 0 0 0 0 rgba(0, 0, 0, 0.05);
-    }
-
-    50% {
-        box-shadow: inset 0 2px 20px rgba(255, 255, 255, 1), 0 0 20px 5px rgba(0, 0, 0, 0.05);
-    }
-
-    100% {
-        box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.8), 0 0 0 0 rgba(0, 0, 0, 0.0);
-    }
-}
-
-.philosophy-icon {
-    font-size: 2.5rem;
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 64px;
-    height: 64px;
-    border-radius: 20px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.05);
-    z-index: 2;
-    animation: floatIcon 4s ease-in-out infinite, pulseGlow 4s ease-in-out infinite;
-    transition: transform 0.3s ease;
-}
-
-.light-theme .philosophy-icon {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.01));
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.8);
-    animation: floatIcon 4s ease-in-out infinite, pulseGlowLight 4s ease-in-out infinite;
-}
-
-.philosophy-card:nth-child(1) .philosophy-icon {
-    animation-delay: 0.2s, 0.2s;
-}
-
-.philosophy-card:nth-child(2) .philosophy-icon {
-    animation-delay: 0.9s, 0.9s;
-}
-
-.philosophy-card:nth-child(3) .philosophy-icon {
-    animation-delay: 0.5s, 0.5s;
-}
-
-.philosophy-card:hover .philosophy-icon {
-    transform: scale(1.1) rotate(5deg);
-}
-
-.philosophy-card h3 {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin: 0;
-    z-index: 2;
-    letter-spacing: -0.02em;
-}
-
-.philosophy-card p {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin: 0;
-    z-index: 2;
-}
-
 /* Batman Reveal Effect CSS */
 #theme-reveal-circle {
     position: fixed;
@@ -3177,10 +2736,7 @@ body::after {
 }
 
 
-/* Premium Preloader Transition */
-#preloader {
-    transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1) !important;
-}
+
 
 
 
@@ -3323,37 +2879,6 @@ body::after {
     display: block;
     background: rgba(248, 113, 113, 0.1);
     color: #f87171;
-}
-
-/* GitHub Stats */
-.github-stats-container {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    margin-top: 2rem;
-    flex-wrap: wrap;
-}
-
-.stat-card {
-    background: var(--card-bg);
-    padding: 1.5rem 2rem;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    text-align: center;
-    min-width: 150px;
-}
-
-.stat-card h4 {
-    margin: 0;
-    font-size: 2.5rem;
-    color: var(--text-primary);
-    font-weight: 700;
-}
-
-.stat-card p {
-    margin: 0.5rem 0 0 0;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
 }
 
 /* Local Time Widget */
@@ -3586,88 +3111,6 @@ body::after {
     color: var(--text-secondary);
     margin: 0;
     line-height: 1.6;
-}
-
-/* Scroll-Spy Side Nav */
-.scroll-spy-nav {
-    position: fixed;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 999;
-    display: none;
-}
-
-@media (min-width: 1024px) {
-    .scroll-spy-nav {
-        display: block;
-    }
-}
-
-.scroll-spy-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.spy-link {
-    display: block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-}
-
-.light-theme .spy-link {
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.spy-link:hover,
-.spy-link.active {
-    background: var(--text-primary);
-    transform: scale(1.5);
-}
-
-/* Custom Text-Select Tooltip */
-::selection {
-    background: rgba(96, 165, 250, 0.3);
-    color: inherit;
-}
-
-.selection-tooltip {
-    position: fixed;
-    background: var(--text-primary);
-    color: var(--bg-color);
-    padding: 0.4rem 0.8rem;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    pointer-events: none;
-    opacity: 0;
-    transform: translate(-50%, 10px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    z-index: 99999;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.selection-tooltip.show {
-    opacity: 1;
-    transform: translate(-50%, -10px);
-    pointer-events: auto;
-}
-
-.selection-tooltip button {
-    background: transparent;
-    border: none;
-    color: inherit;
-    cursor: pointer;
-    font-weight: inherit;
-    font-size: inherit;
 }
 
 /* Interactive Timeline Resume Modal */
@@ -3931,52 +3374,6 @@ body.light-theme .social-icon:hover {
 }
 
 
-/* --- Responsive Enhancement: Philosophy & Guestbook --- */
-#philosophy {
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-}
-
-@media (min-width: 1024px) {
-    .philosophy-slider {
-        overflow-x: visible !important;
-    }
-    .philosophy-track {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        width: 100% !important;
-        gap: 1.5rem !important;
-        padding: 0 !important;
-    }
-    .philosophy-card {
-        width: 100% !important;
-        max-width: none !important;
-    }
-}
-
-@media (max-width: 1023px) {
-    .philosophy-slider {
-        width: 100%;
-        max-width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
-    }
-    .philosophy-track {
-        display: flex;
-        gap: 1rem;
-        padding: 0 0.5rem;
-        width: max-content;
-    }
-    .philosophy-card {
-        flex: 0 0 auto;
-        width: calc(100vw - 3rem);
-        max-width: 340px;
-        scroll-snap-align: center;
-    }
-}
-
 /* Guestbook Form Responsive Layout */
 .guestbook-form {
     display: flex;
@@ -4178,16 +3575,6 @@ body.light-theme .social-icon:hover {
     border-bottom-color: rgba(0, 0, 0, 0.08);
 }
 
-.mockup-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-}
-
-.mockup-dot.red { background: #ef4444; }
-.mockup-dot.yellow { background: #f59e0b; }
-.mockup-dot.green { background: #10b981; }
-
 .mockup-url {
     margin-left: auto;
     font-family: monospace;
@@ -4205,23 +3592,6 @@ body.light-theme .social-icon:hover {
     gap: 0.45rem;
 }
 
-.mockup-badge {
-    align-self: flex-start;
-    font-size: 0.65rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #60a5fa;
-    background: rgba(59, 130, 246, 0.12);
-    padding: 2px 8px;
-    border-radius: 4px;
-}
-
-.light-theme .mockup-badge {
-    color: #2563eb;
-    background: rgba(37, 99, 235, 0.1);
-}
-
 .mockup-headline {
     font-size: 0.95rem;
     font-weight: 600;
@@ -4232,39 +3602,6 @@ body.light-theme .social-icon:hover {
     font-size: 0.78rem;
     color: var(--text-secondary);
     line-height: 1.4;
-}
-
-.mockup-ui-row {
-    display: flex;
-    gap: 0.35rem;
-    flex-wrap: wrap;
-    margin-top: 0.35rem;
-}
-
-.mockup-chip {
-    font-size: 0.68rem;
-    padding: 2px 7px;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.light-theme .mockup-chip {
-    background: rgba(0, 0, 0, 0.04);
-    border-color: rgba(0, 0, 0, 0.06);
-}
-
-.mockup-chip.active {
-    background: rgba(96, 165, 250, 0.2);
-    color: #93c5fd;
-    border-color: rgba(96, 165, 250, 0.3);
-}
-
-.light-theme .mockup-chip.active {
-    background: rgba(37, 99, 235, 0.15);
-    color: #1d4ed8;
-    border-color: rgba(37, 99, 235, 0.25);
 }
 
 .research-mockup .mockup-paper-icon {
@@ -4356,4 +3693,154 @@ body.light-theme .social-icon:hover {
 
 .light-theme .btn-copy-email:hover {
     background: rgba(0, 0, 0, 0.1);
+}
+
+/* --- Paket A: hero proof shot, principles strip, colophon --- */
+.hero-shot {
+    display: none;
+    margin: 0;
+}
+
+.hero-shot a {
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    background: var(--card-bg);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.hero-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.hero-shot figcaption {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.hero-shot-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 8px #34d399;
+}
+
+@media (min-width: 1100px) {
+    #hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 440px;
+        gap: clamp(2rem, 4vw, 4rem);
+        align-items: center;
+        width: min(1120px, calc(100vw - 4rem));
+        margin-left: 50%;
+        transform: translateX(-50%);
+    }
+
+    #hero .hero-title {
+        font-size: clamp(2.5rem, 4vw, 3.25rem);
+    }
+
+    .hero-shot {
+        display: block;
+    }
+}
+
+.principles-strip {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    margin: 2rem 0 0;
+    padding: 1.25rem 0 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.principles-strip li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.principle-num {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.guestbook-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.guestbook-title {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.footer-colophon {
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.75;
+}
+
+.footer-colophon a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* 24px hit area for the 8px scroll-spy dots */
+.spy-link,
+.light-theme .spy-link {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: 0;
+    transform: none;
+}
+
+.spy-link::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.light-theme .spy-link::before {
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.spy-link:hover,
+.spy-link.active {
+    background: transparent;
+    transform: none;
+}
+
+.spy-link:hover::before,
+.spy-link.active::before {
+    background: var(--text-primary);
+    transform: scale(1.5);
+}
+
+.selection-tooltip button {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0 0.35rem;
 }

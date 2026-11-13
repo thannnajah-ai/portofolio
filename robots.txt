@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://thannnajah-ai.github.io/portofolio/sitemap.xml
