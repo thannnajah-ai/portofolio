@@ -1180,6 +1180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             filterBtns.forEach(b => b.classList.remove('active'));
             // Add active class
             btn.classList.add('active');
+            filterBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
 
             const filter = btn.getAttribute('data-filter');
 

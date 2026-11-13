@@ -68,6 +68,17 @@
 </head>
 
 <body>
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('theme');
+                if (!theme) {
+                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                if (theme === 'light') document.body.classList.add('light-theme');
+            } catch (e) { }
+        })();
+    </script>
 
     <a class="skip-link" href="#main-content" data-i18n="skipToContent">Skip to content</a>
 
@@ -425,10 +436,10 @@
 
             <div class="project-controls"
                 style="display: flex; gap: 0.75rem; margin-bottom: 2rem; align-items: center; justify-content: flex-start;">
-                <div class="project-filters" style="margin-bottom: 0;">
-                    <button class="filter-btn active" data-filter="all" data-i18n="filterAll">All</button>
-                    <button class="filter-btn" data-filter="web" data-i18n="filterWeb">Web Dev</button>
-                    <button class="filter-btn" data-filter="research" data-i18n="filterResearch">Research</button>
+                <div class="project-filters" role="group" aria-label="Filter projects" style="margin-bottom: 0;">
+                    <button class="filter-btn active" data-filter="all" data-i18n="filterAll" aria-pressed="true">All</button>
+                    <button class="filter-btn" data-filter="web" data-i18n="filterWeb" aria-pressed="false">Web Dev</button>
+                    <button class="filter-btn" data-filter="research" data-i18n="filterResearch" aria-pressed="false">Research</button>
                 </div>
             </div>
             <div class="projects-grid">

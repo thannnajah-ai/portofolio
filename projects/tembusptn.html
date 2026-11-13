@@ -40,6 +40,18 @@
     </script>
 </head>
 <body>
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('theme');
+                if (!theme) {
+                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                if (theme === 'light') document.body.classList.add('light-theme');
+            } catch (e) { }
+        })();
+    </script>
+
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header">
@@ -126,6 +138,8 @@
         <div class="cta-row">
             <a class="btn btn-primary" href="https://tembusptn.my.id/" target="_blank" rel="noopener noreferrer">Open live site</a>
             <a class="btn btn-secondary" href="../index.html#projects">Back to projects</a>
+            <a class="btn btn-secondary" href="../index.html#contact">Contact</a>
+            <a class="btn btn-secondary" href="../CV_Nathan.pdf" target="_blank" rel="noopener noreferrer">Download CV</a>
         </div>
     </main>
 

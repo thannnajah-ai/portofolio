@@ -1,4 +1,4 @@
-const CACHE_NAME = 'portfolio-v4';
+const CACHE_NAME = 'portfolio-v5';
 
 const PRECACHE_ASSETS = [
     './',
@@ -6,7 +6,9 @@ const PRECACHE_ASSETS = [
     './style.css',
     './script.js',
     './worker.js',
-    './photo.webp'
+    './photo.webp',
+    './projects/tembusptn.html',
+    './projects/case-study.css'
 ];
 
 self.addEventListener('install', (e) => {
