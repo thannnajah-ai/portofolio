@@ -1,4 +1,4 @@
-const CACHE_NAME = 'portfolio-v6';
+const CACHE_NAME = 'portfolio-v7';
 
 const PRECACHE_ASSETS = [
     './',
@@ -7,6 +7,7 @@ const PRECACHE_ASSETS = [
     './script.js',
     './worker.js',
     './photo.webp',
+    './assets/vendor/lenis.min.js',
     './projects/tembusptn.html',
     './projects/case-study.css'
 ];

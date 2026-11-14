@@ -34,83 +34,85 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 0. Initialize Lenis Smooth Scroll (Design Engineering touch)
-    if (typeof Lenis !== 'undefined') {
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    if (typeof Lenis !== 'undefined') {
         const lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
             smooth: !prefersReducedMotion
         });
+        window.lenis = lenis; // Expose globally
+    }
 
-        // Setup for Velocity Marquee and Image Parallax
-        const marqueeContent = document.querySelector('.marquee-content');
-        if (marqueeContent) marqueeContent.style.animation = 'none';
-        let marqueePos = 0;
-        let maxScroll = 0;
-        let marqueeVisible = true;
+    // Setup for Velocity Marquee and Image Parallax (runs even if Lenis fails or is blocked)
+    const marqueeContent = document.querySelector('.marquee-content');
+    if (marqueeContent) marqueeContent.style.animation = 'none';
+    let marqueePos = 0;
+    let maxScroll = 0;
+    let marqueeVisible = true;
 
-        if (marqueeContent && 'IntersectionObserver' in window) {
-            const marqueeObserver = new IntersectionObserver((entries) => {
-                marqueeVisible = entries[0].isIntersecting;
-            });
-            marqueeObserver.observe(marqueeContent);
+    if (marqueeContent && 'IntersectionObserver' in window) {
+        const marqueeObserver = new IntersectionObserver((entries) => {
+            marqueeVisible = entries[0].isIntersecting;
+        });
+        marqueeObserver.observe(marqueeContent);
+    }
+
+    const updateMarqueeBounds = () => {
+        if (marqueeContent) maxScroll = marqueeContent.scrollWidth / 2;
+    };
+    window.addEventListener('resize', updateMarqueeBounds, { passive: true });
+
+    const parallaxImages = document.querySelectorAll('.project-image > *');
+    let lastScrollY = -1;
+
+    const updateParallax = (force = false) => {
+        if (prefersReducedMotion || parallaxImages.length === 0) return;
+        const currentScroll = window.scrollY;
+        if (!force && currentScroll === lastScrollY) return;
+        lastScrollY = currentScroll;
+
+        const halfH = window.innerHeight / 2;
+        parallaxImages.forEach(img => {
+            const rect = img.parentElement.getBoundingClientRect();
+            if (rect.bottom >= 0 && rect.top <= window.innerHeight) {
+                const centerOffset = halfH - (rect.top + rect.height / 2);
+                const y = centerOffset * -0.15;
+                img.style.setProperty('--parallax-y', `${y}px`);
+            }
+        });
+    };
+
+    function raf(time) {
+        if (window.lenis) {
+            window.lenis.raf(time);
         }
-
-        const updateMarqueeBounds = () => {
-            if (marqueeContent) maxScroll = marqueeContent.scrollWidth / 2;
-        };
-        window.addEventListener('resize', updateMarqueeBounds, { passive: true });
-
-        const parallaxImages = document.querySelectorAll('.project-image > *');
-        let lastScrollY = -1;
-
-        const updateParallax = (force = false) => {
-            if (prefersReducedMotion || parallaxImages.length === 0) return;
-            const currentScroll = window.scrollY;
-            if (!force && currentScroll === lastScrollY) return;
-            lastScrollY = currentScroll;
-
-            const halfH = window.innerHeight / 2;
-            parallaxImages.forEach(img => {
-                const rect = img.parentElement.getBoundingClientRect();
-                if (rect.bottom >= 0 && rect.top <= window.innerHeight) {
-                    const centerOffset = halfH - (rect.top + rect.height / 2);
-                    const y = centerOffset * -0.15;
-                    img.style.setProperty('--parallax-y', `${y}px`);
+        
+        // Only execute visual marquee and parallax once curtain opens and if motion is allowed
+        if (document.body.classList.contains('loaded')) {
+            // 1. Velocity Marquee
+            if (marqueeContent && !prefersReducedMotion && marqueeVisible && !document.hidden) {
+                if (maxScroll <= 0) updateMarqueeBounds();
+                const velocity = window.lenis ? (window.lenis.velocity || 0) : 0;
+                marqueePos -= 0.5 + Math.abs(velocity * 0.05);
+                
+                if (Math.abs(marqueePos) >= maxScroll && maxScroll > 0) {
+                    marqueePos = 0;
                 }
-            });
-        };
-
-        function raf(time) {
-            lenis.raf(time);
-            
-            // Only execute visual marquee and parallax once curtain opens and if motion is allowed
-            if (document.body.classList.contains('loaded')) {
-                // 1. Velocity Marquee
-                if (marqueeContent && !prefersReducedMotion && marqueeVisible && !document.hidden) {
-                    if (maxScroll <= 0) updateMarqueeBounds();
-                    const velocity = lenis.velocity || 0;
-                    marqueePos -= 0.5 + Math.abs(velocity * 0.05);
-                    
-                    if (Math.abs(marqueePos) >= maxScroll && maxScroll > 0) {
-                        marqueePos = 0;
-                    }
-                    marqueeContent.style.transform = `translate3d(${marqueePos}px, 0, 0)`;
-                }
-
-                // 2. Image Parallax (only run when scrolling or for initial paint, avoiding idle forced reflows)
-                const isScrolling = lenis.isScrolling || Math.abs(lenis.velocity || 0) > 0.05;
-                if (isScrolling || lastScrollY === -1) {
-                    updateParallax(lastScrollY === -1);
-                }
+                marqueeContent.style.transform = `translate3d(${marqueePos}px, 0, 0)`;
             }
 
-            requestAnimationFrame(raf);
+            // 2. Image Parallax (only run when scrolling or for initial paint, avoiding idle forced reflows)
+            const isScrolling = window.lenis ? (window.lenis.isScrolling || Math.abs(window.lenis.velocity || 0) > 0.05) : true;
+            if (isScrolling || lastScrollY === -1) {
+                updateParallax(lastScrollY === -1);
+            }
         }
+
         requestAnimationFrame(raf);
-        window.lenis = lenis; // Expose globally just in case
     }
+    requestAnimationFrame(raf);
 
 
     // Configuration for Intersection Observer
@@ -333,8 +335,6 @@ document.addEventListener("DOMContentLoaded", () => {
             window.lenis.start();
         }
     };
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Stop scrolling while curtain is down (if motion allowed)
     if (window.lenis && !prefersReducedMotion) window.lenis.stop();
