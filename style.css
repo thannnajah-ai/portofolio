@@ -796,7 +796,8 @@ section {
         left: 0;
         width: 12px;
         height: 12px;
-        background-color: var(--text-primary);
+        /* Always white: difference blend inverts it against any backdrop (visible in both themes) */
+        background-color: #FFFFFF;
         border-radius: 50%;
         transform: translate(-50%, -50%);
         pointer-events: none;
@@ -812,11 +813,6 @@ section {
         height: 40px;
         background-color: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .light-theme .custom-cursor.active {
-        background-color: rgba(0, 0, 0, 0.05);
-        border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     /* FIX: Restore native cursor when any dialog is open (since dialog top-layer hides custom cursor) */
