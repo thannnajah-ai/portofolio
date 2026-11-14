@@ -452,6 +452,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "readPaper": "Read Paper (PDF)",
             "directContactTitle": "Prefer direct email?",
             "copyEmail": "Copy Email",
+            "addContact": "Add Contact",
             "guestCooldown": "Please wait {seconds}s before submitting again."
         },
         id: {
@@ -577,6 +578,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "readPaper": "Baca Karya (PDF)",
             "directContactTitle": "Lebih suka email langsung?",
             "copyEmail": "Salin Email",
+            "addContact": "Simpan Kontak",
             "guestCooldown": "Harap tunggu {seconds} detik sebelum mengirim pesan lagi."
         }
     };
@@ -811,12 +813,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Blog Rendering & Dialog Logic
+    // Blog Rendering & Dialog Logic (deep-linkable via #blog/<id>)
     const blogs = [
-        { titleKey: 'blog1Title', dateKey: 'blog1Date', contentKey: 'blog1Content', link: '#' },
-        { titleKey: 'blog2Title', dateKey: 'blog2Date', contentKey: 'blog2Content', link: '#' },
-        { titleKey: 'blog3Title', dateKey: 'blog3Date', contentKey: 'blog3Content', link: '#' },
-        { titleKey: 'blog4Title', dateKey: 'blog4Date', contentKey: 'blog4Content', link: '#' }
+        { id: 'blog1', titleKey: 'blog1Title', dateKey: 'blog1Date', contentKey: 'blog1Content', link: '#' },
+        { id: 'blog2', titleKey: 'blog2Title', dateKey: 'blog2Date', contentKey: 'blog2Content', link: '#' },
+        { id: 'blog3', titleKey: 'blog3Title', dateKey: 'blog3Date', contentKey: 'blog3Content', link: '#' },
+        { id: 'blog4', titleKey: 'blog4Title', dateKey: 'blog4Date', contentKey: 'blog4Content', link: '#' }
     ];
     const blogContainer = document.getElementById('blog-container');
     const blogDialog = document.getElementById('blog-dialog');
@@ -824,6 +826,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const blogDialogDate = document.getElementById('blog-dialog-date');
     const blogDialogContent = document.getElementById('blog-dialog-content');
     const blogCloseBtn = document.getElementById('blog-close');
+
+    let currentBlog = null;
+
+    const populateBlogDialog = (blog) => {
+        const lang = currentLang || localStorage.getItem('lang') || 'en';
+        if (i18nData[lang]) {
+            blogDialogTitle.innerHTML = i18nData[lang][blog.titleKey] || '';
+            blogDialogDate.innerHTML = i18nData[lang][blog.dateKey] || '';
+            blogDialogContent.innerHTML = i18nData[lang][blog.contentKey] || '';
+        }
+    };
+
+    const openBlog = (blog, push = true) => {
+        currentBlog = blog;
+        populateBlogDialog(blog);
+        blogDialog.showModal();
+        document.body.style.overflow = 'hidden'; // prevent bg scrolling
+        if (push && location.hash !== '#blog/' + blog.id) {
+            history.pushState({ blog: blog.id }, '', '#blog/' + blog.id);
+        }
+    };
 
     if (blogContainer) {
         blogs.forEach(blog => {
@@ -837,17 +860,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             card.addEventListener('click', (e) => {
                 e.preventDefault();
-                // Populate dialog content based on current lang
-                const lang = currentLang || localStorage.getItem('lang') || 'en';
-                if (i18nData[lang]) {
-                    blogDialogTitle.innerHTML = i18nData[lang][blog.titleKey] || '';
-                    blogDialogDate.innerHTML = i18nData[lang][blog.dateKey] || '';
-                    blogDialogContent.innerHTML = i18nData[lang][blog.contentKey] || '';
-                }
-
-                // Show dialog
-                blogDialog.showModal();
-                document.body.style.overflow = 'hidden'; // prevent bg scrolling
+                openBlog(blog);
             });
 
             blogContainer.appendChild(card);
@@ -862,7 +875,6 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
                 blogDialog.close();
                 blogDialog.classList.remove('closing');
-                document.body.style.overflow = '';
             }, 300); // match CSS animation duration
         });
 
@@ -872,6 +884,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 blogCloseBtn.click();
             }
         });
+
+        // Esc / programmatic close: restore scrolling and unwind the deep-link hash
+        blogDialog.addEventListener('close', () => {
+            document.body.style.overflow = '';
+            currentBlog = null;
+            if (location.hash.startsWith('#blog/')) history.back();
+        });
+
+        // Back/forward button keeps the dialog in sync with the URL
+        window.addEventListener('popstate', () => {
+            if (location.hash.startsWith('#blog/')) {
+                const blog = blogs.find(b => '#blog/' + b.id === location.hash);
+                if (blog && !blogDialog.open) openBlog(blog, false);
+            } else if (blogDialog.open) {
+                blogDialog.close();
+            }
+        });
+
+        // Re-render open dialog when language switches
+        window.addEventListener('languagechange', () => {
+            if (blogDialog.open && currentBlog) populateBlogDialog(currentBlog);
+        });
+
+        // Direct visit to a #blog/<id> link
+        if (location.hash.startsWith('#blog/')) {
+            const blog = blogs.find(b => '#blog/' + b.id === location.hash);
+            if (blog) openBlog(blog, false);
+        }
     }
 
 });

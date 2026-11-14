@@ -1,10 +1,12 @@
-const CACHE_NAME = 'portfolio-v11';
+const CACHE_NAME = 'portfolio-v12';
 
 const PRECACHE_ASSETS = [
     './',
     './index.html',
     './style.css',
     './script.js',
+    './manifest.json',
+    './nathan.vcf',
     './photo.webp',
     './assets/projects/tembusptn.webp',
     './assets/fonts/inter-latin.woff2',

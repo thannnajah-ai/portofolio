@@ -1,0 +1,12 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Ferdwiansyah;Nathan;;;
+FN:Nathan Ferdwiansyah W.
+TITLE:Frontend Developer
+EMAIL;TYPE=INTERNET:thannnajah@gmail.com
+TEL;TYPE=CELL:+6285725276231
+URL:https://thannnajah-ai.github.io/portofolio/
+X-SOCIALPROFILE;TYPE=linkedin:https://www.linkedin.com/in/thannnajah/
+X-SOCIALPROFILE;TYPE=github:https://github.com/thannnajah-ai
+NOTE:Frontend Developer — semantic HTML, modern CSS, performant vanilla JavaScript.
+END:VCARD
