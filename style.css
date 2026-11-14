@@ -1338,18 +1338,6 @@ body.loaded #preloader {
     overflow: hidden;
 }
 
-spline-viewer {
-    width: 100%;
-    height: 100%;
-    display: block;
-    opacity: 0.7;
-    transition: opacity 0.5s ease;
-}
-
-.spline-bg.spline-loaded spline-viewer {
-    opacity: 0.85;
-}
-
 .spline-fallback {
     position: absolute;
     inset: 0;
@@ -1359,11 +1347,6 @@ spline-viewer {
     transition: opacity 0.6s ease;
     pointer-events: none;
     overflow: hidden;
-}
-
-.spline-bg.spline-loaded .spline-fallback {
-    opacity: 0;
-    visibility: hidden;
 }
 
 /* Ambient Radial Mesh */

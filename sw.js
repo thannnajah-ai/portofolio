@@ -1,11 +1,10 @@
-const CACHE_NAME = 'portfolio-v9';
+const CACHE_NAME = 'portfolio-v10';
 
 const PRECACHE_ASSETS = [
     './',
     './index.html',
     './style.css',
     './script.js',
-    './worker.js',
     './photo.webp',
     './assets/projects/tembusptn.webp',
     './assets/vendor/lenis.min.js',

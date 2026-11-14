@@ -804,6 +804,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.addEventListener('click', (e) => {
+        // Respect reduced motion: skip particle burst entirely
+        if (prefersReducedMotion) return;
         const wasEmpty = particles.length === 0;
         // Tweak to ignore clicks on language toggle to avoid blocking it, though pointer-events:none on canvas handles that.
         for (let i = 0; i < 20; i++) {
@@ -911,27 +913,6 @@ if (scrollProgress) {
     });
 }
 
-// 4. Dynamic Favicon & Title
-let originalTitle = document.title;
-let originalFavicon = document.querySelector('link[rel="icon"]');
-let originalFaviconHref = originalFavicon ? originalFavicon.href : '';
-
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        document.title = 'Come back! 😢';
-        if (originalFavicon) {
-            originalFavicon.href = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>😢</text></svg>';
-        }
-    } else {
-        document.title = originalTitle;
-        if (originalFavicon) {
-            originalFavicon.href = originalFaviconHref;
-        }
-    }
-});
-
-
-
 // 7. Parallax Depth Scrolling & Staggered Reveal
 // Parallax on Hero elements
 const heroTitle = document.querySelector('.hero-title');
@@ -1012,147 +993,6 @@ const setupDownloadBtn = (btnId) => {
 setupDownloadBtn('download-cv-btn');
 setupDownloadBtn('mobile-cv-btn');
 document.addEventListener('DOMContentLoaded', () => {
-
-    // --- Spline Hero Manager & Fallback Controller ---
-    const initSplineHero = async () => {
-        const container = document.querySelector('.spline-bg');
-        if (!container) return;
-
-        const viewer = container.querySelector('spline-viewer');
-        const fallback = container.querySelector('.spline-fallback');
-
-        // Normalize attribute to data-url so viewer doesn't fetch prematurely
-        if (viewer && viewer.hasAttribute('url') && !viewer.hasAttribute('data-url')) {
-            viewer.setAttribute('data-url', viewer.getAttribute('url'));
-            viewer.removeAttribute('url');
-        }
-
-        const rawUrl = viewer ? (viewer.getAttribute('data-url') || viewer.getAttribute('url') || '') : '';
-        const targetUrl = rawUrl.trim();
-
-        let isResolved = false;
-        let loadWatchdog = null;
-
-        const activateFallback = (reason) => {
-            if (isResolved) return;
-            isResolved = true;
-            if (loadWatchdog) clearTimeout(loadWatchdog);
-            if (reason.includes('No Spline scene')) {
-                console.info(`[Spline Hero] ${reason}. Aesthetic fallback active.`);
-            } else {
-                console.warn(`[Spline Hero] 3D scene failed to load (${reason}). Activating aesthetic fallback.`);
-            }
-            container.classList.add('has-fallback');
-            container.classList.remove('spline-loaded');
-            if (viewer) {
-                viewer.style.display = 'none';
-                viewer.removeAttribute('url');
-            }
-            if (fallback) {
-                fallback.classList.add('is-active');
-            }
-        };
-
-        const activateSpline = () => {
-            if (isResolved) return;
-            isResolved = true;
-            if (loadWatchdog) clearTimeout(loadWatchdog);
-            console.info('[Spline Hero] 3D scene loaded successfully.');
-            container.classList.add('spline-loaded');
-            container.classList.remove('has-fallback');
-            if (viewer) {
-                viewer.style.display = 'block';
-            }
-            if (fallback) {
-                fallback.classList.remove('is-active');
-            }
-        };
-
-        window.__splineHero = {
-            activateSpline: () => { isResolved = false; activateSpline(); },
-            activateFallback: (reason) => { isResolved = false; activateFallback(reason); },
-            isLoaded: () => container.classList.contains('spline-loaded'),
-            hasFallback: () => container.classList.contains('has-fallback')
-        };
-
-        if (!viewer || !targetUrl) {
-            activateFallback('No Spline scene URL configured');
-            return;
-        }
-
-        const loadSplineViewerScript = () => {
-            if (customElements.get('spline-viewer')) return Promise.resolve();
-            return new Promise((resolve, reject) => {
-                const s = document.createElement('script');
-                s.type = 'module';
-                s.src = 'https://unpkg.com/@splinetool/viewer@1.9.0/build/spline-viewer.js';
-                s.onload = () => resolve();
-                s.onerror = () => reject(new Error('Failed to load Spline viewer script from CDN'));
-                document.head.appendChild(s);
-            });
-        };
-
-        // Attach event listeners to viewer for completion and WebGL failure
-        viewer.addEventListener('load-complete', activateSpline, { once: true });
-        viewer.addEventListener('context-loss', () => activateFallback('WebGL context lost'));
-
-        // Preflight asset with timeout to prevent unhandled 403 / msgpack parser crashes
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => {
-            controller.abort();
-            activateFallback('Asset request timed out (3500ms)');
-        }, 3500);
-
-        try {
-            let response;
-            try {
-                response = await fetch(targetUrl, { method: 'HEAD', signal: controller.signal });
-            } catch (headErr) {
-                if (controller.signal.aborted) throw headErr;
-                response = await fetch(targetUrl, {
-                    method: 'GET',
-                    signal: controller.signal
-                });
-            }
-
-            clearTimeout(timeoutId);
-
-            if (!response.ok) {
-                activateFallback(`HTTP ${response.status} (${response.statusText || 'Forbidden / Access Denied'})`);
-                return;
-            }
-
-            // Asset is valid: dynamically load spline viewer library and mount
-            try {
-                await loadSplineViewerScript();
-            } catch (scriptErr) {
-                activateFallback(`Library load failed: ${scriptErr.message}`);
-                return;
-            }
-
-            // Arm watchdog timer
-            loadWatchdog = setTimeout(() => {
-                if (!isResolved) {
-                    activateFallback('3D viewer scene initialization timed out (8000ms)');
-                }
-            }, 8000);
-
-            if (viewer.getAttribute('url') !== targetUrl) {
-                viewer.setAttribute('url', targetUrl);
-            }
-        } catch (fetchErr) {
-            clearTimeout(timeoutId);
-            if (fetchErr.name === 'AbortError') {
-                activateFallback('Asset request timed out');
-            } else {
-                activateFallback(`Network request failed: ${fetchErr.message}`);
-            }
-        }
-    };
-
-    initSplineHero().catch(err => {
-        console.warn('[Spline Hero] Unexpected initialization error:', err);
-    });
 
     // Premium Scroll-Driven Parallax for Spline Background (Preserves CSS center anchor and respects reduced motion)
     const splineBg = document.querySelector('.spline-bg');
@@ -1937,17 +1777,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 handleFallback();
             }
         });
-    }
-
-
-
-    // Task 7: Web Worker Threading
-    if (window.Worker) {
-        const worker = new Worker('worker.js');
-        worker.postMessage('start_heavy_task');
-        worker.onmessage = function(e) {
-            console.log('[Web Worker] Heavy task completed in background:', e.data.result);
-        };
     }
 
 });
