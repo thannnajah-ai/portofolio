@@ -352,6 +352,8 @@ document.addEventListener("DOMContentLoaded", () => {
             "aboutP2": "My core foundation is built on semantic HTML5, modern modular CSS, and Vanilla JavaScript. I leverage AI tools for development acceleration, while keeping architecture, accessibility, and visual craft strictly under personal engineering control.",
             "nowTitle": "RIGHT NOW IN YOGYAKARTA",
             "nowWeather": "Fetching weather...",
+            "nowWind": "Wind",
+            "nowWeatherFail": "Weather unavailable",
             "resumeTitle": "Interactive Resume",
             "resumeCloseAria": "Close Resume",
             "resume1Title": "Frontend Developer",
@@ -478,6 +480,8 @@ document.addEventListener("DOMContentLoaded", () => {
             "aboutP2": "Fondasi kerja saya berakar pada HTML5 semantik, CSS modular modern, dan Vanilla JavaScript. Saya memanfaatkan AI tools untuk akselerasi alur kerja teknis, sementara rancangan tata letak, detail aksesibilitas, dan kualitas interaksi tetap saya kendalikan secara penuh.",
             "nowTitle": "SAAT INI DI YOGYAKARTA",
             "nowWeather": "Memuat cuaca...",
+            "nowWind": "Angin",
+            "nowWeatherFail": "Cuaca tidak tersedia",
             "resumeTitle": "Resume Interaktif",
             "resumeCloseAria": "Tutup Resume",
             "resume1Title": "Frontend Developer",
@@ -1508,16 +1512,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const nowWeather = document.getElementById('now-weather');
     
     if (nowWeather) {
+        // Weather state survives language switches: re-render from cache instead of re-fetching
+        let weather = null;
+        let weatherFailed = false;
+        const renderWeather = () => {
+            const t = i18nData[currentLang || localStorage.getItem('lang') || 'en'] || {};
+            if (weather) {
+                nowWeather.textContent = `${weather.temperature}°C, ${t.nowWind || 'Wind'} ${weather.windspeed}km/h`;
+            } else if (weatherFailed) {
+                nowWeather.textContent = t.nowWeatherFail || 'Weather unavailable';
+            } else {
+                nowWeather.textContent = t.nowWeather || 'Fetching weather...';
+            }
+        };
+
         // Fetch Weather (Yogyakarta coordinates)
         fetch('https://api.open-meteo.com/v1/forecast?latitude=-7.7956&longitude=110.3695&current_weather=true')
             .then(res => res.json())
             .then(data => {
                 const w = data.current_weather;
-                nowWeather.textContent = `${w.temperature}°C, Wind ${w.windspeed}km/h`;
+                if (!w) throw new Error('no weather data');
+                weather = w;
+                renderWeather();
             })
             .catch(() => {
-                nowWeather.textContent = 'Weather API failed';
+                weatherFailed = true;
+                renderWeather();
             });
+
+        window.addEventListener('languagechange', renderWeather);
     }
 
     // Task 1: Advanced Project Search Engine (Fuzzy Search)
