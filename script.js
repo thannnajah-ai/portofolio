@@ -339,8 +339,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Stop scrolling while curtain is down (if motion allowed)
     if (window.lenis && !prefersReducedMotion) window.lenis.stop();
 
-    // Always hide after the greeting sequence (0.3s, or immediately if reduced motion)
-    setTimeout(hidePreloader, prefersReducedMotion ? 0 : 300);
+    // Always hide after the greeting sequence (1.0s, or immediately if reduced motion)
+    setTimeout(hidePreloader, prefersReducedMotion ? 0 : 1000);
 
     // i18n dictionary is defined inline below; the i18n/*.json files are not fetched.
 
