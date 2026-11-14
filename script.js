@@ -1,22 +1,3 @@
-// Global Error Boundary & Fallback System
-window.addEventListener('error', (event) => {
-    console.warn("[AGY Boundary] Caught script error:", event.message);
-    let logs = JSON.parse(localStorage.getItem('agy_analytics') || '{"errors":[]}');
-    logs.errors.push({msg: event.message, time: Date.now()});
-    localStorage.setItem('agy_analytics', JSON.stringify(logs));
-    event.preventDefault(); // Graceful degradation
-});
-window.addEventListener('unhandledrejection', (event) => {
-    if (event.reason && (event.reason.name === 'AbortError' || String(event.reason).includes('Transition was skipped'))) {
-        event.preventDefault();
-        return;
-    }
-    console.warn("[AGY Boundary] Caught unhandled promise rejection:", event.reason);
-    let logs = JSON.parse(localStorage.getItem('agy_analytics') || '{"errors":[]}');
-    logs.errors.push({msg: String(event.reason), time: Date.now()});
-    localStorage.setItem('agy_analytics', JSON.stringify(logs));
-});
-
 // Centralized Bilingual Language State
 let currentLang = (typeof localStorage !== 'undefined' && localStorage.getItem('lang')) || 'en';
 let i18nData = null;
@@ -1499,18 +1480,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // Custom Local Analytics
-    document.addEventListener('click', (e) => {
-        const target = e.target.closest('a, button');
-        if (target) {
-            const action = target.innerText.trim() || target.id || target.href || 'unknown_click';
-            let analytics = JSON.parse(localStorage.getItem('agy_analytics') || '{"clicks":[]}');
-            if(!analytics.clicks) analytics.clicks = [];
-            analytics.clicks.push({ action: action, time: Date.now() });
-            localStorage.setItem('agy_analytics', JSON.stringify(analytics));
-        }
-    });
-
     // Task 1: Advanced Project Search Engine (Fuzzy Search)
     const searchInput = document.getElementById('project-search-input');
     const searchCards = document.querySelectorAll('.project-card');
@@ -1547,11 +1516,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     targetElement.scrollIntoView({ behavior: 'smooth' });
                 }
                 
-                // Track page view for Analytics
-                let analytics = JSON.parse(localStorage.getItem('agy_analytics') || '{"views":[]}');
-                if(!analytics.views) analytics.views = [];
-                analytics.views.push({ route: targetId, time: Date.now() });
-                localStorage.setItem('agy_analytics', JSON.stringify(analytics));
             } else {
                 // Feature 20: Custom 404 Fallback
                 const errorDialog = document.getElementById('error-404-dialog');
